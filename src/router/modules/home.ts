@@ -23,7 +23,7 @@ export default {
     },
     {
       path: "/test",
-      name: "Welcome",
+      name: "test",
       component: () => import("@/views/test/index.vue"),
       meta: {
         title: "test"
