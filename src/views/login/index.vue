@@ -14,6 +14,7 @@ import { initRouter, getTopMenu } from "@/router/utils";
 import { bg, avatar, illustration } from "./utils/static";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
+import { signin_api } from "@/api/drug_user.js";
 
 import dayIcon from "@/assets/svg/day.svg?component";
 import darkIcon from "@/assets/svg/dark.svg?component";
@@ -43,9 +44,17 @@ const ruleForm = reactive({
 
 const onLogin = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  await formEl.validate(valid => {
+  await formEl.validate(async valid => {
     if (valid) {
       loading.value = true;
+      const formData = new FormData();
+      formData.append("phone", "1234567890");
+      formData.append("email", ruleForm.username);
+      formData.append("password", ruleForm.password);
+      const res = await signin_api(formData);
+      if (res.success) {
+        localStorage.setItem("cs_signined", "true");
+      }
       useUserStoreHook()
         .loginByUsername({
           username: ruleForm.username,

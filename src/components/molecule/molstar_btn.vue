@@ -11,7 +11,7 @@
 
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
-import molstar_svg from "@/components/molecule/molstar_svg.vue";
+import molstar_svg from "./icon/molstar_svg.vue";
 
 const props = defineProps({
   svg_name: {
@@ -35,30 +35,27 @@ defineExpose({
 
 <style scoped lang="scss">
 .disable_btn {
-  color: #777;
-  cursor: not-allowed;
   opacity: 0.5;
+  cursor: not-allowed;
+  color: #777;
 }
 
 .molstar_bg {
   background: #eeece7;
   opacity: 0.5;
 }
-
 .molstar_btn {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   background: #f5f3f0;
   border: none;
 }
-
 .molstar_btn:hover {
-  color: #ae5d04 !important;
   cursor: pointer;
+  color: #ae5d04 !important;
   outline: 1px solid #c9c3b3 !important;
 }
-
 .disable_btn:hover {
   cursor: not-allowed !important;
 }

@@ -8,6 +8,7 @@ import {
   pathResolve,
   __APP_INFO__
 } from "./build/utils";
+const targetUlr = "https://new.drugflow.com";
 
 export default ({ mode }: ConfigEnv): UserConfigExport => {
   const { VITE_CDN, VITE_PORT, VITE_COMPRESSION, VITE_PUBLIC_PATH } =
@@ -24,7 +25,64 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
       port: VITE_PORT,
       host: "0.0.0.0",
       // 本地跨域代理 https://cn.vitejs.dev/config/server-options.html#server-proxy
-      proxy: {},
+      proxy: {
+        "/api": {
+          target: targetUlr,
+          changeOrigin: true
+        },
+        "/get_env": {
+          target: targetUlr,
+          changeOrigin: true
+        },
+        "/signin": {
+          target: targetUlr,
+          changeOrigin: true
+        },
+        "/signup": {
+          target: targetUlr,
+          changeOrigin: true
+        },
+        "/signout": {
+          target: targetUlr,
+          changeOrigin: true
+        },
+        "/downloads": {
+          target: targetUlr,
+          changeOrigin: true
+        },
+        "/download": {
+          target: targetUlr,
+          changeOrigin: true
+        },
+        "/activate": {
+          target: targetUlr,
+          changeOrigin: true
+        },
+        "/re_activate": {
+          target: targetUlr,
+          changeOrigin: true
+        },
+        "/forgot_password": {
+          target: targetUlr,
+          changeOrigin: true
+        },
+        "/reset_password": {
+          target: targetUlr,
+          changeOrigin: true
+        },
+        "/get_csrf_token": {
+          target: targetUlr,
+          changeOrigin: true
+        }
+        // '/ws': {
+        //   target: 'ws://dev-5.carbonsilico.com/ws/subscribe',
+        //   ws: true,
+        //   changeOrigin: true,
+        //   pathRewrite: {
+        //     '^/ws': ''
+        //   }
+        // }
+      },
       // 预热文件以提前转换和缓存结果，降低启动期间的初始页面加载时长并防止转换瀑布
       warmup: {
         clientFiles: ["./index.html", "./src/{views,components}/*"]
