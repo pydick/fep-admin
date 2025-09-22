@@ -1,10 +1,5 @@
 <template>
-  <div
-    style="width: 1.5rem; height: 1.5rem"
-    class="molstar_btn"
-    :class="{ disable_btn: props.disabled }"
-    :title="props.title"
-  >
+  <div style="width: 1.5rem; height: 1.5rem" class="molstar_btn" :class="{ disable_btn: props.disabled }" :title="props.title">
     <molstar_svg :name="props.svg_name" width="16px" height="16px" />
   </div>
 </template>

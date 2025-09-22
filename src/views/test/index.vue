@@ -92,7 +92,7 @@ export default {
 <template>
   <div>
     <div style="width: 800px; height: 800px">
-      <el-button @click="show_protein"> show_protein </el-button>
+      <el-button @click="show_protein">show_protein</el-button>
       <Protein3dMolstar
         ref="molstar3dRef"
         v-model:box_x="form.X_center"

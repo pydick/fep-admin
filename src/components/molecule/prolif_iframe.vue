@@ -1,39 +1,19 @@
 <template>
-  <div
-    class="prolif_frame"
-    :style="{ width: props.width, height: props.height }"
-  >
+  <div class="prolif_frame" :style="{ width: props.width, height: props.height }">
     <div ref="prolif" class="prolif_iframe" />
     <div class="prolif_btn">
       <el-radio-group v-model="ligand" @change="set_ligand">
         <div v-for="item in props.pdb_ligand_inter_list" :key="item">
           <div v-for="it in item.ligand_list" :key="it">
-            <el-radio
-              :label="
-                item.pdb_name +
-                ':' +
-                it.auth_asym_id +
-                ':' +
-                it.residue_name +
-                ':' +
-                it.auth_residue_number
-              "
-              size="small"
-            >
+            <el-radio :label="item.pdb_name + ':' + it.auth_asym_id + ':' + it.residue_name + ':' + it.auth_residue_number" size="small">
               <span v-if="props.show_ligname">
-                <span v-if="item.pdb_name === 'ref'"
-                  >{{ t("result.参考配体") }}: {{ it.auth_asym_id }}:
-                  {{ it.residue_name }}: {{ it.auth_residue_number }}</span
-                >
-                <span v-else
-                  >{{ item.pdb_name }}: {{ it.auth_asym_id }}:
-                  {{ it.residue_name }}: {{ it.auth_residue_number }}</span
-                >
+                <span v-if="item.pdb_name === 'ref'">
+                  {{ t("result.参考配体") }}: {{ it.auth_asym_id }}: {{ it.residue_name }}: {{ it.auth_residue_number }}
+                </span>
+                <span v-else>{{ item.pdb_name }}: {{ it.auth_asym_id }}: {{ it.residue_name }}: {{ it.auth_residue_number }}</span>
               </span>
               <span v-else>
-                <span v-if="item.pdb_name === 'ref'">{{
-                  t("result.参考配体")
-                }}</span>
+                <span v-if="item.pdb_name === 'ref'">{{ t("result.参考配体") }}</span>
                 <span v-else>{{ item.pdb_name }}</span>
               </span>
             </el-radio>
@@ -108,11 +88,7 @@ const set_ligand = async () => {
   let pdb_string = "";
   let residue_full_info = [];
   for (let i = 0; i < props.pdb_ligand_inter_list.length; i++) {
-    for (
-      let j = 0;
-      j < props.pdb_ligand_inter_list[i].ligand_list.length;
-      j++
-    ) {
+    for (let j = 0; j < props.pdb_ligand_inter_list[i].ligand_list.length; j++) {
       if (
         ligand.value ===
         props.pdb_ligand_inter_list[i].pdb_name +
@@ -145,8 +121,7 @@ const set_ligand = async () => {
   );
   const res = await get_interaction_iframe_api(form);
   if (res.data.status === false || !res.data.iframe_string[0].iframe) {
-    prolif.value.innerHTML =
-      '<p style="font-size: 1.5rem; padding: 6rem 0; margin: 0 auto; width: 10rem;">No Interaction</p>';
+    prolif.value.innerHTML = '<p style="font-size: 1.5rem; padding: 6rem 0; margin: 0 auto; width: 10rem;">No Interaction</p>';
   } else {
     prolif.value.innerHTML = res.data.iframe_string[0].iframe;
   }
@@ -169,11 +144,7 @@ const set_ligand_from_outer = () => {
   if (!first_render.value) {
     let flag = false;
     for (let i = 0; i < props.pdb_ligand_inter_list.length; i++) {
-      for (
-        let j = 0;
-        j < props.pdb_ligand_inter_list[i].ligand_list.length;
-        j++
-      ) {
+      for (let j = 0; j < props.pdb_ligand_inter_list[i].ligand_list.length; j++) {
         if (
           ligand.value ===
           props.pdb_ligand_inter_list[i].pdb_name +
@@ -198,8 +169,7 @@ const set_ligand_from_outer = () => {
         ":" +
         props.pdb_ligand_inter_list[final_index].ligand_list[0].residue_name +
         ":" +
-        props.pdb_ligand_inter_list[final_index].ligand_list[0]
-          .auth_residue_number;
+        props.pdb_ligand_inter_list[final_index].ligand_list[0].auth_residue_number;
       set_ligand();
     }
   }

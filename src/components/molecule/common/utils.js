@@ -115,21 +115,12 @@ export const JSonToCSV = {
       // 如果存在自定义key值
       if (columns.key.length) {
         columns.key.map(function (m) {
-          row +=
-            '"' +
-            (typeof columns.formatter === "function"
-              ? columns.formatter(m, n[m]) || n[m]
-              : n[m]) +
-            '",';
+          row += '"' + (typeof columns.formatter === "function" ? columns.formatter(m, n[m]) || n[m] : n[m]) + '",';
         });
       } else {
         for (key in n) {
           row +=
-            '"' +
-            (typeof columns.formatter === "function"
-              ? columns.formatter(key, n[key]) || n[key]
-              : n[key]) +
-            '",';
+            '"' + (typeof columns.formatter === "function" ? columns.formatter(key, n[key]) || n[key] : n[key]) + '",';
         }
       }
       row.slice(0, row.length - 1); // 删除最后一个,
@@ -154,9 +145,7 @@ export const JSonToCSV = {
   },
   getDownloadUrl: function (csvData) {
     const _utf = "\uFEFF"; // 为了使Excel以utf-8的编码模式，同时也是解决中文乱码的问题
-    return (
-      "data:attachment/csv;charset=utf-8," + _utf + encodeURIComponent(csvData)
-    );
+    return "data:attachment/csv;charset=utf-8," + _utf + encodeURIComponent(csvData);
   }
   // browser: function () {
   //   var Sys = {};

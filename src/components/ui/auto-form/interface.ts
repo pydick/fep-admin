@@ -56,19 +56,13 @@ interface BaseDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> {
   when: (sourceFieldValue: any, targetFieldValue: any) => boolean;
 }
 
-export type ValueDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> =
-  BaseDependency<SchemaType> & {
-    type:
-      | DependencyType.DISABLES
-      | DependencyType.REQUIRES
-      | DependencyType.HIDES;
-  };
+export type ValueDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> = BaseDependency<SchemaType> & {
+  type: DependencyType.DISABLES | DependencyType.REQUIRES | DependencyType.HIDES;
+};
 
 export type EnumValues = readonly [string, ...string[]];
 
-export type OptionsDependency<
-  SchemaType extends z.infer<z.ZodObject<any, any>>
-> = BaseDependency<SchemaType> & {
+export type OptionsDependency<SchemaType extends z.infer<z.ZodObject<any, any>>> = BaseDependency<SchemaType> & {
   type: DependencyType.SETS_OPTIONS;
 
   // Partial array of values from sourceField that will trigger the dependency

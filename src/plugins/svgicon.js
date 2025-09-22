@@ -1,13 +1,13 @@
-import * as components from '@element-plus/icons-vue'
+import * as components from "@element-plus/icons-vue";
 export default {
-  install: (app) => {
+  install: app => {
     // for (const key in components) {
     //   const componentConfig = components[key];
     //   app.component(componentConfig.name, componentConfig);
     // }
 
     for (const [key, component] of Object.entries(components)) {
-      app.component(key, component)
+      app.component(key, component);
     }
   }
-}
+};

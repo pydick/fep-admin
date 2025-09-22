@@ -1,11 +1,6 @@
 <script setup lang="ts" generic="T extends z.ZodAny">
 import type { Config, ConfigItem } from "./interface";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { FormItem, FormMessage } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
@@ -25,15 +20,11 @@ const props = defineProps<{
   disabled?: boolean;
 }>();
 
-function isZodArray(
-  item: z.ZodArray<any> | z.ZodDefault<any>
-): item is z.ZodArray<any> {
+function isZodArray(item: z.ZodArray<any> | z.ZodDefault<any>): item is z.ZodArray<any> {
   return item instanceof z.ZodArray;
 }
 
-function isZodDefault(
-  item: z.ZodArray<any> | z.ZodDefault<any>
-): item is z.ZodDefault<any> {
+function isZodDefault(item: z.ZodArray<any> | z.ZodDefault<any>): item is z.ZodDefault<any> {
   return item instanceof z.ZodDefault;
 }
 
@@ -61,13 +52,7 @@ provide(FieldContextKey, fieldContext);
 <template>
   <FieldArray v-slot="{ fields, remove, push }" as="section" :name="fieldName">
     <slot v-bind="props">
-      <Accordion
-        type="multiple"
-        class="w-full"
-        collapsible
-        :disabled="disabled"
-        as-child
-      >
+      <Accordion type="multiple" class="w-full" collapsible :disabled="disabled" as-child>
         <FormItem>
           <AccordionItem :value="fieldName" class="border-none">
             <AccordionTrigger>
@@ -79,20 +64,10 @@ provide(FieldContextKey, fieldContext);
             <AccordionContent>
               <template v-for="(field, index) of fields" :key="field.key">
                 <div class="mb-4 p-1">
-                  <AutoFormField
-                    :field-name="`${fieldName}[${index}]`"
-                    :label="fieldName"
-                    :shape="itemShape!"
-                    :config="config as ConfigItem"
-                  />
+                  <AutoFormField :field-name="`${fieldName}[${index}]`" :label="fieldName" :shape="itemShape!" :config="config as ConfigItem" />
 
                   <div class="!my-4 flex justify-end">
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="secondary"
-                      @click="remove(index)"
-                    >
+                    <Button type="button" size="icon" variant="secondary" @click="remove(index)">
                       <TrashIcon :size="16" />
                     </Button>
                   </div>
@@ -100,12 +75,7 @@ provide(FieldContextKey, fieldContext);
                 </div>
               </template>
 
-              <Button
-                type="button"
-                variant="secondary"
-                class="mt-4 flex items-center"
-                @click="push(null)"
-              >
+              <Button type="button" variant="secondary" class="mt-4 flex items-center" @click="push(null)">
                 <PlusIcon class="mr-2" :size="16" />
                 Add
               </Button>

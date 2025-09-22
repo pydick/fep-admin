@@ -1,32 +1,11 @@
 <template>
-  <div
-    id="protein_frame"
-    style="
-      position: relative;
-      height: 100%;
-      min-width: 200px;
-      min-height: 400px;
-    "
-  >
-    <div
-      style="
-        height: calc(100% + 1px);
-        min-height: 500px;
-        min-width: 540px;
-        width: calc(100% + 1px);
-        overflow: visible;
-        position: relative;
-      "
-    >
+  <div id="protein_frame" style="position: relative; height: 100%; min-width: 200px; min-height: 400px">
+    <div style="height: calc(100% + 1px); min-height: 500px; min-width: 540px; width: calc(100% + 1px); overflow: visible; position: relative">
       <drugflow_molstar ref="molstar_ref" />
     </div>
 
     <div v-if="if_cover == true" class="cover_frame">
-      <img
-        :src="requireImg('protein3DCover.png')"
-        class="cover_img"
-        alt="protein3D cover"
-      />
+      <img :src="requireImg('protein3DCover.png')" class="cover_img" alt="protein3D cover" />
     </div>
     <div v-if="if_err == true" class="flex_def cover_tips">
       <div class="text09rem" style="color: #409eff">
@@ -40,11 +19,7 @@
 import svg_temp from "./icon/svg_temp.vue";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  parse_ligand_string,
-  parse_pdb_info,
-  search_centry
-} from "@/components/molecule/pdb_parser.js";
+import { parse_ligand_string, parse_pdb_info, search_centry } from "@/components/molecule/pdb_parser.js";
 import drugflow_molstar from "@/components/molecule/drugflow_molstar.vue";
 import { change_pocket_to_xyz, calc_iou } from "./utils/common.js";
 import { requireImg } from "./common/utils.js";
@@ -187,13 +162,9 @@ export default {
         for (let j = 0; j < ligands.length; j++) {
           const chain_name = ligands[j].auth_asym_id;
           const residue_id = ligands[j].auth_residue_number;
-          if (
-            this.ligand_content[i].residue_id == residue_id &&
-            this.ligand_content[i].chain_name === chain_name
-          ) {
+          if (this.ligand_content[i].residue_id == residue_id && this.ligand_content[i].chain_name === chain_name) {
             this.ligand_content[i].auth_asym_id = ligands[j].auth_asym_id;
-            this.ligand_content[i].auth_residue_number =
-              ligands[j].auth_residue_number;
+            this.ligand_content[i].auth_residue_number = ligands[j].auth_residue_number;
             break;
           }
         }
@@ -247,9 +218,7 @@ export default {
           auth_asym_id: chain_name,
           group_PDB: "ATOM"
         });
-        await this.molstar_ref.show_selection("chain", [
-          { auth_asym_id: chain_name, group_PDB: "ATOM" }
-        ]);
+        await this.molstar_ref.show_selection("chain", [{ auth_asym_id: chain_name, group_PDB: "ATOM" }]);
       }
     },
 
@@ -434,9 +403,7 @@ export default {
         if (this.if_show_box === true) {
           if (this.pocket_check) {
             for (let i = 0; i < this.ligand_content.length; i++) {
-              const pocket_coord_dict = change_pocket_to_xyz(
-                this.ligand_content[i].max_min_coord
-              );
+              const pocket_coord_dict = change_pocket_to_xyz(this.ligand_content[i].max_min_coord);
               const iou = calc_iou(pocket_coord_dict, {
                 x: position[0],
                 y: position[1],
@@ -455,14 +422,7 @@ export default {
           }
 
           this.context.emit("update:if_changed_box", true);
-          this.add_shape(
-            position[0],
-            position[1],
-            position[2],
-            this.l1,
-            this.l2,
-            this.l3
-          );
+          this.add_shape(position[0], position[1], position[2], this.l1, this.l2, this.l3);
           console.log("click func flag: ", flag);
           if (!flag) {
             // 触发父组件函数

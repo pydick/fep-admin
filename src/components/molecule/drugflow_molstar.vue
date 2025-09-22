@@ -1,8 +1,5 @@
 <template>
-  <div
-    style="position: relative; width: 100%; height: 100%"
-    :class="{ full_frame: full_screen_type }"
-  >
+  <div style="position: relative; width: 100%; height: 100%" :class="{ full_frame: full_screen_type }">
     <div
       :id="canvas_id"
       ref="molstar_ref"
@@ -10,20 +7,11 @@
       :class="{ drugflow_molstar_no_sequence: !props.if_sequence_panel }"
       style="width: 100%; height: 100%; min-width: 300px; min-height: 300px"
     />
-    <div
-      v-show="props.show_tool && show_tool"
-      style="position: absolute; top: 0.5rem; width: 100%"
-    >
+    <div v-show="props.show_tool && show_tool" style="position: absolute; top: 0.5rem; width: 100%">
       <el-row style="margin: 0 auto; width: 40rem">
         <el-col :span="3" class="flex_def" />
         <el-col :span="3" class="flex_def">
-          <el-popover
-            placement="bottom"
-            title="Set Granularity"
-            :width="80"
-            trigger="hover"
-            popper-class="molstar_popper"
-          >
+          <el-popover placement="bottom" title="Set Granularity" :width="80" trigger="hover" popper-class="molstar_popper">
             <template #reference>
               <molstar_btn svg_name="granularity" title="Set Granularity" />
             </template>
@@ -33,126 +21,56 @@
               <el-radio label="element" size="small">Atom</el-radio>
             </el-radio-group>
           </el-popover>
-          <el-popover
-            placement="bottom"
-            title="Quick Select"
-            :width="80"
-            trigger="hover"
-            popper-class="molstar_popper"
-          >
+          <el-popover placement="bottom" title="Quick Select" :width="80" trigger="hover" popper-class="molstar_popper">
             <template #reference>
               <molstar_btn svg_name="quick_select" title="Quick Select" />
             </template>
             <div class="flex_column">
               <div>
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="quick_select(undefined, (type = 'chains'))"
-                  >All Chains</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'chains'))">All Chains</el-button>
               </div>
               <div v-for="item in pdb_info.chain" :key="item.key">
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="quick_select(item)"
-                  >Chain: {{ item.auth_asym_id }}</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(item)">Chain: {{ item.auth_asym_id }}</el-button>
               </div>
               <el-divider v-if="pdb_info.ligand.length" style="margin: 8px 0" />
               <div>
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="quick_select(undefined, (type = 'ligands'))"
-                  >All Ligands</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'ligands'))">All Ligands</el-button>
               </div>
               <div v-for="item in pdb_info.ligand" :key="item.key">
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="quick_select(item)"
-                  >{{ item.auth_asym_id }}: {{ item.residue_name }}:
-                  {{ item.auth_residue_number }}</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(item)">
+                  {{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}
+                </el-button>
               </div>
               <el-divider v-if="pdb_info.water.length" style="margin: 8px 0" />
               <div v-if="pdb_info.water.length">
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="quick_select(undefined, (type = 'water'))"
-                  >All Water</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'water'))">All Water</el-button>
               </div>
             </div>
           </el-popover>
-          <el-popover
-            placement="bottom"
-            title="More Selection"
-            :width="80"
-            trigger="hover"
-            popper-class="molstar_popper"
-          >
+          <el-popover placement="bottom" title="More Selection" :width="80" trigger="hover" popper-class="molstar_popper">
             <template #reference>
               <molstar_btn svg_name="expand" title="More Selection" />
             </template>
             <div>
-              <el-button
-                link
-                size="small"
-                class="molstar_btn_inner"
-                @click="select_all()"
-                >Select All</el-button
-              >
+              <el-button link size="small" class="molstar_btn_inner" @click="select_all()">Select All</el-button>
             </div>
             <div>
-              <el-button
-                link
-                size="small"
-                class="molstar_btn_inner"
-                @click="select_none()"
-                >Select None</el-button
-              >
+              <el-button link size="small" class="molstar_btn_inner" @click="select_none()">Select None</el-button>
             </div>
             <div>
-              <el-button
-                link
-                size="small"
-                class="molstar_btn_inner"
-                @click="invert_select()"
-                >Invert Select</el-button
-              >
+              <el-button link size="small" class="molstar_btn_inner" @click="invert_select()">Invert Select</el-button>
             </div>
             <el-divider style="margin: 8px 0" />
             <div style="font-size: 12px; margin: 8px 0">Expand</div>
             <el-row :gutter="8">
               <el-col :span="12">
-                <el-input
-                  v-model="expand_number"
-                  size="small"
-                  :min="1"
-                  :max="10"
-                />
+                <el-input v-model="expand_number" size="small" :min="1" :max="10" />
               </el-col>
               <el-col :span="2">
                 <div style="font-size: 12px">Å</div>
               </el-col>
               <el-col :span="10" class="flex_def">
-                <el-button
-                  type="primary"
-                  size="small"
-                  style="width: 30px; margin-left: 8px"
-                  @click="expand_selection"
-                  >OK</el-button
-                >
+                <el-button type="primary" size="small" style="width: 30px; margin-left: 8px" @click="expand_selection">OK</el-button>
               </el-col>
             </el-row>
           </el-popover>
@@ -168,49 +86,24 @@
             :disabled="props.disable_comp_btn"
           >
             <template #reference>
-              <molstar_btn
-                svg_name="create_surface"
-                title="Create Surface"
-                :disabled="props.disable_comp_btn"
-              />
+              <molstar_btn svg_name="create_surface" title="Create Surface" :disabled="props.disable_comp_btn" />
             </template>
             <div class="flex_column">
               <div>
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="create_surface(undefined, 'selection')"
-                  >For Selection</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="create_surface(undefined, 'selection')">For Selection</el-button>
               </div>
               <el-divider v-if="pdb_info.chain.length" style="margin: 8px 0" />
               <div v-for="item in pdb_info.chain" :key="item.key">
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="create_surface(item)"
-                  >Chain: {{ item.auth_asym_id }}</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="create_surface(item)">Chain: {{ item.auth_asym_id }}</el-button>
               </div>
               <el-divider v-if="pdb_info.ligand.length" style="margin: 8px 0" />
               <div v-for="item in pdb_info.ligand" :key="item.key">
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="create_surface(item)"
-                  >{{ item.auth_asym_id }}: {{ item.residue_name }}:
-                  {{ item.auth_residue_number }}</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="create_surface(item)">
+                  {{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}
+                </el-button>
               </div>
               <el-divider v-if="surface_list.length" style="margin: 8px 0" />
-              <div
-                v-for="item in surface_list"
-                :key="item"
-                style="margin-bottom: 0.3rem"
-              >
+              <div v-for="item in surface_list" :key="item" style="margin-bottom: 0.3rem">
                 <el-button
                   v-show="item.if_show_name"
                   type="primary"
@@ -221,8 +114,9 @@
                     item.hide = !item.hide;
                     set_visibility('Surface_' + item.timestamp);
                   "
-                  >{{ item.name }}</el-button
                 >
+                  {{ item.name }}
+                </el-button>
                 <el-input
                   v-show="!item.if_show_name"
                   v-model="item.name"
@@ -230,19 +124,12 @@
                   style="width: 70px; margin-right: 12px"
                   @keyup.enter="item.if_show_name = !item.if_show_name"
                 />
-                <el-button
-                  size="small"
-                  circle
-                  @click="item.if_show_name = !item.if_show_name"
-                  ><el-icon><Edit /></el-icon
-                ></el-button>
-                <el-button
-                  type="danger"
-                  size="small"
-                  circle
-                  @click="create_surface(undefined, 'clean', item.timestamp)"
-                  ><el-icon><Delete /></el-icon
-                ></el-button>
+                <el-button size="small" circle @click="item.if_show_name = !item.if_show_name">
+                  <el-icon><Edit /></el-icon>
+                </el-button>
+                <el-button type="danger" size="small" circle @click="create_surface(undefined, 'clean', item.timestamp)">
+                  <el-icon><Delete /></el-icon>
+                </el-button>
               </div>
             </div>
           </el-popover>
@@ -255,46 +142,24 @@
             :disabled="props.disable_comp_btn || wait_proif"
           >
             <template #reference>
-              <molstar_btn
-                svg_name="create_pocket"
-                title="Create Pocket"
-                :disabled="props.disable_comp_btn"
-              />
+              <molstar_btn svg_name="create_pocket" title="Create Pocket" :disabled="props.disable_comp_btn" />
             </template>
             <div class="flex_column">
               <div v-for="item in pdb_info.ligand" :key="item.key">
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="create_pocket(item)"
-                  >{{ item.auth_asym_id }}: {{ item.residue_name }}:
-                  {{ item.auth_residue_number }}</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="create_pocket(item)">
+                  {{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}
+                </el-button>
               </div>
               <div v-if="pdb_info.ligand.length === 0">
-                <el-button link size="small" class="molstar_btn_inner" disabled
-                  >No Pocket</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" disabled>No Pocket</el-button>
               </div>
               <el-divider style="margin: 8px 0" />
               <div>
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="create_pocket(undefined, (type = 'clean'))"
-                  >Clean Pocket</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="create_pocket(undefined, (type = 'clean'))">Clean Pocket</el-button>
               </div>
               <el-divider v-if="has_pocket" style="margin: 8px 0" />
               <div v-if="has_pocket">
-                <el-checkbox
-                  v-model="if_hide_chain"
-                  label="Hide Non-Pocket Atoms"
-                  size="small"
-                  @change="hide_chain"
-                />
+                <el-checkbox v-model="if_hide_chain" label="Hide Non-Pocket Atoms" size="small" @change="hide_chain" />
               </div>
             </div>
           </el-popover>
@@ -307,127 +172,54 @@
             :disabled="props.disable_comp_btn"
           >
             <template #reference>
-              <molstar_btn
-                svg_name="create_label"
-                title="Create Label"
-                :disabled="props.disable_comp_btn"
-              />
+              <molstar_btn svg_name="create_label" title="Create Label" :disabled="props.disable_comp_btn" />
             </template>
             <div class="flex_column">
               <div>
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="create_label(undefined, (type = 'selection'))"
-                  >For Selection</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'selection'))">
+                  For Selection
+                </el-button>
               </div>
               <div>
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="create_label(undefined, (type = 'ligands'))"
-                  >All Ligands</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'ligands'))">All Ligands</el-button>
               </div>
               <el-divider style="margin: 8px 0" />
               <div>
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="create_label(undefined, (type = 'clean'))"
-                  >Clean Label</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'clean'))">Clean Label</el-button>
               </div>
             </div>
           </el-popover>
 
-          <el-popover
-            placement="bottom"
-            title="Create Measurement"
-            :width="80"
-            trigger="hover"
-            popper-class="molstar_popper"
-          >
+          <el-popover placement="bottom" title="Create Measurement" :width="80" trigger="hover" popper-class="molstar_popper">
             <template #reference>
               <molstar_btn svg_name="measure" title="Measure" />
             </template>
             <div class="flex_column">
               <div>
-                <el-tooltip
-                  effect="light"
-                  content="请先选择两个原子再添加距离测量"
-                  placement="right"
-                >
-                  <el-button
-                    link
-                    size="small"
-                    class="molstar_btn_inner"
-                    @click="add_distance()"
-                    >Add Distance</el-button
-                  >
+                <el-tooltip effect="light" content="请先选择两个原子再添加距离测量" placement="right">
+                  <el-button link size="small" class="molstar_btn_inner" @click="add_distance()">Add Distance</el-button>
                 </el-tooltip>
               </div>
               <div>
-                <el-tooltip
-                  effect="light"
-                  content="请先选择三个原子再添加角度测量"
-                  placement="right"
-                >
-                  <el-button
-                    link
-                    size="small"
-                    class="molstar_btn_inner"
-                    @click="add_angle()"
-                    >Add Angle</el-button
-                  >
+                <el-tooltip effect="light" content="请先选择三个原子再添加角度测量" placement="right">
+                  <el-button link size="small" class="molstar_btn_inner" @click="add_angle()">Add Angle</el-button>
                 </el-tooltip>
               </div>
               <div>
-                <el-tooltip
-                  effect="light"
-                  content="请先选择四个原子再添加二面角测量"
-                  placement="right"
-                >
-                  <el-button
-                    link
-                    size="small"
-                    class="molstar_btn_inner"
-                    @click="add_dihedral()"
-                    >Add Dihedral</el-button
-                  >
+                <el-tooltip effect="light" content="请先选择四个原子再添加二面角测量" placement="right">
+                  <el-button link size="small" class="molstar_btn_inner" @click="add_dihedral()">Add Dihedral</el-button>
                 </el-tooltip>
               </div>
               <el-divider style="margin: 8px 0" />
               <div>
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  @click="clean_measure()"
-                  >Clean Measure</el-button
-                >
+                <el-button link size="small" class="molstar_btn_inner" @click="clean_measure()">Clean Measure</el-button>
               </div>
             </div>
           </el-popover>
 
-          <el-popover
-            placement="bottom"
-            title="More"
-            :width="80"
-            trigger="hover"
-            popper-class="molstar_popper"
-            :disabled="props.disable_comp_btn"
-          >
+          <el-popover placement="bottom" title="More" :width="80" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn">
             <template #reference>
-              <molstar_btn
-                svg_name="more"
-                title="More"
-                :disabled="props.disable_comp_btn"
-              />
+              <molstar_btn svg_name="more" title="More" :disabled="props.disable_comp_btn" />
             </template>
             <div class="flex_column">
               <div>
@@ -435,49 +227,40 @@
                   link
                   size="small"
                   class="molstar_btn_inner"
-                  :disabled="
-                    has_pocket || has_surface || props.disable_comp_btn
-                  "
+                  :disabled="has_pocket || has_surface || props.disable_comp_btn"
                   @click="hide_selection()"
-                  >Hide Selection</el-button
                 >
+                  Hide Selection
+                </el-button>
               </div>
               <div>
                 <el-button
                   link
                   size="small"
                   class="molstar_btn_inner"
-                  :disabled="
-                    has_pocket || has_surface || props.disable_comp_btn
-                  "
+                  :disabled="has_pocket || has_surface || props.disable_comp_btn"
                   @click="show_selection((type = 'prev'))"
-                  >Show Selection</el-button
                 >
+                  Show Selection
+                </el-button>
               </div>
               <div>
                 <el-button
                   link
                   size="small"
                   class="molstar_btn_inner"
-                  :disabled="
-                    has_pocket || has_surface || props.disable_comp_btn
-                  "
+                  :disabled="has_pocket || has_surface || props.disable_comp_btn"
                   @click="show_selection((type = 'all'))"
-                  >Show All</el-button
                 >
+                  Show All
+                </el-button>
               </div>
             </div>
           </el-popover>
         </el-col>
         <el-col :span="1" class="flex_def" />
         <el-col :span="8" class="flex_def">
-          <el-popover
-            placement="bottom"
-            title="Change Background"
-            :width="80"
-            trigger="hover"
-            popper-class="molstar_popper"
-          >
+          <el-popover placement="bottom" title="Change Background" :width="80" trigger="hover" popper-class="molstar_popper">
             <template #reference>
               <molstar_btn svg_name="moon" title="Change Background" />
             </template>
@@ -495,41 +278,22 @@
             :disabled="props.disable_comp_btn"
           >
             <template #reference>
-              <molstar_btn
-                svg_name="cartoon"
-                title="Change Repr"
-                :disabled="props.disable_comp_btn"
-              />
+              <molstar_btn svg_name="cartoon" title="Change Repr" :disabled="props.disable_comp_btn" />
             </template>
-            <el-radio-group
-              v-model="chain_repr"
-              style="align-items: flex-start; flex-direction: column"
-              @change="change_repr"
-            >
+            <el-radio-group v-model="chain_repr" style="align-items: flex-start; flex-direction: column" @change="change_repr">
               <el-radio label="cartoon" size="small">Cartoon</el-radio>
               <el-radio label="bs" size="small">Ball & Stick</el-radio>
-              <el-radio label="sf" size="small"
-                >Spacefill<span style="width: 60px"
-              /></el-radio>
+              <el-radio label="sf" size="small">
+                Spacefill
+                <span style="width: 60px" />
+              </el-radio>
               <el-radio label="line" size="small">Line</el-radio>
             </el-radio-group>
           </el-popover>
           <!-- <molstar_btn svg_name="water" @click="change_water_repr" title="Water" :disabled="props.disable_comp_btn"/> -->
-          <molstar_btn
-            svg_name="interaction"
-            title="Show 2D Interaction"
-            @click="show_prolif_func"
-          />
-          <molstar_btn
-            svg_name="screen_shot"
-            title="Screen Shot"
-            @click="make_screenshot"
-          />
-          <molstar_btn
-            svg_name="goto_center"
-            title="Goto Center"
-            @click="reset_camera"
-          />
+          <molstar_btn svg_name="interaction" title="Show 2D Interaction" @click="show_prolif_func" />
+          <molstar_btn svg_name="screen_shot" title="Screen Shot" @click="make_screenshot" />
+          <molstar_btn svg_name="goto_center" title="Goto Center" @click="reset_camera" />
           <molstar_btn svg_name="rotate" title="Rotate" @click="toggle_spin" />
           <molstar_btn svg_name="full_screen" @click="full_screen" />
           <molstar_btn svg_name="reset" title="Reset" @click="reset_all" />
@@ -538,17 +302,8 @@
         <el-col :span="3" class="flex_def" />
       </el-row>
     </div>
-    <el-dialog
-      v-model="show_prolif"
-      title="2D Interaction"
-      width="70%"
-      top="4vh"
-    >
-      <prolif_iframe
-        ref="prolif_ref"
-        :pdb_ligand_inter_list="pdb_ligand_inter_list"
-        :show_ligname="props.prolif_show_ligname"
-      />
+    <el-dialog v-model="show_prolif" title="2D Interaction" width="70%" top="4vh">
+      <prolif_iframe ref="prolif_ref" :pdb_ligand_inter_list="pdb_ligand_inter_list" :show_ligname="props.prolif_show_ligname" />
     </el-dialog>
   </div>
 </template>
@@ -799,8 +554,7 @@ const load_structure = async input_params => {
     for (j = 0; j < pdb_info.value.ligand.length; j++) {
       if (pdb_info.value.ligand[j].residue_name === "UNL") {
         chain_id = pdb_info.value.ligand[j].auth_asym_id;
-        ligand_residue_number =
-          pdb_info.value.ligand[j].auth_residue_number.toString();
+        ligand_residue_number = pdb_info.value.ligand[j].auth_residue_number.toString();
         break;
       }
     }
@@ -857,149 +611,103 @@ const set_occlusion = () => {
 const find_UNL_dict = interaction_list => {
   const ret_dict = {};
   for (let i = 0; i < interaction_list.length; i++) {
-    if (
-      interaction_list[i].interaction_dict[0] &&
-      interaction_list[i].interaction_dict[0].ligand_name == "UNL"
-    ) {
-      ret_dict["auth_asym_id"] =
-        interaction_list[i].interaction_dict[0].ligand_chain_id;
-      ret_dict["auth_residue_number"] =
-        interaction_list[i].interaction_dict[0].ligand_residue_number;
+    if (interaction_list[i].interaction_dict[0] && interaction_list[i].interaction_dict[0].ligand_name == "UNL") {
+      ret_dict["auth_asym_id"] = interaction_list[i].interaction_dict[0].ligand_chain_id;
+      ret_dict["auth_residue_number"] = interaction_list[i].interaction_dict[0].ligand_residue_number;
       break;
     }
   }
   return ret_dict;
 };
 
-const recreate_repr = async (
-  alpha = 1,
-  recreate_polymer = true,
-  recreate_ligand = true,
-  recreate_water = true
-) => {
+const recreate_repr = async (alpha = 1, recreate_polymer = true, recreate_ligand = true, recreate_water = true) => {
   if (recreate_polymer) {
-    await molstar_ref.value.viewerInstance.update_comp_repr(
-      "Polymer",
-      "Polymer_cartoon",
-      repr_state.value.cartoon,
-      { type: "cartoon", typeParams: { alpha: alpha } }
-    );
-    await molstar_ref.value.viewerInstance.update_comp_repr(
-      "Polymer",
-      "Polymer_bs",
-      repr_state.value.bs,
-      {
-        type: "ball-and-stick",
-        size: "uniform",
-        sizeParams: { value: 0.9 },
-        typeParams: {
-          alpha: alpha,
-          ignoreHydrogens: "all",
-          ignoreHydrogensVariant: "non-polar"
-        },
-        color: "element-symbol",
-        colorParams: {
-          carbonColor: { name: "element-symbol", params: {} },
-          colors: { name: "custom", params: ColorMap({ C: ColorNames.gray }) }
-        }
+    await molstar_ref.value.viewerInstance.update_comp_repr("Polymer", "Polymer_cartoon", repr_state.value.cartoon, {
+      type: "cartoon",
+      typeParams: { alpha: alpha }
+    });
+    await molstar_ref.value.viewerInstance.update_comp_repr("Polymer", "Polymer_bs", repr_state.value.bs, {
+      type: "ball-and-stick",
+      size: "uniform",
+      sizeParams: { value: 0.9 },
+      typeParams: {
+        alpha: alpha,
+        ignoreHydrogens: "all",
+        ignoreHydrogensVariant: "non-polar"
+      },
+      color: "element-symbol",
+      colorParams: {
+        carbonColor: { name: "element-symbol", params: {} },
+        colors: { name: "custom", params: ColorMap({ C: ColorNames.gray }) }
       }
-    );
-    await molstar_ref.value.viewerInstance.update_comp_repr(
-      "Polymer",
-      "Polymer_sf",
-      repr_state.value.sf,
-      { type: "spacefill", typeParams: { alpha: alpha } }
-    );
-    await molstar_ref.value.viewerInstance.update_comp_repr(
-      "Polymer",
-      "Polymer_line",
-      repr_state.value.line,
-      { type: "line", typeParams: { alpha: alpha } }
-    );
+    });
+    await molstar_ref.value.viewerInstance.update_comp_repr("Polymer", "Polymer_sf", repr_state.value.sf, {
+      type: "spacefill",
+      typeParams: { alpha: alpha }
+    });
+    await molstar_ref.value.viewerInstance.update_comp_repr("Polymer", "Polymer_line", repr_state.value.line, {
+      type: "line",
+      typeParams: { alpha: alpha }
+    });
   }
   if (recreate_ligand) {
-    await molstar_ref.value.viewerInstance.update_comp_repr(
-      "Ligand",
-      "Ligand_bs",
-      true,
-      {
-        type: "ball-and-stick",
-        typeParams: {
-          ignoreHydrogens: "all",
-          ignoreHydrogensVariant: "non-polar"
-        },
-        color: "element-symbol",
-        colorParams: {
-          carbonColor: { name: "element-symbol", params: {} },
-          colors: { name: "custom", params: ColorMap({ C: ColorNames.orange }) }
-        }
+    await molstar_ref.value.viewerInstance.update_comp_repr("Ligand", "Ligand_bs", true, {
+      type: "ball-and-stick",
+      typeParams: {
+        ignoreHydrogens: "all",
+        ignoreHydrogensVariant: "non-polar"
+      },
+      color: "element-symbol",
+      colorParams: {
+        carbonColor: { name: "element-symbol", params: {} },
+        colors: { name: "custom", params: ColorMap({ C: ColorNames.orange }) }
       }
-    );
+    });
   }
   if (recreate_water) {
-    await molstar_ref.value.viewerInstance.update_comp_repr(
-      "Water",
-      "Water_bs",
-      true,
-      { type: "ball-and-stick" }
-    );
+    await molstar_ref.value.viewerInstance.update_comp_repr("Water", "Water_bs", true, { type: "ball-and-stick" });
   }
   set_occlusion();
 };
 
 const add_or_update_ligand_view_repr = async (ligand_id, color_name) => {
-  await molstar_ref.value.viewerInstance.update_comp_repr(
-    "Ligand_" + ligand_id,
-    "Ligand_" + ligand_id + "_bs",
-    true,
-    {
-      type: "ball-and-stick",
-      typeParams: {
-        alpha: 1,
-        ignoreHydrogens: "all",
-        ignoreHydrogensVariant: "non-polar"
-      },
-      color: "element-symbol",
-      colorParams: {
-        carbonColor: { name: "element-symbol", params: {} },
-        colors: {
-          name: "custom",
-          params: ColorMap({ C: ColorNames[color_name] })
-        }
+  await molstar_ref.value.viewerInstance.update_comp_repr("Ligand_" + ligand_id, "Ligand_" + ligand_id + "_bs", true, {
+    type: "ball-and-stick",
+    typeParams: {
+      alpha: 1,
+      ignoreHydrogens: "all",
+      ignoreHydrogensVariant: "non-polar"
+    },
+    color: "element-symbol",
+    colorParams: {
+      carbonColor: { name: "element-symbol", params: {} },
+      colors: {
+        name: "custom",
+        params: ColorMap({ C: ColorNames[color_name] })
       }
     }
-  );
-  await molstar_ref.value.viewerInstance.update_comp_repr(
-    "Ligand_plus_" + ligand_id,
-    "Ligand_plus_" + ligand_id + "_bs",
-    true,
-    {
-      type: "ball-and-stick",
-      color: "element-symbol",
-      size: "uniform",
-      sizeParams: { value: 0.9 },
-      typeParams: {
-        alpha: 0.8,
-        ignoreHydrogens: "all",
-        ignoreHydrogensVariant: "non-polar"
-      },
-      colorParams: {
-        carbonColor: { name: "element-symbol", params: {} },
-        colors: { name: "custom", params: ColorMap({ C: ColorNames.gray }) }
-      }
+  });
+  await molstar_ref.value.viewerInstance.update_comp_repr("Ligand_plus_" + ligand_id, "Ligand_plus_" + ligand_id + "_bs", true, {
+    type: "ball-and-stick",
+    color: "element-symbol",
+    size: "uniform",
+    sizeParams: { value: 0.9 },
+    typeParams: {
+      alpha: 0.8,
+      ignoreHydrogens: "all",
+      ignoreHydrogensVariant: "non-polar"
+    },
+    colorParams: {
+      carbonColor: { name: "element-symbol", params: {} },
+      colors: { name: "custom", params: ColorMap({ C: ColorNames.gray }) }
     }
-  );
-  await molstar_ref.value.viewerInstance.update_comp_repr(
-    "Ligand_plus_" + ligand_id,
-    "Ligand_plus_" + ligand_id + "_label",
-    true,
-    {
-      type: "label",
-      sizeParams: { scale: 0.65 },
-      colorParams: { value: 0xffffff },
-      typeParams: { alpha: 1, level: granularity.value }
-    }
-  );
+  });
+  await molstar_ref.value.viewerInstance.update_comp_repr("Ligand_plus_" + ligand_id, "Ligand_plus_" + ligand_id + "_label", true, {
+    type: "label",
+    sizeParams: { scale: 0.65 },
+    colorParams: { value: 0xffffff },
+    typeParams: { alpha: 1, level: granularity.value }
+  });
   // await molstar_ref.value.viewerInstance.update_comp_repr('Ligand_' + ligand_id, 'Ligand_' + ligand_id + '_it', true, {
   //     type: InteractionsRepresentationProvider,
   //     typeParams: {includeParent: true, parentDisplay: 'between' }
@@ -1007,11 +715,7 @@ const add_or_update_ligand_view_repr = async (ligand_id, color_name) => {
   // focus ligand
   for (let i = 0; i < pdb_info.value.ligand.length; i++) {
     if (pdb_info.value.ligand[i].residue_name === "UNL") {
-      molstar_ref.value.viewerInstance.visual.focus(
-        [pdb_info.value.ligand[i]],
-        undefined,
-        10
-      );
+      molstar_ref.value.viewerInstance.visual.focus([pdb_info.value.ligand[i]], undefined, 10);
       break;
     }
   }
@@ -1025,91 +729,63 @@ const add_or_update_ligand_view_repr = async (ligand_id, color_name) => {
  * @param {boolean} if_hetatm - 是否显示异原子分子（配体和水）
  * @param {boolean} not_change_visible - 是否保持当前可见性状态
  */
-const add_or_update_default_repr = async (
-  alpha = 1,
-  if_hetatm = true,
-  not_change_visible = true
-) => {
+const add_or_update_default_repr = async (alpha = 1, if_hetatm = true, not_change_visible = true) => {
   // 蛋白质主链：卡通表示法（默认显示）
-  await molstar_ref.value.viewerInstance.update_comp_repr(
-    "Polymer",
-    "Polymer_cartoon",
-    true,
-    { type: "cartoon", typeParams: { alpha: alpha } }
-  );
+  await molstar_ref.value.viewerInstance.update_comp_repr("Polymer", "Polymer_cartoon", true, { type: "cartoon", typeParams: { alpha: alpha } });
 
   // 蛋白质：球棍模型
-  await molstar_ref.value.viewerInstance.update_comp_repr(
-    "Polymer",
-    "Polymer_bs",
-    not_change_visible,
-    {
-      type: "ball-and-stick",
-      size: "uniform",
-      sizeParams: { value: 0.9 },
-      typeParams: {
-        alpha: alpha,
-        ignoreHydrogens: "all",
-        ignoreHydrogensVariant: "non-polar"
-      },
-      color: "element-symbol",
-      colorParams: {
-        carbonColor: { name: "element-symbol", params: {} },
-        colors: { name: "custom", params: ColorMap({ C: ColorNames.gray }) } // 碳原子显示为灰色
-      }
+  await molstar_ref.value.viewerInstance.update_comp_repr("Polymer", "Polymer_bs", not_change_visible, {
+    type: "ball-and-stick",
+    size: "uniform",
+    sizeParams: { value: 0.9 },
+    typeParams: {
+      alpha: alpha,
+      ignoreHydrogens: "all",
+      ignoreHydrogensVariant: "non-polar"
+    },
+    color: "element-symbol",
+    colorParams: {
+      carbonColor: { name: "element-symbol", params: {} },
+      colors: { name: "custom", params: ColorMap({ C: ColorNames.gray }) } // 碳原子显示为灰色
     }
-  );
+  });
 
   // 蛋白质：空间填充模型
-  await molstar_ref.value.viewerInstance.update_comp_repr(
-    "Polymer",
-    "Polymer_sf",
-    not_change_visible,
-    { type: "spacefill", typeParams: { alpha: alpha } }
-  );
+  await molstar_ref.value.viewerInstance.update_comp_repr("Polymer", "Polymer_sf", not_change_visible, {
+    type: "spacefill",
+    typeParams: { alpha: alpha }
+  });
 
   // 蛋白质：线条模型
-  await molstar_ref.value.viewerInstance.update_comp_repr(
-    "Polymer",
-    "Polymer_line",
-    not_change_visible,
-    { type: "line", typeParams: { alpha: alpha } }
-  );
+  await molstar_ref.value.viewerInstance.update_comp_repr("Polymer", "Polymer_line", not_change_visible, {
+    type: "line",
+    typeParams: { alpha: alpha }
+  });
 
   // 如果需要显示异原子分子
   if (if_hetatm) {
     // 配体：球棍模型（橙色碳原子）
     if (pdb_info.value.ligand.length > 0) {
-      await molstar_ref.value.viewerInstance.update_comp_repr(
-        "Ligand",
-        "Ligand_bs",
-        true,
-        {
-          type: "ball-and-stick",
-          typeParams: {
-            ignoreHydrogens: "all",
-            ignoreHydrogensVariant: "non-polar"
-          },
-          color: "element-symbol",
-          colorParams: {
-            carbonColor: { name: "element-symbol", params: {} },
-            colors: {
-              name: "custom",
-              params: ColorMap({ C: ColorNames.orange })
-            } // 配体碳原子显示为橙色
-          }
+      await molstar_ref.value.viewerInstance.update_comp_repr("Ligand", "Ligand_bs", true, {
+        type: "ball-and-stick",
+        typeParams: {
+          ignoreHydrogens: "all",
+          ignoreHydrogensVariant: "non-polar"
+        },
+        color: "element-symbol",
+        colorParams: {
+          carbonColor: { name: "element-symbol", params: {} },
+          colors: {
+            name: "custom",
+            params: ColorMap({ C: ColorNames.orange })
+          } // 配体碳原子显示为橙色
         }
-      );
+      });
     }
 
     // 水分子：球棍模型
     if (pdb_info.value.water.length > 0) {
-      await molstar_ref.value.viewerInstance.update_comp_repr(
-        "Water",
-        "Water_bs",
-        true,
-        { type: "ball-and-stick" }
-      );
+      await molstar_ref.value.viewerInstance.update_comp_repr("Water", "Water_bs", true, { type: "ball-and-stick" });
     }
   }
 
@@ -1131,8 +807,7 @@ const get_pdb_info = () => {
 };
 
 const add_shape = params => {
-  const structure =
-    molstar_ref.value.viewerInstance.plugin.state.data.select("Structure_0")[0];
+  const structure = molstar_ref.value.viewerInstance.plugin.state.data.select("Structure_0")[0];
   return molstar_ref.value.viewerInstance.add_shape(structure, params);
 };
 
@@ -1145,9 +820,7 @@ const remove_shape = selector => {
  */
 const full_screen = () => {
   full_screen_type.value = !full_screen_type.value;
-  molstar_ref.value.viewerInstance.canvas.toggleExpanded(
-    full_screen_type.value
-  );
+  molstar_ref.value.viewerInstance.canvas.toggleExpanded(full_screen_type.value);
 };
 
 /**
@@ -1234,14 +907,8 @@ const set_ligand_view_id_visibility = smiles_id => {
 
   for (let j = 0; j < pdb_ligand_inter_list.value.length; j++) {
     if (pdb_ligand_inter_list.value[j]["render_id"] == smiles_id) {
-      for (
-        let i = 0;
-        i < pdb_ligand_inter_list.value[j].prolif_id_list.length;
-        i++
-      ) {
-        molstar_ref.value.viewerInstance.set_visibility(
-          pdb_ligand_inter_list.value[j].prolif_id_list[i]
-        );
+      for (let i = 0; i < pdb_ligand_inter_list.value[j].prolif_id_list.length; i++) {
+        molstar_ref.value.viewerInstance.set_visibility(pdb_ligand_inter_list.value[j].prolif_id_list[i]);
       }
       break;
     }
@@ -1250,10 +917,7 @@ const set_ligand_view_id_visibility = smiles_id => {
 
 const remove_ligand_view_pdb = async smiles_id => {
   await remove_prolif_line(smiles_id);
-  await molstar_ref.value.viewerInstance.remove_tmp_comp(
-    "Structure_" + smiles_id,
-    smiles_id
-  );
+  await molstar_ref.value.viewerInstance.remove_tmp_comp("Structure_" + smiles_id, smiles_id);
 
   for (let i = 0; i < pdb_ligand_inter_list.value.length; i++) {
     if (pdb_ligand_inter_list.value[i]["render_id"] === smiles_id) {
@@ -1338,11 +1002,7 @@ const create_surface = async (item, type = "single", name = "abcd") => {
 
   // 获取当前选择的组件信息
   const now_dict = molstar_ref.value.viewerInstance.selected_info.now;
-  const select_info = [
-    ...now_dict.polymer,
-    ...now_dict.ligand,
-    ...now_dict.other
-  ];
+  const select_info = [...now_dict.polymer, ...now_dict.ligand, ...now_dict.other];
   const timestamp = Date.now();
 
   // 标记存在表面
@@ -1352,12 +1012,10 @@ const create_surface = async (item, type = "single", name = "abcd") => {
   await molstar_ref.value.viewerInstance.create_surf_comp(timestamp);
 
   // 更新表面的表示方式（高斯表面，按疏水性着色）
-  await molstar_ref.value.viewerInstance.update_comp_repr(
-    "Surface_" + timestamp,
-    "Surface_gs_" + timestamp,
-    true,
-    { type: "gaussian-surface", color: "hydrophobicity" }
-  );
+  await molstar_ref.value.viewerInstance.update_comp_repr("Surface_" + timestamp, "Surface_gs_" + timestamp, true, {
+    type: "gaussian-surface",
+    color: "hydrophobicity"
+  });
 
   // 清除选择
   molstar_ref.value.viewerInstance.visual.select_none();
@@ -1372,8 +1030,7 @@ const create_surface = async (item, type = "single", name = "abcd") => {
       select_info: select_info
     });
   } else {
-    const max_cnt =
-      surface_list.value.reduce((a, b) => (a.cnt > b.cnt ? a : b)).cnt + 1;
+    const max_cnt = surface_list.value.reduce((a, b) => (a.cnt > b.cnt ? a : b)).cnt + 1;
     surface_list.value.push({
       cnt: max_cnt,
       timestamp: timestamp,
@@ -1440,15 +1097,8 @@ const find_and_add_prolif_data = async (item, render_id = "0") => {
 const remove_prolif_line = async (render_id = "0") => {
   for (let j = 0; j < pdb_ligand_inter_list.value.length; j++) {
     if (pdb_ligand_inter_list.value[j]["render_id"] == render_id) {
-      for (
-        let i = 0;
-        i < pdb_ligand_inter_list.value[j].prolif_id_list.length;
-        i++
-      ) {
-        await molstar_ref.value.viewerInstance.remove_tmp_comp(
-          pdb_ligand_inter_list.value[j].prolif_id_list[i],
-          render_id
-        );
+      for (let i = 0; i < pdb_ligand_inter_list.value[j].prolif_id_list.length; i++) {
+        await molstar_ref.value.viewerInstance.remove_tmp_comp(pdb_ligand_inter_list.value[j].prolif_id_list[i], render_id);
       }
       pdb_ligand_inter_list.value[j].prolif_id_list = [];
       break;
@@ -1481,45 +1131,32 @@ const create_pocket = async (item, type = "single") => {
   has_pocket.value = true;
 
   // 创建临时配体组件以高亮口袋区域
-  await molstar_ref.value.viewerInstance.create_tmp_ligand_comp(
-    item.auth_asym_id,
-    item.auth_residue_number
-  );
+  await molstar_ref.value.viewerInstance.create_tmp_ligand_comp(item.auth_asym_id, item.auth_residue_number);
 
   // 设置口袋周围残基的球棍模型表示
-  await molstar_ref.value.viewerInstance.update_comp_repr(
-    "Ligand_plus_tmp",
-    "Ligand_plus_tmp_bs",
-    true,
-    {
-      type: "ball-and-stick",
-      size: "uniform",
-      sizeParams: { value: 0.9 },
-      typeParams: {
-        alpha: 0.8,
-        ignoreHydrogens: "all",
-        ignoreHydrogensVariant: "non-polar"
-      },
-      color: "element-symbol",
-      colorParams: {
-        carbonColor: { name: "element-symbol", params: {} },
-        colors: { name: "custom", params: ColorMap({ C: ColorNames.gray }) } // 口袋残基碳原子为灰色
-      }
+  await molstar_ref.value.viewerInstance.update_comp_repr("Ligand_plus_tmp", "Ligand_plus_tmp_bs", true, {
+    type: "ball-and-stick",
+    size: "uniform",
+    sizeParams: { value: 0.9 },
+    typeParams: {
+      alpha: 0.8,
+      ignoreHydrogens: "all",
+      ignoreHydrogensVariant: "non-polar"
+    },
+    color: "element-symbol",
+    colorParams: {
+      carbonColor: { name: "element-symbol", params: {} },
+      colors: { name: "custom", params: ColorMap({ C: ColorNames.gray }) } // 口袋残基碳原子为灰色
     }
-  );
+  });
 
   // 添加残基标签
-  await molstar_ref.value.viewerInstance.update_comp_repr(
-    "Ligand_plus_tmp",
-    "Ligand_plus_tmp_label",
-    true,
-    {
-      type: "label",
-      sizeParams: { scale: 0.65 },
-      colorParams: { value: 0xffffff }, // 白色标签
-      typeParams: { alpha: 1, level: granularity.value }
-    }
-  );
+  await molstar_ref.value.viewerInstance.update_comp_repr("Ligand_plus_tmp", "Ligand_plus_tmp_label", true, {
+    type: "label",
+    sizeParams: { scale: 0.65 },
+    colorParams: { value: 0xffffff }, // 白色标签
+    typeParams: { alpha: 1, level: granularity.value }
+  });
 
   // 将蛋白质主体设为半透明以突出口袋区域
   await add_or_update_default_repr(0.1, false);
@@ -1539,17 +1176,12 @@ const create_label = async (item, type = "single") => {
     molstar_ref.value.viewerInstance.visual.select(pdb_info.value.ligand);
   }
   await molstar_ref.value.viewerInstance.create_tmp_label_comp();
-  await molstar_ref.value.viewerInstance.update_comp_repr(
-    "Label_tmp",
-    "Label_tmp_label",
-    true,
-    {
-      type: "label",
-      sizeParams: { scale: 0.65 },
-      colorParams: { value: 0xffffff },
-      typeParams: { alpha: 1, level: granularity.value }
-    }
-  );
+  await molstar_ref.value.viewerInstance.update_comp_repr("Label_tmp", "Label_tmp_label", true, {
+    type: "label",
+    sizeParams: { scale: 0.65 },
+    colorParams: { value: 0xffffff },
+    typeParams: { alpha: 1, level: granularity.value }
+  });
 };
 
 const hide_selection = () => {
@@ -1573,8 +1205,7 @@ const show_selection = async (type = "prev", show_params = []) => {
       ret = { polymer: false, ligand: false, water: false };
     }
   } else if (type === "water") {
-    const ret_no =
-      await molstar_ref.value.viewerInstance.visual._showSelect("Water");
+    const ret_no = await molstar_ref.value.viewerInstance.visual._showSelect("Water");
     if (ret_no === -1) {
       ret = { polymer: false, ligand: false, water: true };
       await molstar_ref.value.viewerInstance.recreate_s_c(ret);
@@ -1583,8 +1214,7 @@ const show_selection = async (type = "prev", show_params = []) => {
       ret = { polymer: false, ligand: false, water: false };
     }
   } else if (type === "ligand") {
-    const ret_no =
-      await molstar_ref.value.viewerInstance.visual._showSelect("Ligand");
+    const ret_no = await molstar_ref.value.viewerInstance.visual._showSelect("Ligand");
     if (ret_no === -1) {
       ret = { polymer: false, ligand: true, water: false };
       await molstar_ref.value.viewerInstance.recreate_s_c(ret);
@@ -1606,17 +1236,11 @@ const reverse_show = async (ret, show_params) => {
   let hide_params = [];
   for (let i = 0; i < show_params.length; i++) {
     if (ret.polymer) {
-      hide_params = pdb_info.value.chain.filter(
-        item => item.auth_asym_id !== show_params[i].auth_asym_id
-      );
+      hide_params = pdb_info.value.chain.filter(item => item.auth_asym_id !== show_params[i].auth_asym_id);
     } else if (ret.ligand) {
-      hide_params = pdb_info.value.ligand.filter(
-        item => item.auth_residue_number !== show_params[i].auth_residue_number
-      );
+      hide_params = pdb_info.value.ligand.filter(item => item.auth_residue_number !== show_params[i].auth_residue_number);
     } else if (ret.water) {
-      hide_params = pdb_info.value.water.filter(
-        item => item.auth_residue_number !== show_params[i].auth_residue_number
-      );
+      hide_params = pdb_info.value.water.filter(item => item.auth_residue_number !== show_params[i].auth_residue_number);
     }
   }
   select_none();
@@ -1629,9 +1253,7 @@ const reverse_show = async (ret, show_params) => {
 };
 
 const expand_selection = () => {
-  molstar_ref.value.viewerInstance.visual.expand_select(
-    Number(expand_number.value)
-  );
+  molstar_ref.value.viewerInstance.visual.expand_select(Number(expand_number.value));
 };
 
 /**

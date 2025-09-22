@@ -33,9 +33,7 @@
             (c.style.height = 0),
             (c.style.overflow = "hidden"),
             (c = c),
-            (t = document.body).firstChild
-              ? h(c, t.firstChild)
-              : t.appendChild(c)));
+            (t = document.body).firstChild ? h(c, t.firstChild) : t.appendChild(c)));
       }),
         document.addEventListener
           ? ~["complete", "loaded", "interactive"].indexOf(document.readyState)
@@ -50,8 +48,7 @@
             (a = !1),
             v(),
             (o.onreadystatechange = function () {
-              "complete" == o.readyState &&
-                ((o.onreadystatechange = null), d());
+              "complete" == o.readyState && ((o.onreadystatechange = null), d());
             })));
     }
     function d() {

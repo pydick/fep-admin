@@ -10,9 +10,7 @@ import {
 } from "radix-vue";
 import { computed, type HTMLAttributes } from "vue";
 
-const props = defineProps<
-  DropdownMenuRadioItemProps & { class?: HTMLAttributes["class"] }
->();
+const props = defineProps<DropdownMenuRadioItemProps & { class?: HTMLAttributes["class"] }>();
 
 const emits = defineEmits<DropdownMenuRadioItemEmits>();
 

@@ -1,17 +1,9 @@
 <script setup lang="ts">
 import { cn } from "@/lib/utils";
-import {
-  SwitchRoot,
-  type SwitchRootEmits,
-  type SwitchRootProps,
-  SwitchThumb,
-  useForwardPropsEmits
-} from "radix-vue";
+import { SwitchRoot, type SwitchRootEmits, type SwitchRootProps, SwitchThumb, useForwardPropsEmits } from "radix-vue";
 import { computed, type HTMLAttributes } from "vue";
 
-const props = defineProps<
-  SwitchRootProps & { class?: HTMLAttributes["class"] }
->();
+const props = defineProps<SwitchRootProps & { class?: HTMLAttributes["class"] }>();
 
 const emits = defineEmits<SwitchRootEmits>();
 
@@ -36,9 +28,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
   >
     <SwitchThumb
       :class="
-        cn(
-          'pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5'
-        )
+        cn('pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5')
       "
     >
       <slot name="thumb" />

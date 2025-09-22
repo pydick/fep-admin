@@ -27,12 +27,10 @@ function template(d: any, i: number, elements: (HTMLElement | SVGElement)[]) {
       return wm.get(d);
     } else {
       const componentDiv = document.createElement("div");
-      const omittedData = Object.entries(omit(d, [props.index])).map(
-        ([key, value]) => {
-          const legendReference = props.items?.find(i => i.name === key);
-          return { ...legendReference, value: props.valueFormatter(value) };
-        }
-      );
+      const omittedData = Object.entries(omit(d, [props.index])).map(([key, value]) => {
+        const legendReference = props.items?.find(i => i.name === key);
+        return { ...legendReference, value: props.valueFormatter(value) };
+      });
       const TooltipComponent = props.customTooltip ?? ChartTooltip;
       createApp(TooltipComponent, {
         title: d[props.index],

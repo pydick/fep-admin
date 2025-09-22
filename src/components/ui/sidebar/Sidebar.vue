@@ -29,22 +29,12 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 <template>
   <div
     v-if="collapsible === 'none'"
-    :class="
-      cn(
-        'flex h-full w-[--sidebar-width] flex-col bg-sidebar text-sidebar-foreground',
-        props.class
-      )
-    "
+    :class="cn('flex h-full w-[--sidebar-width] flex-col bg-sidebar text-sidebar-foreground', props.class)"
     v-bind="$attrs"
   >
     <slot />
   </div>
-  <Sheet
-    v-else-if="isMobile"
-    :open="openMobile"
-    v-bind="$attrs"
-    @update:open="setOpenMobile"
-  >
+  <Sheet v-else-if="isMobile" :open="openMobile" v-bind="$attrs" @update:open="setOpenMobile">
     <SheetContent
       data-sidebar="sidebar"
       data-mobile="true"
