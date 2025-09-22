@@ -66,7 +66,7 @@ export default defineConfig([
           arrowParens: "avoid",
           trailingComma: "none",
           singleAttributePerLine: false,
-          printWidth: 120
+          printWidth: 10000
         }
       ]
     }
@@ -85,10 +85,7 @@ export default defineConfig([
       "@typescript-eslint/no-unsafe-function-type": "off",
       "@typescript-eslint/no-import-type-side-effects": "error",
       "@typescript-eslint/explicit-module-boundary-types": "off",
-      "@typescript-eslint/consistent-type-imports": [
-        "error",
-        { disallowTypeAnnotations: false, fixStyle: "inline-type-imports" }
-      ],
+      "@typescript-eslint/consistent-type-imports": ["error", { disallowTypeAnnotations: false, fixStyle: "inline-type-imports" }],
       "@typescript-eslint/prefer-literal-enum-member": ["error", { allowBitwiseExpressions: true }],
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -173,7 +170,7 @@ export default defineConfig([
           arrowParens: "avoid",
           trailingComma: "none",
           singleAttributePerLine: false,
-          printWidth: 150,
+          printWidth: 10000,
           htmlWhitespaceSensitivity: "ignore"
         }
       ]

@@ -10,7 +10,7 @@ export default {
   // 全局禁用单属性换行
   singleAttributePerLine: false,
   // 设置较大的打印宽度避免过早换行
-  printWidth: 120,
+  printWidth: 10000,
   
   // Vue文件特殊配置
   overrides: [
@@ -20,7 +20,7 @@ export default {
         // Vue template中的HTML属性不换行
         singleAttributePerLine: false,
         // 设置较大的打印宽度
-        printWidth: 150,
+        printWidth: 10000,
         // 保持HTML标签属性在同一行
         htmlWhitespaceSensitivity: "ignore"
       }
