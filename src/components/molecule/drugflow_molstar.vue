@@ -822,7 +822,7 @@ const load_structure = async input_params => {
       pdb_string: input_params.input,
       pdb_name: input_params.pdb_name,
       ligand_list: [pdb_info.value.ligand[j]],
-      prolif_data: res.data.iframe_string,
+      prolif_data: res.iframe_string,
       render_id: input_params.render_id,
       residue_full_info: input_params.residue_full_info,
       prolif_id_list: []
@@ -832,7 +832,7 @@ const load_structure = async input_params => {
       pdb_string: input_params.input,
       pdb_name: input_params.pdb_name,
       ligand_list: pdb_info.value.ligand,
-      prolif_data: res.data.iframe_string,
+      prolif_data: res.iframe_string,
       render_id: input_params.render_id,
       residue_full_info: input_params.residue_full_info,
       prolif_id_list: []
