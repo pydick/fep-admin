@@ -7,14 +7,7 @@ import pluginPrettier from "eslint-plugin-prettier";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-  globalIgnores([
-    "**/.*",
-    "dist/*",
-    "*.d.ts",
-    "public/*",
-    "src/assets/**",
-    "src/**/iconfont/**"
-  ]),
+  globalIgnores(["**/.*", "dist/*", "*.d.ts", "public/*", "src/assets/**", "src/**/iconfont/**"]),
   {
     ...js.configs.recommended,
     languageOptions: {
@@ -67,7 +60,13 @@ export default defineConfig([
       "prettier/prettier": [
         "error",
         {
-          endOfLine: "auto"
+          endOfLine: "auto",
+          bracketSpacing: true,
+          singleQuote: false,
+          arrowParens: "avoid",
+          trailingComma: "none",
+          singleAttributePerLine: false,
+          printWidth: 120
         }
       ]
     }
@@ -90,10 +89,7 @@ export default defineConfig([
         "error",
         { disallowTypeAnnotations: false, fixStyle: "inline-type-imports" }
       ],
-      "@typescript-eslint/prefer-literal-enum-member": [
-        "error",
-        { allowBitwiseExpressions: true }
-      ],
+      "@typescript-eslint/prefer-literal-enum-member": ["error", { allowBitwiseExpressions: true }],
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
@@ -166,6 +162,19 @@ export default defineConfig([
           },
           svg: "always",
           math: "always"
+        }
+      ],
+      "prettier/prettier": [
+        "error",
+        {
+          endOfLine: "auto",
+          bracketSpacing: true,
+          singleQuote: false,
+          arrowParens: "avoid",
+          trailingComma: "none",
+          singleAttributePerLine: false,
+          printWidth: 150,
+          htmlWhitespaceSensitivity: "ignore"
         }
       ]
     }
