@@ -7,9 +7,7 @@
           <div v-for="it in item.ligand_list" :key="it">
             <el-radio :label="item.pdb_name + ':' + it.auth_asym_id + ':' + it.residue_name + ':' + it.auth_residue_number" size="small">
               <span v-if="props.show_ligname">
-                <span v-if="item.pdb_name === 'ref'">
-                  {{ t("result.参考配体") }}: {{ it.auth_asym_id }}: {{ it.residue_name }}: {{ it.auth_residue_number }}
-                </span>
+                <span v-if="item.pdb_name === 'ref'">{{ t("result.参考配体") }}: {{ it.auth_asym_id }}: {{ it.residue_name }}: {{ it.auth_residue_number }}</span>
                 <span v-else>{{ item.pdb_name }}: {{ it.auth_asym_id }}: {{ it.residue_name }}: {{ it.auth_residue_number }}</span>
               </span>
               <span v-else>
@@ -71,15 +69,7 @@ const props = defineProps({
 const { t } = useI18n();
 const prolif = ref(null);
 const first_render = ref(true);
-const ligand = ref(
-  props.pdb_ligand_inter_list[0].pdb_name +
-    ":" +
-    props.pdb_ligand_inter_list[0].ligand_list[0].auth_asym_id +
-    ":" +
-    props.pdb_ligand_inter_list[0].ligand_list[0].residue_name +
-    ":" +
-    props.pdb_ligand_inter_list[0].ligand_list[0].auth_residue_number
-);
+const ligand = ref(props.pdb_ligand_inter_list[0].pdb_name + ":" + props.pdb_ligand_inter_list[0].ligand_list[0].auth_asym_id + ":" + props.pdb_ligand_inter_list[0].ligand_list[0].residue_name + ":" + props.pdb_ligand_inter_list[0].ligand_list[0].auth_residue_number);
 
 const set_ligand = async () => {
   first_render.value = false;
@@ -89,16 +79,7 @@ const set_ligand = async () => {
   let residue_full_info = [];
   for (let i = 0; i < props.pdb_ligand_inter_list.length; i++) {
     for (let j = 0; j < props.pdb_ligand_inter_list[i].ligand_list.length; j++) {
-      if (
-        ligand.value ===
-        props.pdb_ligand_inter_list[i].pdb_name +
-          ":" +
-          props.pdb_ligand_inter_list[i].ligand_list[j].auth_asym_id +
-          ":" +
-          props.pdb_ligand_inter_list[i].ligand_list[j].residue_name +
-          ":" +
-          props.pdb_ligand_inter_list[i].ligand_list[j].auth_residue_number
-      ) {
+      if (ligand.value === props.pdb_ligand_inter_list[i].pdb_name + ":" + props.pdb_ligand_inter_list[i].ligand_list[j].auth_asym_id + ":" + props.pdb_ligand_inter_list[i].ligand_list[j].residue_name + ":" + props.pdb_ligand_inter_list[i].ligand_list[j].auth_residue_number) {
         pdb_string = props.pdb_ligand_inter_list[i].pdb_string;
         if (props.pdb_ligand_inter_list[i].residue_full_info) {
           residue_full_info = props.pdb_ligand_inter_list[i].residue_full_info;
@@ -145,16 +126,7 @@ const set_ligand_from_outer = () => {
     let flag = false;
     for (let i = 0; i < props.pdb_ligand_inter_list.length; i++) {
       for (let j = 0; j < props.pdb_ligand_inter_list[i].ligand_list.length; j++) {
-        if (
-          ligand.value ===
-          props.pdb_ligand_inter_list[i].pdb_name +
-            ":" +
-            props.pdb_ligand_inter_list[i].ligand_list[j].auth_asym_id +
-            ":" +
-            props.pdb_ligand_inter_list[i].ligand_list[j].residue_name +
-            ":" +
-            props.pdb_ligand_inter_list[i].ligand_list[j].auth_residue_number
-        ) {
+        if (ligand.value === props.pdb_ligand_inter_list[i].pdb_name + ":" + props.pdb_ligand_inter_list[i].ligand_list[j].auth_asym_id + ":" + props.pdb_ligand_inter_list[i].ligand_list[j].residue_name + ":" + props.pdb_ligand_inter_list[i].ligand_list[j].auth_residue_number) {
           flag = true;
           break;
         }
@@ -162,14 +134,7 @@ const set_ligand_from_outer = () => {
     }
     if (!flag) {
       const final_index = props.pdb_ligand_inter_list.length - 1;
-      ligand.value =
-        props.pdb_ligand_inter_list[final_index].pdb_name +
-        ":" +
-        props.pdb_ligand_inter_list[final_index].ligand_list[0].auth_asym_id +
-        ":" +
-        props.pdb_ligand_inter_list[final_index].ligand_list[0].residue_name +
-        ":" +
-        props.pdb_ligand_inter_list[final_index].ligand_list[0].auth_residue_number;
+      ligand.value = props.pdb_ligand_inter_list[final_index].pdb_name + ":" + props.pdb_ligand_inter_list[final_index].ligand_list[0].auth_asym_id + ":" + props.pdb_ligand_inter_list[final_index].ligand_list[0].residue_name + ":" + props.pdb_ligand_inter_list[final_index].ligand_list[0].auth_residue_number;
       set_ligand();
     }
   }

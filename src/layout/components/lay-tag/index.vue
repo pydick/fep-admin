@@ -18,35 +18,7 @@ import ArrowDown from "~icons/ri/arrow-down-s-line";
 import ArrowRightSLine from "~icons/ri/arrow-right-s-line";
 import ArrowLeftSLine from "~icons/ri/arrow-left-s-line";
 
-const {
-  Close,
-  route,
-  router,
-  visible,
-  showTags,
-  instance,
-  multiTags,
-  tagsViews,
-  buttonTop,
-  buttonLeft,
-  showModel,
-  translateX,
-  isFixedTag,
-  pureSetting,
-  activeIndex,
-  getTabStyle,
-  isScrolling,
-  iconIsActive,
-  linkIsActive,
-  currentSelect,
-  scheduleIsActive,
-  getContextMenuStyle,
-  closeMenu,
-  onMounted,
-  onMouseenter,
-  onMouseleave,
-  onContentFullScreen
-} = useTags();
+const { Close, route, router, visible, showTags, instance, multiTags, tagsViews, buttonTop, buttonLeft, showModel, translateX, isFixedTag, pureSetting, activeIndex, getTabStyle, isScrolling, iconIsActive, linkIsActive, currentSelect, scheduleIsActive, getContextMenuStyle, closeMenu, onMounted, onMouseenter, onMouseleave, onContentFullScreen } = useTags();
 
 const tabDom = ref();
 const containerDom = ref();
@@ -519,25 +491,12 @@ onBeforeUnmount(() => {
     </span>
     <div ref="scrollbarDom" class="scroll-container" :class="showModel === 'chrome' && 'chrome-scroll-container'" @wheel.prevent="handleWheel">
       <div ref="tabDom" class="tab select-none" :style="getTabStyle">
-        <div
-          v-for="(item, index) in multiTags"
-          :ref="'dynamic' + index"
-          :key="index"
-          :class="['scroll-item is-closable', linkIsActive(item), showModel === 'chrome' && 'chrome-item', isFixedTag(item) && 'fixed-tag']"
-          @contextmenu.prevent="openMenu(item, $event)"
-          @mouseenter.prevent="onMouseenter(index)"
-          @mouseleave.prevent="onMouseleave(index)"
-          @click="tagOnClick(item)"
-        >
+        <div v-for="(item, index) in multiTags" :ref="'dynamic' + index" :key="index" :class="['scroll-item is-closable', linkIsActive(item), showModel === 'chrome' && 'chrome-item', isFixedTag(item) && 'fixed-tag']" @contextmenu.prevent="openMenu(item, $event)" @mouseenter.prevent="onMouseenter(index)" @mouseleave.prevent="onMouseleave(index)" @click="tagOnClick(item)">
           <template v-if="showModel !== 'chrome'">
             <span class="tag-title dark:text-text_color_primary! dark:hover:text-primary!">
               {{ item.meta.title }}
             </span>
-            <span
-              v-if="isFixedTag(item) ? false : iconIsActive(item, index) || (index === activeIndex && index !== 0)"
-              class="el-icon-close"
-              @click.stop="deleteMenu(item)"
-            >
+            <span v-if="isFixedTag(item) ? false : iconIsActive(item, index) || (index === activeIndex && index !== 0)" class="el-icon-close" @click.stop="deleteMenu(item)">
               <IconifyIconOffline :icon="Close" />
             </span>
             <span v-if="showModel !== 'card'" :ref="'schedule' + index" :class="[scheduleIsActive(item)]" />

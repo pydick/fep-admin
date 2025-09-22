@@ -30,12 +30,9 @@ export function useTags() {
   const isScrolling = ref(false);
 
   /** 显示模式，默认灵动模式 */
-  const showModel = ref(
-    storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`)?.showModel || "smart"
-  );
+  const showModel = ref(storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`)?.showModel || "smart");
   /** 是否隐藏标签页，默认显示 */
-  const showTags =
-    ref(storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`).hideTabs) ?? ref("false");
+  const showTags = ref(storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`).hideTabs) ?? ref("false");
   const multiTags: any = computed(() => {
     return useMultiTagsStoreHook().multiTags;
   });
@@ -173,9 +170,7 @@ export function useTags() {
   }
 
   function onContentFullScreen() {
-    pureSetting.hiddenSideBar
-      ? pureSetting.changeSetting({ key: "hiddenSideBar", value: false })
-      : pureSetting.changeSetting({ key: "hiddenSideBar", value: true });
+    pureSetting.hiddenSideBar ? pureSetting.changeSetting({ key: "hiddenSideBar", value: false }) : pureSetting.changeSetting({ key: "hiddenSideBar", value: true });
   }
 
   onMounted(() => {

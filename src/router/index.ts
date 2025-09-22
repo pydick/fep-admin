@@ -7,17 +7,7 @@ import remainingRouter from "./modules/remaining";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 import { isUrl, openLink, cloneDeep, isAllEmpty, storageLocal } from "@pureadmin/utils";
-import {
-  ascending,
-  getTopMenu,
-  initRouter,
-  isOneOfArray,
-  getHistoryMode,
-  findRouteByPath,
-  handleAliveRoute,
-  formatTwoStageRoutes,
-  formatFlatteningRoutes
-} from "./utils";
+import { ascending, getTopMenu, initRouter, isOneOfArray, getHistoryMode, findRouteByPath, handleAliveRoute, formatTwoStageRoutes, formatFlatteningRoutes } from "./utils";
 import { type Router, type RouteRecordRaw, type RouteComponent, createRouter } from "vue-router";
 import { type DataInfo, userKey, removeToken, multipleTabsKey } from "@/utils/auth";
 
@@ -37,9 +27,7 @@ Object.keys(modules).forEach(key => {
 });
 
 /** 导出处理后的静态路由（三级及以上的路由全部拍成二级） */
-export const constantRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(
-  formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity))))
-);
+export const constantRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity)))));
 
 /** 初始的静态路由，用于退出登录时重置路由 */
 const initConstantRoutes: Array<RouteRecordRaw> = cloneDeep(constantRoutes);
@@ -77,9 +65,7 @@ export function resetRouter() {
   for (const route of initConstantRoutes.concat(...(remainingRouter as any))) {
     router.addRoute(route);
   }
-  router.options.routes = formatTwoStageRoutes(
-    formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity))))
-  );
+  router.options.routes = formatTwoStageRoutes(formatFlatteningRoutes(buildHierarchyTree(ascending(routes.flat(Infinity)))));
   usePermissionStoreHook().clearAllCachePage();
 }
 

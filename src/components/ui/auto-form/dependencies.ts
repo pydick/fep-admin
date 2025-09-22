@@ -6,8 +6,7 @@ import { computed, ref, watch } from "vue";
 import { type Dependency, DependencyType, type EnumValues } from "./interface";
 import { getFromPath, getIndexIfArray } from "./utils";
 
-export const [injectDependencies, provideDependencies] =
-  createContext<Ref<Dependency<z.infer<z.ZodObject<any>>>[] | undefined>>("AutoFormDependencies");
+export const [injectDependencies, provideDependencies] = createContext<Ref<Dependency<z.infer<z.ZodObject<any>>>[] | undefined>>("AutoFormDependencies");
 
 export default function useDependencies(fieldName: string) {
   const form = useFormValues();
@@ -23,9 +22,7 @@ export default function useDependencies(fieldName: string) {
   const isRequired = ref(false);
   const overrideOptions = ref<EnumValues | undefined>();
 
-  const currentFieldDependencies = computed(() =>
-    dependencies.value?.filter(dependency => dependency.targetField === currentFieldName)
-  );
+  const currentFieldDependencies = computed(() => dependencies.value?.filter(dependency => dependency.targetField === currentFieldName));
 
   function getSourceValue(dep: Dependency<any>) {
     const source = dep.sourceField as string;

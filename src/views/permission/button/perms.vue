@@ -38,9 +38,7 @@ defineOptions({
       <el-space wrap>
         <el-button v-if="hasPerms('permission:btn:add')" plain type="warning">拥有code：'permission:btn:add' 权限可见</el-button>
         <el-button v-if="hasPerms(['permission:btn:edit'])" plain type="primary">拥有code：['permission:btn:edit'] 权限可见</el-button>
-        <el-button v-if="hasPerms(['permission:btn:add', 'permission:btn:edit', 'permission:btn:delete'])" plain type="danger">
-          拥有code：['permission:btn:add', 'permission:btn:edit', 'permission:btn:delete'] 权限可见
-        </el-button>
+        <el-button v-if="hasPerms(['permission:btn:add', 'permission:btn:edit', 'permission:btn:delete'])" plain type="danger">拥有code：['permission:btn:add', 'permission:btn:edit', 'permission:btn:delete'] 权限可见</el-button>
       </el-space>
     </el-card>
 
@@ -51,9 +49,7 @@ defineOptions({
       <el-space wrap>
         <el-button v-perms="'permission:btn:add'" plain type="warning">拥有code：'permission:btn:add' 权限可见</el-button>
         <el-button v-perms="['permission:btn:edit']" plain type="primary">拥有code：['permission:btn:edit'] 权限可见</el-button>
-        <el-button v-perms="['permission:btn:add', 'permission:btn:edit', 'permission:btn:delete']" plain type="danger">
-          拥有code：['permission:btn:add', 'permission:btn:edit', 'permission:btn:delete'] 权限可见
-        </el-button>
+        <el-button v-perms="['permission:btn:add', 'permission:btn:edit', 'permission:btn:delete']" plain type="danger">拥有code：['permission:btn:add', 'permission:btn:edit', 'permission:btn:delete'] 权限可见</el-button>
       </el-space>
     </el-card>
   </div>

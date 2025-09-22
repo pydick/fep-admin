@@ -119,13 +119,7 @@ export default defineComponent({
             class={["pure-segmented-item", (props.disabled || option?.disabled) && "pure-segmented-item-disabled"]}
             style={{
               background: curMouseActive.value === index ? segmentedItembg.value : "",
-              color: props.disabled
-                ? null
-                : !option.disabled && (curIndex.value === index || curMouseActive.value === index)
-                  ? isDark.value
-                    ? "rgba(255, 255, 255, 0.85)"
-                    : "rgba(0,0,0,.88)"
-                  : ""
+              color: props.disabled ? null : !option.disabled && (curIndex.value === index || curMouseActive.value === index) ? (isDark.value ? "rgba(255, 255, 255, 0.85)" : "rgba(0,0,0,.88)") : ""
             }}
             onMouseenter={event => handleMouseenter({ option, index }, event)}
             onMouseleave={event => handleMouseleave({ option, index }, event)}

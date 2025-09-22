@@ -32,13 +32,7 @@ export const optimize: Directive = {
           }
         }
         // Register using addEventListener on mounted, and removeEventListener automatically on unmounted
-        useEventListener(
-          el,
-          value.event,
-          type === "debounce"
-            ? debounce(params ? () => value.fn(...params) : value.fn, value?.timeout ?? 200, value?.immediate ?? false)
-            : throttle(params ? () => value.fn(...params) : value.fn, value?.timeout ?? 1000)
-        );
+        useEventListener(el, value.event, type === "debounce" ? debounce(params ? () => value.fn(...params) : value.fn, value?.timeout ?? 200, value?.immediate ?? false) : throttle(params ? () => value.fn(...params) : value.fn, value?.timeout ?? 1000));
       } else {
         throw new Error("[Directive: optimize]: `event` and `fn` are required, and `fn` must be a function");
       }

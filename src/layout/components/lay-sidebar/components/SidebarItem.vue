@@ -51,12 +51,7 @@ const getSubMenuIconStyle = computed((): CSSProperties => {
 const textClass = computed(() => {
   const item = props.item;
   const baseClass = "w-full! text-inherit!";
-  if (
-    layout.value !== "horizontal" &&
-    isCollapse.value &&
-    !toRaw(item.meta.icon) &&
-    ((layout.value === "vertical" && item.parentId === null) || (layout.value === "mix" && item.pathList.length === 2))
-  ) {
+  if (layout.value !== "horizontal" && isCollapse.value && !toRaw(item.meta.icon) && ((layout.value === "vertical" && item.parentId === null) || (layout.value === "mix" && item.pathList.length === 2))) {
     return `${baseClass} min-w-[54px]! text-center! px-3!`;
   }
   return baseClass;
@@ -111,14 +106,7 @@ function resolvePath(routePath) {
       <div v-if="toRaw(item.meta.icon)" class="sub-menu-icon" :style="getSubMenuIconStyle">
         <component :is="useRenderIcon(toRaw(onlyOneChild.meta.icon) || (item.meta && toRaw(item.meta.icon)))" />
       </div>
-      <el-text
-        v-if="
-          (!item?.meta.icon && isCollapse && layout === 'vertical' && item?.pathList?.length === 1) ||
-          (!onlyOneChild.meta.icon && isCollapse && layout === 'mix' && item?.pathList?.length === 2)
-        "
-        truncated
-        class="w-full! px-3! min-w-[54px]! text-center! text-inherit!"
-      >
+      <el-text v-if="(!item?.meta.icon && isCollapse && layout === 'vertical' && item?.pathList?.length === 1) || (!onlyOneChild.meta.icon && isCollapse && layout === 'mix' && item?.pathList?.length === 2)" truncated class="w-full! px-3! min-w-[54px]! text-center! text-inherit!">
         {{ onlyOneChild.meta.title }}
       </el-text>
 
@@ -144,11 +132,7 @@ function resolvePath(routePath) {
         <component :is="useRenderIcon(item.meta && toRaw(item.meta.icon))" />
       </div>
       <ReText
-        v-if="
-          layout === 'mix' && toRaw(item.meta.icon)
-            ? !isCollapse || item?.pathList?.length !== 2
-            : !(layout === 'vertical' && isCollapse && toRaw(item.meta.icon) && item.parentId === null)
-        "
+        v-if="layout === 'mix' && toRaw(item.meta.icon) ? !isCollapse || item?.pathList?.length !== 2 : !(layout === 'vertical' && isCollapse && toRaw(item.meta.icon) && item.parentId === null)"
         :tippyProps="{
           offset: [0, -10],
           theme: tooltipEffect
@@ -160,13 +144,6 @@ function resolvePath(routePath) {
       <SidebarExtraIcon v-if="!isCollapse" :extraIcon="item.meta.extraIcon" />
     </template>
 
-    <sidebar-item
-      v-for="child in item.children"
-      :key="child.path"
-      :is-nest="true"
-      :item="child"
-      :base-path="resolvePath(child.path)"
-      class="nest-menu"
-    />
+    <sidebar-item v-for="child in item.children" :key="child.path" :is-nest="true" :item="child" :base-path="resolvePath(child.path)" class="nest-menu" />
   </el-sub-menu>
 </template>

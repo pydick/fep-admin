@@ -1,12 +1,6 @@
 <template>
   <div style="position: relative; width: 100%; height: 100%" :class="{ full_frame: full_screen_type }">
-    <div
-      :id="canvas_id"
-      ref="molstar_ref"
-      class="drugflow_molstar"
-      :class="{ drugflow_molstar_no_sequence: !props.if_sequence_panel }"
-      style="width: 100%; height: 100%; min-width: 300px; min-height: 300px"
-    />
+    <div :id="canvas_id" ref="molstar_ref" class="drugflow_molstar" :class="{ drugflow_molstar_no_sequence: !props.if_sequence_panel }" style="width: 100%; height: 100%; min-width: 300px; min-height: 300px" />
     <div v-show="props.show_tool && show_tool" style="position: absolute; top: 0.5rem; width: 100%">
       <el-row style="margin: 0 auto; width: 40rem">
         <el-col :span="3" class="flex_def" />
@@ -37,9 +31,7 @@
                 <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'ligands'))">All Ligands</el-button>
               </div>
               <div v-for="item in pdb_info.ligand" :key="item.key">
-                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(item)">
-                  {{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}
-                </el-button>
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(item)">{{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}</el-button>
               </div>
               <el-divider v-if="pdb_info.water.length" style="margin: 8px 0" />
               <div v-if="pdb_info.water.length">
@@ -77,14 +69,7 @@
         </el-col>
         <el-col :span="1" class="flex_def" />
         <el-col :span="5" class="flex_def">
-          <el-popover
-            placement="bottom"
-            title="Create Surface"
-            :width="180"
-            trigger="hover"
-            popper-class="molstar_popper"
-            :disabled="props.disable_comp_btn"
-          >
+          <el-popover placement="bottom" title="Create Surface" :width="180" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn">
             <template #reference>
               <molstar_btn svg_name="create_surface" title="Create Surface" :disabled="props.disable_comp_btn" />
             </template>
@@ -98,9 +83,7 @@
               </div>
               <el-divider v-if="pdb_info.ligand.length" style="margin: 8px 0" />
               <div v-for="item in pdb_info.ligand" :key="item.key">
-                <el-button link size="small" class="molstar_btn_inner" @click="create_surface(item)">
-                  {{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}
-                </el-button>
+                <el-button link size="small" class="molstar_btn_inner" @click="create_surface(item)">{{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}</el-button>
               </div>
               <el-divider v-if="surface_list.length" style="margin: 8px 0" />
               <div v-for="item in surface_list" :key="item" style="margin-bottom: 0.3rem">
@@ -117,13 +100,7 @@
                 >
                   {{ item.name }}
                 </el-button>
-                <el-input
-                  v-show="!item.if_show_name"
-                  v-model="item.name"
-                  size="small"
-                  style="width: 70px; margin-right: 12px"
-                  @keyup.enter="item.if_show_name = !item.if_show_name"
-                />
+                <el-input v-show="!item.if_show_name" v-model="item.name" size="small" style="width: 70px; margin-right: 12px" @keyup.enter="item.if_show_name = !item.if_show_name" />
                 <el-button size="small" circle @click="item.if_show_name = !item.if_show_name">
                   <el-icon><Edit /></el-icon>
                 </el-button>
@@ -133,22 +110,13 @@
               </div>
             </div>
           </el-popover>
-          <el-popover
-            placement="bottom"
-            title="Create Pocket"
-            :width="180"
-            trigger="hover"
-            popper-class="molstar_popper"
-            :disabled="props.disable_comp_btn || wait_proif"
-          >
+          <el-popover placement="bottom" title="Create Pocket" :width="180" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn || wait_proif">
             <template #reference>
               <molstar_btn svg_name="create_pocket" title="Create Pocket" :disabled="props.disable_comp_btn" />
             </template>
             <div class="flex_column">
               <div v-for="item in pdb_info.ligand" :key="item.key">
-                <el-button link size="small" class="molstar_btn_inner" @click="create_pocket(item)">
-                  {{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}
-                </el-button>
+                <el-button link size="small" class="molstar_btn_inner" @click="create_pocket(item)">{{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}</el-button>
               </div>
               <div v-if="pdb_info.ligand.length === 0">
                 <el-button link size="small" class="molstar_btn_inner" disabled>No Pocket</el-button>
@@ -163,22 +131,13 @@
               </div>
             </div>
           </el-popover>
-          <el-popover
-            placement="bottom"
-            title="Create Label"
-            :width="80"
-            trigger="hover"
-            popper-class="molstar_popper"
-            :disabled="props.disable_comp_btn"
-          >
+          <el-popover placement="bottom" title="Create Label" :width="80" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn">
             <template #reference>
               <molstar_btn svg_name="create_label" title="Create Label" :disabled="props.disable_comp_btn" />
             </template>
             <div class="flex_column">
               <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'selection'))">
-                  For Selection
-                </el-button>
+                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'selection'))">For Selection</el-button>
               </div>
               <div>
                 <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'ligands'))">All Ligands</el-button>
@@ -223,37 +182,13 @@
             </template>
             <div class="flex_column">
               <div>
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  :disabled="has_pocket || has_surface || props.disable_comp_btn"
-                  @click="hide_selection()"
-                >
-                  Hide Selection
-                </el-button>
+                <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="hide_selection()">Hide Selection</el-button>
               </div>
               <div>
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  :disabled="has_pocket || has_surface || props.disable_comp_btn"
-                  @click="show_selection((type = 'prev'))"
-                >
-                  Show Selection
-                </el-button>
+                <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="show_selection((type = 'prev'))">Show Selection</el-button>
               </div>
               <div>
-                <el-button
-                  link
-                  size="small"
-                  class="molstar_btn_inner"
-                  :disabled="has_pocket || has_surface || props.disable_comp_btn"
-                  @click="show_selection((type = 'all'))"
-                >
-                  Show All
-                </el-button>
+                <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="show_selection((type = 'all'))">Show All</el-button>
               </div>
             </div>
           </el-popover>
@@ -269,14 +204,7 @@
               <el-radio label="black" size="small">Black</el-radio>
             </el-radio-group>
           </el-popover>
-          <el-popover
-            placement="bottom"
-            title="Change Repr"
-            :width="80"
-            trigger="hover"
-            popper-class="molstar_popper"
-            :disabled="props.disable_comp_btn"
-          >
+          <el-popover placement="bottom" title="Change Repr" :width="80" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn">
             <template #reference>
               <molstar_btn svg_name="cartoon" title="Change Repr" :disabled="props.disable_comp_btn" />
             </template>
@@ -1068,11 +996,7 @@ const find_and_add_prolif_data = async (item, render_id = "0") => {
   let interaction_list = [];
   for (let i = 0; i < prolif_data.length; i++) {
     tmp_list = prolif_data[i].interaction_dict;
-    if (
-      tmp_list.length > 0 &&
-      tmp_list[0]["ligand_chain_id"] == item["auth_asym_id"] &&
-      tmp_list[0]["ligand_residue_number"] == item["auth_residue_number"]
-    ) {
+    if (tmp_list.length > 0 && tmp_list[0]["ligand_chain_id"] == item["auth_asym_id"] && tmp_list[0]["ligand_residue_number"] == item["auth_residue_number"]) {
       interaction_list = prolif_data[i].interaction_dict;
       break;
     }

@@ -80,18 +80,7 @@ function handleClose(options: DialogOptions, index: number, args = { command: "c
 </script>
 
 <template>
-  <el-dialog
-    v-for="(options, index) in dialogStore"
-    :key="index"
-    v-bind="options"
-    v-model="options.visible"
-    class="pure-dialog"
-    :fullscreen="fullscreen ? true : options?.fullscreen ? true : false"
-    @closed="handleClose(options, index)"
-    @opened="eventsCallBack('open', options, index)"
-    @openAutoFocus="eventsCallBack('openAutoFocus', options, index)"
-    @closeAutoFocus="eventsCallBack('closeAutoFocus', options, index)"
-  >
+  <el-dialog v-for="(options, index) in dialogStore" :key="index" v-bind="options" v-model="options.visible" class="pure-dialog" :fullscreen="fullscreen ? true : options?.fullscreen ? true : false" @closed="handleClose(options, index)" @opened="eventsCallBack('open', options, index)" @openAutoFocus="eventsCallBack('openAutoFocus', options, index)" @closeAutoFocus="eventsCallBack('closeAutoFocus', options, index)">
     <!-- header -->
     <template v-if="options?.fullscreenIcon || options?.headerRenderer" #header="{ close, titleId, titleClass }">
       <div v-if="options?.fullscreenIcon" class="flex items-center justify-between">

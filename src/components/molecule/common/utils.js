@@ -119,8 +119,7 @@ export const JSonToCSV = {
         });
       } else {
         for (key in n) {
-          row +=
-            '"' + (typeof columns.formatter === "function" ? columns.formatter(key, n[key]) || n[key] : n[key]) + '",';
+          row += '"' + (typeof columns.formatter === "function" ? columns.formatter(key, n[key]) || n[key] : n[key]) + '",';
         }
       }
       row.slice(0, row.length - 1); // 删除最后一个,
@@ -161,13 +160,7 @@ export const JSonToCSV = {
   // }
 };
 
-export function export_table(
-  table_data,
-  props_list,
-  check_id_list,
-  filename = "DrugFlow_Results",
-  use_check_saved = false
-) {
+export function export_table(table_data, props_list, check_id_list, filename = "DrugFlow_Results", use_check_saved = false) {
   let download_data = [];
   if (use_check_saved) {
     download_data = table_data;

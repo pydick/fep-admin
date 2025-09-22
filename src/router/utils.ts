@@ -1,10 +1,4 @@
-import {
-  type RouterHistory,
-  type RouteRecordRaw,
-  type RouteComponent,
-  createWebHistory,
-  createWebHashHistory
-} from "vue-router";
+import { type RouterHistory, type RouteRecordRaw, type RouteComponent, createWebHistory, createWebHashHistory } from "vue-router";
 import { router } from "./index";
 import { isProxy, toRaw } from "vue";
 import { useTimeoutFn } from "@vueuse/core";
@@ -24,11 +18,7 @@ import { getAsyncRoutes } from "@/api/routes";
 
 function handRank(routeInfo: any) {
   const { name, path, parentId, meta } = routeInfo;
-  return isAllEmpty(parentId)
-    ? isAllEmpty(meta?.rank) || (meta?.rank === 0 && name !== "Home" && path !== "/")
-      ? true
-      : false
-    : false;
+  return isAllEmpty(parentId) ? (isAllEmpty(meta?.rank) || (meta?.rank === 0 && name !== "Home" && path !== "/") ? true : false) : false;
 }
 
 /** 按照路由中meta下的rank等级升序来排序路由 */
@@ -145,10 +135,7 @@ function handleAsyncRoutes(routeList) {
     usePermissionStoreHook().handleWholeMenus(routeList);
   }
   if (!useMultiTagsStoreHook().getMultiTagsCache) {
-    useMultiTagsStoreHook().handleTags("equal", [
-      ...routerArrays,
-      ...usePermissionStoreHook().flatteningRoutes.filter(v => v?.meta?.fixedTag)
-    ]);
+    useMultiTagsStoreHook().handleTags("equal", [...routerArrays, ...usePermissionStoreHook().flatteningRoutes.filter(v => v?.meta?.fixedTag)]);
   }
   addPathMatch();
 }
@@ -275,9 +262,7 @@ function addAsyncRoutes(arrRoutes: Array<RouteRecordRaw>) {
       v.component = IFrame;
     } else {
       // 对后端传component组件路径和不传做兼容（如果后端传component组件路径，那么path可以随便写，如果不传，component组件路径会跟path保持一致）
-      const index = v?.component
-        ? modulesRoutesKeys.findIndex(ev => ev.includes(v.component as any))
-        : modulesRoutesKeys.findIndex(ev => ev.includes(v.path));
+      const index = v?.component ? modulesRoutesKeys.findIndex(ev => ev.includes(v.component as any)) : modulesRoutesKeys.findIndex(ev => ev.includes(v.path));
       v.component = modulesRoutes[modulesRoutesKeys[index]];
     }
     if (v?.children && v.children.length) {
@@ -344,21 +329,4 @@ function getTopMenu(tag = false): menuType {
   return topMenu;
 }
 
-export {
-  hasAuth,
-  getAuths,
-  ascending,
-  filterTree,
-  initRouter,
-  getTopMenu,
-  addPathMatch,
-  isOneOfArray,
-  getHistoryMode,
-  addAsyncRoutes,
-  getParentPaths,
-  findRouteByPath,
-  handleAliveRoute,
-  formatTwoStageRoutes,
-  formatFlatteningRoutes,
-  filterNoPermissionTree
-};
+export { hasAuth, getAuths, ascending, filterTree, initRouter, getTopMenu, addPathMatch, isOneOfArray, getHistoryMode, addAsyncRoutes, getParentPaths, findRouteByPath, handleAliveRoute, formatTwoStageRoutes, formatFlatteningRoutes, filterNoPermissionTree };

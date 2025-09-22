@@ -17,125 +17,7 @@ export function readPDBFile(file) {
 export async function check_pocket(pdb_file, delete_hets, center_dic, dim_dic) {
   const pdb_string = await readPDBFile(pdb_file);
   // 离子的名称定义
-  const ions = [
-    "CL",
-    "NA",
-    "MG",
-    "ZN",
-    "CA",
-    "FE",
-    "MN",
-    "CO",
-    "CU",
-    "NI",
-    "K",
-    "CD",
-    "HG",
-    "CS",
-    "SR",
-    "BA",
-    "TL",
-    "PB",
-    "AU",
-    "AG",
-    "IR",
-    "RU",
-    "PT",
-    "RH",
-    "OS",
-    "RE",
-    "TC",
-    "MO",
-    "W",
-    "V",
-    "CR",
-    "FE",
-    "CO",
-    "NI",
-    "CU",
-    "ZN",
-    "Y",
-    "SR",
-    "ZR",
-    "NB",
-    "MO",
-    "TC",
-    "RU",
-    "RH",
-    "PD",
-    "AG",
-    "CD",
-    "IN",
-    "SN",
-    "SB",
-    "TE",
-    "I",
-    "XE",
-    "CS",
-    "BA",
-    "LA",
-    "CE",
-    "PR",
-    "ND",
-    "PM",
-    "SM",
-    "EU",
-    "GD",
-    "TB",
-    "DY",
-    "HO",
-    "ER",
-    "TM",
-    "YB",
-    "LU",
-    "HF",
-    "TA",
-    "W",
-    "RE",
-    "OS",
-    "IR",
-    "PT",
-    "AU",
-    "HG",
-    "TL",
-    "PB",
-    "BI",
-    "PO",
-    "AT",
-    "RN",
-    "FR",
-    "RA",
-    "AC",
-    "TH",
-    "PA",
-    "U",
-    "NP",
-    "PU",
-    "AM",
-    "CM",
-    "BK",
-    "CF",
-    "ES",
-    "FM",
-    "MD",
-    "NO",
-    "LR",
-    "RF",
-    "DB",
-    "SG",
-    "BH",
-    "HS",
-    "MT",
-    "DS",
-    "RG",
-    "CN",
-    "NH",
-    "FL",
-    "MC",
-    "LV",
-    "TS",
-    "OG"
-  ];
+  const ions = ["CL", "NA", "MG", "ZN", "CA", "FE", "MN", "CO", "CU", "NI", "K", "CD", "HG", "CS", "SR", "BA", "TL", "PB", "AU", "AG", "IR", "RU", "PT", "RH", "OS", "RE", "TC", "MO", "W", "V", "CR", "FE", "CO", "NI", "CU", "ZN", "Y", "SR", "ZR", "NB", "MO", "TC", "RU", "RH", "PD", "AG", "CD", "IN", "SN", "SB", "TE", "I", "XE", "CS", "BA", "LA", "CE", "PR", "ND", "PM", "SM", "EU", "GD", "TB", "DY", "HO", "ER", "TM", "YB", "LU", "HF", "TA", "W", "RE", "OS", "IR", "PT", "AU", "HG", "TL", "PB", "BI", "PO", "AT", "RN", "FR", "RA", "AC", "TH", "PA", "U", "NP", "PU", "AM", "CM", "BK", "CF", "ES", "FM", "MD", "NO", "LR", "RF", "DB", "SG", "BH", "HS", "MT", "DS", "RG", "CN", "NH", "FL", "MC", "LV", "TS", "OG"];
   // delete_hets.push({ residue_number: item.residue_number, chain_id: item.chain_id })
   const delete_hets_list = delete_hets.map(item => item.chain_id + ":" + item.residue_number);
   const x = Number(center_dic.X_center);
@@ -171,14 +53,7 @@ export async function check_pocket(pdb_file, delete_hets, center_dic, dim_dic) {
       console.log("ligand_name", ligand_name);
       if (ligand_name !== "HOH" && !ions.includes(ligand_name)) {
         // 判断坐标是否在口袋内
-        if (
-          x_c < x + dim_x / 2 &&
-          x_c > x - dim_x / 2 &&
-          y_c < y + dim_y / 2 &&
-          y_c > y - dim_y / 2 &&
-          z_c < z + dim_z / 2 &&
-          z_c > z - dim_z / 2
-        ) {
+        if (x_c < x + dim_x / 2 && x_c > x - dim_x / 2 && y_c < y + dim_y / 2 && y_c > y - dim_y / 2 && z_c < z + dim_z / 2 && z_c > z - dim_z / 2) {
           delete_hets_list.push(chain_name + ":" + residue_id);
           delete_hets.push({ residue_number: residue_id, chain_id: chain_name });
           new_delete_hets.push({ residue_number: residue_id, chain_id: chain_name, ligand_name: ligand_name });
@@ -238,47 +113,7 @@ export function parse_ligand_info(pdb_string) {
     if (line.startsWith("HETATM")) {
       const ligand_name = line.substr(17, 3).trim();
       // 增加一个离子列表，如果ligand_name在离子名称列表中，则忽略
-      const ions = [
-        "CL",
-        "NA",
-        "MG",
-        "ZN",
-        "CA",
-        "FE",
-        "MN",
-        "CO",
-        "CU",
-        "NI",
-        "K",
-        "CD",
-        "HG",
-        "CS",
-        "SR",
-        "BA",
-        "TL",
-        "PB",
-        "AU",
-        "AG",
-        "IR",
-        "RU",
-        "PT",
-        "RH",
-        "OS",
-        "RE",
-        "TC",
-        "MO",
-        "W",
-        "V",
-        "CR",
-        "FE",
-        "CO",
-        "NI",
-        "CU",
-        "ZN",
-        "Y",
-        "SR",
-        "X"
-      ];
+      const ions = ["CL", "NA", "MG", "ZN", "CA", "FE", "MN", "CO", "CU", "NI", "K", "CD", "HG", "CS", "SR", "BA", "TL", "PB", "AU", "AG", "IR", "RU", "PT", "RH", "OS", "RE", "TC", "MO", "W", "V", "CR", "FE", "CO", "NI", "CU", "ZN", "Y", "SR", "X"];
       if (ligand_name === "HOH") {
         continue;
       }

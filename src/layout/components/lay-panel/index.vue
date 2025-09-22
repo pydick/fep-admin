@@ -9,20 +9,7 @@ const target = ref(null);
 const show = ref<Boolean>(false);
 
 const iconClass = computed(() => {
-  return [
-    "w-[22px]",
-    "h-[22px]",
-    "flex",
-    "justify-center",
-    "items-center",
-    "outline-hidden",
-    "rounded-[4px]",
-    "cursor-pointer",
-    "transition-colors",
-    "hover:bg-[#0000000f]",
-    "dark:hover:bg-[#ffffff1f]",
-    "dark:hover:text-[#ffffffd9]"
-  ];
+  return ["w-[22px]", "h-[22px]", "flex", "justify-center", "items-center", "outline-hidden", "rounded-[4px]", "cursor-pointer", "transition-colors", "hover:bg-[#0000000f]", "dark:hover:bg-[#ffffff1f]", "dark:hover:text-[#ffffffd9]"];
 });
 
 const { onReset } = useDataThemeChange();

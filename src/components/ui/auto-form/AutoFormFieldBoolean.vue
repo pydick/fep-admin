@@ -18,13 +18,7 @@ const booleanComponent = computed(() => (props.config?.component === "switch" ? 
       <div class="space-y-0 mb-3 flex items-center gap-3">
         <FormControl>
           <slot v-bind="slotProps">
-            <component
-              :is="booleanComponent"
-              v-bind="{ ...slotProps.componentField }"
-              :disabled="disabled"
-              :checked="slotProps.componentField.modelValue"
-              @update:checked="slotProps.componentField['onUpdate:modelValue']"
-            />
+            <component :is="booleanComponent" v-bind="{ ...slotProps.componentField }" :disabled="disabled" :checked="slotProps.componentField.modelValue" @update:checked="slotProps.componentField['onUpdate:modelValue']" />
           </slot>
         </FormControl>
         <AutoFormLabel v-if="!config?.hideLabel" :required="required">

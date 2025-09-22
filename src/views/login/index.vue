@@ -129,9 +129,7 @@ useEventListener(document, "keydown", ({ code }) => {
             </Motion>
 
             <Motion :delay="250">
-              <el-button class="w-full mt-4!" size="default" type="primary" :loading="loading" :disabled="disabled" @click="onLogin(ruleFormRef)">
-                登录
-              </el-button>
+              <el-button class="w-full mt-4!" size="default" type="primary" :loading="loading" :disabled="disabled" @click="onLogin(ruleFormRef)">登录</el-button>
             </Motion>
           </el-form>
         </div>

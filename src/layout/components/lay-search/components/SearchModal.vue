@@ -102,12 +102,7 @@ function flatTree(arr) {
 /** 查询 */
 function search() {
   const flatMenusData = flatTree(menusData.value);
-  resultOptions.value = flatMenusData.filter(menu =>
-    keyword.value
-      ? menu.meta?.title.toLocaleLowerCase().includes(keyword.value.toLocaleLowerCase().trim()) ||
-        !isAllEmpty(match(menu.meta?.title.toLocaleLowerCase(), keyword.value.toLocaleLowerCase().trim()))
-      : false
-  );
+  resultOptions.value = flatMenusData.filter(menu => (keyword.value ? menu.meta?.title.toLocaleLowerCase().includes(keyword.value.toLocaleLowerCase().trim()) || !isAllEmpty(match(menu.meta?.title.toLocaleLowerCase(), keyword.value.toLocaleLowerCase().trim())) : false));
   activePath.value = resultOptions.value?.length > 0 ? resultOptions.value[0].path : "";
 }
 
@@ -272,16 +267,7 @@ onKeyStroke("ArrowDown", handleDown);
     <div class="search-content">
       <el-scrollbar ref="scrollbarRef" max-height="calc(90vh - 140px)">
         <el-empty v-if="showEmpty" description="暂无搜索结果" />
-        <SearchHistory
-          v-if="showSearchHistory"
-          ref="historyRef"
-          v-model:value="historyPath"
-          :options="historyOptions"
-          @click="handleEnter"
-          @delete="handleDelete"
-          @collect="handleCollect"
-          @drag="handleDrag"
-        />
+        <SearchHistory v-if="showSearchHistory" ref="historyRef" v-model:value="historyPath" :options="historyOptions" @click="handleEnter" @delete="handleDelete" @collect="handleCollect" @drag="handleDrag" />
         <SearchResult v-if="showSearchResult" ref="resultRef" v-model:value="activePath" :options="resultOptions" @click="handleEnter" />
       </el-scrollbar>
     </div>

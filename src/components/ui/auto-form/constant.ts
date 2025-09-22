@@ -21,18 +21,7 @@ export const INPUT_COMPONENTS = {
   object: AutoFormFieldObject
 };
 
-export type TInputComponents =
-  | "date"
-  | "select"
-  | "radio"
-  | "checkbox"
-  | "switch"
-  | "textarea"
-  | "number"
-  | "string"
-  | "file"
-  | "array"
-  | "object";
+export type TInputComponents = "date" | "select" | "radio" | "checkbox" | "switch" | "textarea" | "number" | "string" | "file" | "array" | "object";
 
 /**
  * Define handlers for specific Zod types.

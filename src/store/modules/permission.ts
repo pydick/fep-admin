@@ -1,15 +1,5 @@
 import { defineStore } from "pinia";
-import {
-  type cacheType,
-  store,
-  debounce,
-  ascending,
-  getKeyList,
-  filterTree,
-  constantMenus,
-  filterNoPermissionTree,
-  formatFlatteningRoutes
-} from "../utils";
+import { type cacheType, store, debounce, ascending, getKeyList, filterTree, constantMenus, filterNoPermissionTree, formatFlatteningRoutes } from "../utils";
 import { useMultiTagsStoreHook } from "./multiTags";
 
 export const usePermissionStore = defineStore("pure-permission", {
@@ -47,8 +37,7 @@ export const usePermissionStore = defineStore("pure-permission", {
         let cacheLength = this.cachePageList.length;
         const nameList = getKeyList(useMultiTagsStoreHook().multiTags, "name");
         while (cacheLength > 0) {
-          nameList.findIndex(v => v === this.cachePageList[cacheLength - 1]) === -1 &&
-            this.cachePageList.splice(this.cachePageList.indexOf(this.cachePageList[cacheLength - 1]), 1);
+          nameList.findIndex(v => v === this.cachePageList[cacheLength - 1]) === -1 && this.cachePageList.splice(this.cachePageList.indexOf(this.cachePageList[cacheLength - 1]), 1);
           cacheLength--;
         }
       })();

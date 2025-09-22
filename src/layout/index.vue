@@ -118,20 +118,10 @@ const LayHeader = defineComponent({
       "div",
       {
         class: { "fixed-header": set.fixedHeader },
-        style: [
-          set.hideTabs && layout.value.includes("horizontal")
-            ? isDark.value
-              ? "box-shadow: 0 1px 4px #0d0d0d"
-              : "box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08)"
-            : ""
-        ]
+        style: [set.hideTabs && layout.value.includes("horizontal") ? (isDark.value ? "box-shadow: 0 1px 4px #0d0d0d" : "box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08)") : ""]
       },
       {
-        default: () => [
-          !pureSetting.hiddenSideBar && (layout.value.includes("vertical") || layout.value.includes("mix")) ? h(LayNavbar) : null,
-          !pureSetting.hiddenSideBar && layout.value.includes("horizontal") ? h(NavHorizontal) : null,
-          h(LayTag)
-        ]
+        default: () => [!pureSetting.hiddenSideBar && (layout.value.includes("vertical") || layout.value.includes("mix")) ? h(LayNavbar) : null, !pureSetting.hiddenSideBar && layout.value.includes("horizontal") ? h(NavHorizontal) : null, h(LayTag)]
       }
     );
   }
@@ -140,11 +130,7 @@ const LayHeader = defineComponent({
 
 <template>
   <div ref="appWrapperRef" :class="['app-wrapper', set.classes]">
-    <div
-      v-show="set.device === 'mobile' && set.sidebar.opened && layout.includes('vertical')"
-      class="app-mask"
-      @click="useAppStoreHook().toggleSideBar()"
-    />
+    <div v-show="set.device === 'mobile' && set.sidebar.opened && layout.includes('vertical')" class="app-mask" @click="useAppStoreHook().toggleSideBar()" />
     <NavVertical v-show="!pureSetting.hiddenSideBar && (layout.includes('vertical') || layout.includes('mix'))" />
     <div :class="['main-container', pureSetting.hiddenSideBar ? 'main-hidden' : '']">
       <div v-if="set.fixedHeader">
