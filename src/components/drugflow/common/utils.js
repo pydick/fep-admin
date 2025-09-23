@@ -1,4 +1,4 @@
-// import { vue_gtag_event } from '@/components/common/vue_gtag'
+
 
 export function check_file(file, dict) {
   const name = file.name;

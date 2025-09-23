@@ -1,12 +1,14 @@
 <script>
 import { reactive, ref } from "vue";
-import protein3d_molstar from "@/components/drugflow/components/molecule/protein3d_molstar.vue";
+import protein3d_molstar from "@drugflow/components/molecule/protein3d_molstar.vue";
+import app_frame from "@drugflow/components/layout/app_frame.vue";
 import { data } from "./data.js";
 
 export default {
   name: "ScreenDocking",
   components: {
-    Protein3dMolstar: protein3d_molstar
+    Protein3dMolstar: protein3d_molstar,
+    app_frame
   },
   setup() {
     const form = reactive({
@@ -84,6 +86,9 @@ export default {
   methods: {
     show_protein() {
       this.$refs.molstar3dRef.loadStructure(data, "pdb");
+    },
+    handle_space_id(id) {
+      console.log(id);
     }
   }
 };
@@ -94,6 +99,11 @@ export default {
     <div class="drugflow-scope" style="width: 800px; height: 800px">
       <el-button @click="show_protein">show_protein</el-button>
       <Protein3dMolstar ref="molstar3dRef" v-model:box_x="form.X_center" v-model:box_y="form.Y_center" v-model:box_z="form.Z_center" v-model:l1="form.X_dimension" v-model:l2="form.Y_dimension" v-model:l3="form.Z_dimension" v-model:ligand_select="form.box_ligand" v-model:theme="theme" v-model:if_changed_box="form.box_changed_by_user" :if_show_box="if_show_box" />
+      <P>-------------------</P>
+      <app_frame tab_name="Docking" @space_id="handle_space_id">
+        <template #title>title</template>
+        <div class="bg_ff_gradient" style="padding: 0 2rem" />
+      </app_frame>
     </div>
   </div>
 </template>

@@ -26,6 +26,9 @@
       "@/*": [
         "src/*"
       ],
+      "@drugflow/*": [
+        "src/components/drugflow/*"
+      ],
       "@build/*": [
         "build/*"
       ]

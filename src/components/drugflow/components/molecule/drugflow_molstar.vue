@@ -245,7 +245,7 @@ import "drugflow-molstar/build/drugflow-molstar-component-0.3.43.js";
 import { InteractionsRepresentationProvider } from "molstar/lib/mol-model-props/computed/representations/interactions";
 import { Color, ColorMap } from "molstar/lib/mol-util/color";
 import { ColorNames } from "molstar/lib/mol-util/color/names";
-import { get_interaction_iframe_api } from "@/components/drugflow/api/molecular.js";
+import { get_interaction_iframe_api } from "@drugflow/api/molecular.js";
 
 // ==================== Molstar 核心组件引用 ====================
 /** Molstar组件的DOM引用，用于获取viewerInstance实例 */
