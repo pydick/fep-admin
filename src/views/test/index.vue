@@ -4,13 +4,21 @@ import protein3d_molstar from "@drugflow/components/molecule/protein3d_molstar.v
 import app_frame from "@drugflow/components/layout/app_frame.vue";
 import { data } from "./data.js";
 import doc_link from "@drugflow/components/layout/doc_link.vue";
+import SvgBox from "@drugflow/common/svgBox.vue";
+import Data_select from "@drugflow/common/data_select.vue";
+import Spinner from "@drugflow/common/spinner.vue";
+import Upload from "@drugflow/common/upload.vue";
 
 export default {
   name: "ScreenDocking",
   components: {
     Protein3dMolstar: protein3d_molstar,
     app_frame,
-    doc_link
+    doc_link,
+    SvgBox,
+    Data_select,
+    Spinner,
+    Upload
   },
   setup() {
     const form = reactive({
@@ -80,14 +88,41 @@ export default {
       het_group: [],
       delete_water: []
     });
+    const ligand_smiles = reactive(["CC(C)CC1=CC=C(C=C1)C(C)C(O)=O", "COC1=CC2=C(C=C1)N=C(N2)S(=O)CC1=NC=C(C)C(OC)=C1C", "COCCC1=CC=C(OCC(O)CNC(C)C)C=C1"]);
     const theme = ref("light");
     const if_show_box = ref(true);
     const molstar3dRef = ref(null);
-    return { form, theme, if_show_box, molstar3dRef };
+    const show_data_list = ref(false);
+    const data_list = reactive([
+      {
+        id: 4532,
+        name: "4DJV_pre_DFFixed.pdb",
+        source: '{"module":"vitrual-screening"}',
+        dataset_id: "zq91sqnxqbpjsff0",
+        created_at: "2025-09-15T03:25:36.588525Z",
+        extras: null
+      },
+      {
+        id: 4531,
+        name: "4DJV_pre.pdb",
+        source: '{"module":"protein_process","job_id":"15213"}',
+        dataset_id: "6vgl0r3tulybfjk1",
+        created_at: "2025-09-12T05:58:15.919653Z",
+        extras: null
+      }
+    ]);
+    const protein_name = ref("");
+    return { form, theme, if_show_box, molstar3dRef, ligand_smiles, show_data_list, data_list, protein_name };
   },
   methods: {
     show_protein() {
       this.$refs.molstar3dRef.loadStructure(data, "pdb");
+    },
+    show_Data_select() {
+      this.show_data_list = true;
+    },
+    show_spinner_ref() {
+      this.$refs.spinner_ref.show();
     },
     handle_space_id(id) {
       console.log(id);
@@ -101,15 +136,26 @@ export default {
     <div class="drugflow-scope" style="width: 800px; height: 800px">
       <el-button @click="show_protein">show_protein</el-button>
       <Protein3dMolstar ref="molstar3dRef" v-model:box_x="form.X_center" v-model:box_y="form.Y_center" v-model:box_z="form.Z_center" v-model:l1="form.X_dimension" v-model:l2="form.Y_dimension" v-model:l3="form.Z_dimension" v-model:ligand_select="form.box_ligand" v-model:theme="theme" v-model:if_changed_box="form.box_changed_by_user" :if_show_box="if_show_box" />
-      <P>-------------------</P>
-      <app_frame tab_name="Docking" @space_id="handle_space_id">
-        <template #title>title</template>
-        <div class="bg_ff_gradient" style="padding: 0 2rem" />
-      </app_frame>
-
-      <p>-----------------------------------</p>
-      <doc_link algo_type="Docking" />
     </div>
+    <P>--------app_frame-----------</P>
+    <app_frame tab_name="Docking" @space_id="handle_space_id">
+      <template #title>title</template>
+      <div class="bg_ff_gradient" style="padding: 0 2rem" />
+    </app_frame>
+
+    <p>-------------doc_link----------------------</p>
+    <doc_link algo_type="Docking" />
+
+    <p>-------------svgBox------------------</p>
+    <svgBox ref="svg_box" :if_wait="true" width="200px" height="200px" />
+    <p>----------------Data_select------------</p>
+    <el-button @click="show_Data_select">show_Data_select</el-button>
+    <Data_select v-model:if_show="show_data_list" :data_list="data_list" :name="'hale'" />
+    <p>--------Spinner------------</p>
+    <el-button @click="show_spinner_ref">show_spinner_ref</el-button>
+    <Spinner ref="spinner_ref" style="background: #fff" :full_screen="false" />
+    <p>-------------Upload-------------</p>
+    <upload :file_name="protein_name" :inp_placeholder="'screen.上传'" :ws_id="'898mg9qjbdlknrdh'" file_accept=".pdb" task_type="docking" :is_slot="false" />
   </div>
 </template>
 

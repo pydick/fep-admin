@@ -309,21 +309,21 @@ export default {
     } else {
       get_users_role()
         .then(res => {
-          user_info.value.uname = res.data.name;
-          user_info.value.uemail = res.data.email;
-          user_info.value.is_staff = res.data.is_staff;
-          privatization.value = res.data.privatization;
-          if (res.data.extras.api_permission) {
-            tmp_permission = res.data.extras.api_permission;
+          user_info.value.uname = res.name;
+          user_info.value.uemail = res.email;
+          user_info.value.is_staff = res.is_staff;
+          privatization.value = res.privatization;
+          if (res.extras.api_permission) {
+            tmp_permission = res.extras.api_permission;
           }
           context.emit("update:api_permission", tmp_permission);
 
           localStorage.setItem(
             "cs_user_info",
             JSON.stringify({
-              uname: res.data.name,
-              uemail: res.data.email,
-              is_staff: res.data.is_staff,
+              uname: res.name,
+              uemail: res.email,
+              is_staff: res.is_staff,
               api_permission: tmp_permission
             })
           );
@@ -529,18 +529,18 @@ export default {
   mounted() {
     get_users_role().then(res => {
       console.log(res);
-      this.user_type = res.data.extras.user_type;
-      this.confirm_status = res.data.extras.confirm_status;
-      this.need_confirm = res.data.extras.need_confirm;
-      this.license_time = res.data.extras.license_time;
-      this.form.name = res.data.name;
-      this.form.organization = res.data.organization;
-      this.form.telephone = res.data.telephone;
-      this.privatization = res.data.privatization;
+      this.user_type = res.extras.user_type;
+      this.confirm_status = res.extras.confirm_status;
+      this.need_confirm = res.extras.need_confirm;
+      this.license_time = res.extras.license_time;
+      this.form.name = res.name;
+      this.form.organization = res.organization;
+      this.form.telephone = res.telephone;
+      this.privatization = res.privatization;
       console.log(this.privatization);
       this.timeLeft = this.license_time - dayjs().unix();
       localStorage.setItem("user_type", this.user_type);
-      this.check_for_gpt(res);
+      this.check_for_gpt({ data: res });
       // console.log(this.license_time)
       // console.log(dayjs().unix())
       // console.log(this.timeLeft)
