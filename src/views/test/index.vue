@@ -91,7 +91,7 @@ export default {
 
 <template>
   <div>
-    <div style="width: 800px; height: 800px">
+    <div class="drugflow-scope" style="width: 800px; height: 800px">
       <el-button @click="show_protein">show_protein</el-button>
       <Protein3dMolstar ref="molstar3dRef" v-model:box_x="form.X_center" v-model:box_y="form.Y_center" v-model:box_z="form.Z_center" v-model:l1="form.X_dimension" v-model:l2="form.Y_dimension" v-model:l3="form.Z_dimension" v-model:ligand_select="form.box_ligand" v-model:theme="theme" v-model:if_changed_box="form.box_changed_by_user" :if_show_box="if_show_box" />
     </div>
