@@ -3,12 +3,14 @@ import { reactive, ref } from "vue";
 import protein3d_molstar from "@drugflow/components/molecule/protein3d_molstar.vue";
 import app_frame from "@drugflow/components/layout/app_frame.vue";
 import { data } from "./data.js";
+import doc_link from "@drugflow/components/layout/doc_link.vue";
 
 export default {
   name: "ScreenDocking",
   components: {
     Protein3dMolstar: protein3d_molstar,
-    app_frame
+    app_frame,
+    doc_link
   },
   setup() {
     const form = reactive({
@@ -104,6 +106,9 @@ export default {
         <template #title>title</template>
         <div class="bg_ff_gradient" style="padding: 0 2rem" />
       </app_frame>
+
+      <p>-----------------------------------</p>
+      <doc_link algo_type="Docking" />
     </div>
   </div>
 </template>
