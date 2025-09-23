@@ -238,14 +238,14 @@
 
 <script setup>
 import { ref, onMounted, defineEmits, nextTick } from "vue";
-import molstar_btn from "@/components/molecule/molstar_btn.vue";
-import prolif_iframe from "@/components/molecule/prolif_iframe.vue";
+import molstar_btn from "./molstar_btn.vue";
+import prolif_iframe from "./prolif_iframe.vue";
 import "drugflow-molstar/build/drugflow-molstar-light.css";
 import "drugflow-molstar/build/drugflow-molstar-component-0.3.43.js";
 import { InteractionsRepresentationProvider } from "molstar/lib/mol-model-props/computed/representations/interactions";
 import { Color, ColorMap } from "molstar/lib/mol-util/color";
 import { ColorNames } from "molstar/lib/mol-util/color/names";
-import { get_interaction_iframe_api } from "./api/molecular.js";
+import { get_interaction_iframe_api } from "@/components/drugflow-components/api/molecular.js";
 
 // ==================== Molstar 核心组件引用 ====================
 /** Molstar组件的DOM引用，用于获取viewerInstance实例 */

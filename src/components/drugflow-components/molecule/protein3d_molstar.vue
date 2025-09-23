@@ -16,18 +16,17 @@
 </template>
 
 <script>
-import svg_temp from "./icon/svg_temp.vue";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { parse_ligand_string, parse_pdb_info, search_centry } from "@/components/molecule/pdb_parser.js";
-import drugflow_molstar from "@/components/molecule/drugflow_molstar.vue";
-import { change_pocket_to_xyz, calc_iou } from "./utils/common.js";
-import { requireImg } from "./common/utils.js";
+import { parse_ligand_string, parse_pdb_info, search_centry } from "./pdb_parser.js";
+import drugflow_molstar from "./drugflow_molstar.vue";
+import { change_pocket_to_xyz, calc_iou } from "@/components/drugflow-components/utils/common.js";
+import { requireImg } from "@/components/drugflow-components/common/utils.js";
 import { ElLoading } from "element-plus";
 
 export default {
   name: "protein3d_molstar",
-  components: { svg_temp, drugflow_molstar },
+  components: { drugflow_molstar },
   props: {
     box_x: { type: Number },
     box_y: { type: Number },

@@ -6,7 +6,7 @@
 
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
-import molstar_svg from "./icon/molstar_svg.vue";
+import molstar_svg from "@/components/drugflow-components/icon/molstar_svg.vue";
 
 const props = defineProps({
   svg_name: {
