@@ -20,8 +20,8 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { parse_ligand_string, parse_pdb_info, search_centry } from "./pdb_parser.js";
 import drugflow_molstar from "./drugflow_molstar.vue";
-import { change_pocket_to_xyz, calc_iou } from "@/components/drugflow-components/utils/common.js";
-import { requireImg } from "@/components/drugflow-components/common/utils.js";
+import { change_pocket_to_xyz, calc_iou } from "@/components/drugflow/utils/common.js";
+import { requireImg } from "@/components/drugflow/common/utils.js";
 import { ElLoading } from "element-plus";
 
 export default {
