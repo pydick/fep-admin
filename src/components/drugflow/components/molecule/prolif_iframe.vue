@@ -24,7 +24,7 @@
 
 <script setup>
 import { ref, onMounted, nextTick, watch } from "vue";
-import { get_interaction_iframe_api } from "../api/molecular.js";
+import { get_interaction_iframe_api } from "@/components/drugflow/api/molecular.js";
 import { useI18n } from "vue-i18n";
 
 const props = defineProps({

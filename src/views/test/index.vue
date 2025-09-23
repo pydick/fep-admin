@@ -1,6 +1,6 @@
 <script>
 import { reactive, ref } from "vue";
-import protein3d_molstar from "@/components/drugflow/molecule/protein3d_molstar.vue";
+import protein3d_molstar from "@/components/drugflow/components/molecule/protein3d_molstar.vue";
 import { data } from "./data.js";
 
 export default {
