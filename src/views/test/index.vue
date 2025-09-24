@@ -127,6 +127,11 @@ export default {
     const frame_data = data2;
     return { frame_data, form, theme, if_show_box, molstar3dRef, ligand_smiles, show_data_list, data_list, protein_name, task_name, ori_task_name, label_col, ligands_id, task_id };
   },
+  mounted() {
+    setTimeout(() => {
+      this.$refs.molstar3dRef.loadStructure(data, "pdb");
+    }, 3000);
+  },
   methods: {
     show_protein() {
       this.$refs.molstar3dRef.loadStructure(data, "pdb");
