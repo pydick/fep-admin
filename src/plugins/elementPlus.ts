@@ -134,4 +134,10 @@ export function useElementPlus(app: App) {
   plugins.forEach(plugin => {
     app.use(plugin);
   });
+
+  // 挂载到全局对象，使其可以在任何地方直接使用
+  window.ElLoading = ElLoading;
+  window.ElMessage = ElMessage;
+  window.ElMessageBox = ElMessageBox;
+  window.ElNotification = ElNotification;
 }
