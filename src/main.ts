@@ -28,6 +28,9 @@ import "./assets/iconfont/iconfont.css";
 import websocket from "@drugflow/utils/websocket";
 const app = createApp(App);
 
+import VXETable from "vxe-table";
+import "vxe-table/lib/style.css";
+
 // 自定义指令
 import * as directives from "@/directives";
 Object.keys(directives).forEach(key => {
@@ -56,6 +59,7 @@ getPlatformConfig(app).then(async config => {
   setupStore(app);
   setupPlugins(app);
   app.use(elementIcon);
+  app.use(VXETable);
   app.use(router);
   app.provide("websocket", websocket);
   await router.isReady();

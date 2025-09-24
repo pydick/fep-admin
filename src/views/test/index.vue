@@ -9,6 +9,7 @@ import Data_select from "@drugflow/common/data_select.vue";
 import Spinner from "@drugflow/common/spinner.vue";
 import Upload from "@drugflow/common/upload.vue";
 import task_card from "@drugflow/components/task/task_card.vue";
+import csv_details from "@drugflow/components/file_process/csv_details.vue";
 
 export default {
   name: "ScreenDocking",
@@ -20,7 +21,8 @@ export default {
     Data_select,
     Spinner,
     Upload,
-    task_card
+    task_card,
+    csv_details
   },
   setup() {
     const form = reactive({
@@ -116,7 +118,9 @@ export default {
     const task_name = ref("Docking Task");
     const ori_task_name = ref("Docking Task");
     const protein_name = ref("");
-    return { form, theme, if_show_box, molstar3dRef, ligand_smiles, show_data_list, data_list, protein_name, task_name, ori_task_name };
+    const ligands_id = ref("87mv48bkbrtwtvtd");
+    const label_col = reactive(["Smiles"]);
+    return { form, theme, if_show_box, molstar3dRef, ligand_smiles, show_data_list, data_list, protein_name, task_name, ori_task_name, label_col, ligands_id };
   },
   methods: {
     show_protein() {
@@ -165,6 +169,8 @@ export default {
     <upload :file_name="protein_name" :inp_placeholder="'screen.上传'" :ws_id="'898mg9qjbdlknrdh'" file_accept=".pdb" task_type="docking" :is_slot="false" />
     <p>----------task_card-----------------</p>
     <task_card v-model:task_name="task_name" :ori_task_name="ori_task_name" :space_id="103" task_type="docking" @goto_tab="change_tab" />
+    <p>-----------------------------csv_details------------------</p>
+    <csv_details ref="csv_details_ref" :dataset_id="ligands_id" :is_overview="false" :smiles_label="label_col" />
   </div>
 </template>
 
