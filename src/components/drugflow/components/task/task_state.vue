@@ -182,8 +182,8 @@ export default {
     const update_task_list = () => {
       // console.log(props.space_id, props.task_type)
       return screen_get(props.space_id, props.task_type, "running", 1, 7).then(res => {
-        running_task_list.value = reactive(res.data.results);
-        running_task_count.value = res.data.count;
+        running_task_list.value = reactive(res.results);
+        running_task_count.value = res.count;
       });
     };
     update_task_list();

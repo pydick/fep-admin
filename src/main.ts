@@ -25,7 +25,7 @@ import "./style/drugflow-global.scss";
 // 导入字体图标
 import "./assets/iconfont/iconfont.js";
 import "./assets/iconfont/iconfont.css";
-
+import websocket from "@drugflow/utils/websocket";
 const app = createApp(App);
 
 // 自定义指令
@@ -57,6 +57,7 @@ getPlatformConfig(app).then(async config => {
   setupPlugins(app);
   app.use(elementIcon);
   app.use(router);
+  app.provide("websocket", websocket);
   await router.isReady();
   injectResponsiveStorage(app, config);
   app.use(MotionPlugin).use(useElementPlus).use(Table);

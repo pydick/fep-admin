@@ -8,6 +8,7 @@ import SvgBox from "@drugflow/common/svgBox.vue";
 import Data_select from "@drugflow/common/data_select.vue";
 import Spinner from "@drugflow/common/spinner.vue";
 import Upload from "@drugflow/common/upload.vue";
+import task_card from "@drugflow/components/task/task_card.vue";
 
 export default {
   name: "ScreenDocking",
@@ -18,7 +19,8 @@ export default {
     SvgBox,
     Data_select,
     Spinner,
-    Upload
+    Upload,
+    task_card
   },
   setup() {
     const form = reactive({
@@ -111,8 +113,10 @@ export default {
         extras: null
       }
     ]);
+    const task_name = ref("Docking Task");
+    const ori_task_name = ref("Docking Task");
     const protein_name = ref("");
-    return { form, theme, if_show_box, molstar3dRef, ligand_smiles, show_data_list, data_list, protein_name };
+    return { form, theme, if_show_box, molstar3dRef, ligand_smiles, show_data_list, data_list, protein_name, task_name, ori_task_name };
   },
   methods: {
     show_protein() {
@@ -126,14 +130,17 @@ export default {
     },
     handle_space_id(id) {
       console.log(id);
+    },
+    change_tab(tab_name) {
+      console.log(tab_name);
     }
   }
 };
 </script>
 
 <template>
-  <div>
-    <div class="drugflow-scope" style="width: 800px; height: 800px">
+  <div class="drugflow-scope">
+    <div style="width: 800px; height: 800px">
       <el-button @click="show_protein">show_protein</el-button>
       <Protein3dMolstar ref="molstar3dRef" v-model:box_x="form.X_center" v-model:box_y="form.Y_center" v-model:box_z="form.Z_center" v-model:l1="form.X_dimension" v-model:l2="form.Y_dimension" v-model:l3="form.Z_dimension" v-model:ligand_select="form.box_ligand" v-model:theme="theme" v-model:if_changed_box="form.box_changed_by_user" :if_show_box="if_show_box" />
     </div>
@@ -156,6 +163,8 @@ export default {
     <Spinner ref="spinner_ref" style="background: #fff" :full_screen="false" />
     <p>-------------Upload-------------</p>
     <upload :file_name="protein_name" :inp_placeholder="'screen.上传'" :ws_id="'898mg9qjbdlknrdh'" file_accept=".pdb" task_type="docking" :is_slot="false" />
+    <p>----------task_card-----------------</p>
+    <task_card v-model:task_name="task_name" :ori_task_name="ori_task_name" :space_id="103" task_type="docking" @goto_tab="change_tab" />
   </div>
 </template>
 

@@ -34,7 +34,7 @@ export default {
     if (localStorage.getItem("cs_language")) {
       language.value = localStorage.getItem("cs_language");
     } else {
-      language.value = proxy.$i18n.locale;
+      // language.value = proxy.$i18n.locale;
     }
 
     return {

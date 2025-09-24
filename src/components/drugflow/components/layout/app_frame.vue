@@ -430,30 +430,30 @@ export default {
         .then(res => {
           if (num === 0) {
             jobs_migrate({
-              ws_id: res.data.results[0].ws_id
+              ws_id: res.results[0].ws_id
             });
           }
-          if (res.data.results.length) {
+          if (res.results.length) {
             create_space.value = false;
-            space_list.value = res.data.results;
+            space_list.value = res.results;
             let num = 0;
-            for (let i = 0; i < res.data.results.length; i++) {
+            for (let i = 0; i < res.results.length; i++) {
               space_list.value[i].isShow = false;
               space_list.value[i].isCheck = false;
-              if (res.data.results[i].status === 1) {
-                // console.log(res.data.results[i])
+              if (res.results[i].status === 1) {
+                // console.log(res.results[i])
                 num += 1;
-                context.emit("space_id", res.data.results[i]);
-                space.value = res.data.results[i];
-                space_check.value = res.data.results[i].name;
+                context.emit("space_id", res.results[i]);
+                space.value = res.results[i];
+                space_check.value = res.results[i].name;
                 space_list.value[i].isCheck = true;
                 return;
               }
             }
             if (num === 0) {
-              context.emit("space_id", res.data.results[0]);
-              space.value = res.data.results[0];
-              space_check.value = res.data.results[0].name;
+              context.emit("space_id", res.results[0]);
+              space.value = res.results[0];
+              space_check.value = res.results[0].name;
               space_list.value[0].isCheck = true;
             }
           } else {
