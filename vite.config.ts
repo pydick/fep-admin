@@ -2,6 +2,7 @@ import { getPluginsList } from "./build/plugins";
 import { include, exclude } from "./build/optimize";
 import { type UserConfigExport, type ConfigEnv, loadEnv } from "vite";
 import { root, alias, wrapperEnv, pathResolve, __APP_INFO__ } from "./build/utils";
+import qiankun from "vite-plugin-qiankun";
 const targetUlr = "https://new.drugflow.com";
 
 export default ({ mode }: ConfigEnv): UserConfigExport => {
@@ -81,7 +82,13 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
         clientFiles: ["./index.html", "./src/{views,components}/*"]
       }
     },
-    plugins: getPluginsList(VITE_CDN, VITE_COMPRESSION),
+    plugins: [
+      getPluginsList(VITE_CDN, VITE_COMPRESSION),
+      qiankun("FEP", {
+        // 微应用名字，与主应用注册的微应用名字保持一致
+        useDevMode: true
+      })
+    ],
     // https://cn.vitejs.dev/config/dep-optimization-options.html#dep-optimization-options
     optimizeDeps: {
       include,

@@ -8,7 +8,8 @@ import { createApp, type Directive } from "vue";
 import { useElementPlus } from "@/plugins/elementPlus";
 import { injectResponsiveStorage } from "@/utils/responsive";
 import { setupPlugins } from "./plugins";
-
+import initQianKun from "./qianKuninit";
+import { qiankunWindow } from "vite-plugin-qiankun/dist/helper";
 import elementIcon from "@/plugins/svgicon";
 
 import Table from "@pureadmin/table";
@@ -55,17 +56,43 @@ import "tippy.js/themes/light.css";
 import VueTippy from "vue-tippy";
 app.use(VueTippy);
 
-getPlatformConfig(app).then(async config => {
-  setupStore(app);
-  setupPlugins(app);
-  app.use(elementIcon);
-  app.use(VXETable);
-  app.use(router);
-  app.provide("websocket", websocket);
-  await router.isReady();
-  injectResponsiveStorage(app, config);
-  app.use(MotionPlugin).use(useElementPlus).use(Table);
-  // .use(PureDescriptions)
-  // .use(useEcharts);
-  app.mount("#app");
-});
+// getPlatformConfig(app).then(async config => {
+//   setupStore(app);
+//   setupPlugins(app);
+//   app.use(elementIcon);
+//   app.use(VXETable);
+//   app.use(router);
+//   app.provide("websocket", websocket);
+//   await router.isReady();
+//   injectResponsiveStorage(app, config);
+//   app.use(MotionPlugin).use(useElementPlus).use(Table);
+//   // .use(PureDescriptions)
+//   // .use(useEcharts);
+//   app.mount("#app");
+// });
+
+async function render(props: any = {}) {
+  const { container, activeRule } = props;
+  getPlatformConfig(app).then(async config => {
+    setupStore(app);
+    setupPlugins(app);
+    app.use(elementIcon);
+    app.use(VXETable);
+    app.use(router);
+    app.provide("websocket", websocket);
+    await router.isReady();
+    injectResponsiveStorage(app, config);
+    app.use(MotionPlugin).use(useElementPlus).use(Table);
+    // .use(PureDescriptions)
+    // .use(useEcharts);
+    app.mount(container ? container.querySelector("#app") : "#app");
+
+    app.config.globalProperties.$activeRule = activeRule;
+  });
+}
+
+if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
+  render();
+} else {
+  initQianKun(render);
+}
