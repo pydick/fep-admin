@@ -18,6 +18,10 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
       // 端口号
       port: VITE_PORT,
       host: "0.0.0.0",
+      cors: true,
+      headers: {
+        "Access-Control-Allow-Origin": "*"
+      },
       // 本地跨域代理 https://cn.vitejs.dev/config/server-options.html#server-proxy
       proxy: {
         "/api": {
@@ -84,7 +88,7 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
     },
     plugins: [
       getPluginsList(VITE_CDN, VITE_COMPRESSION),
-      qiankun("FEP", {
+      qiankun("MicroFEP", {
         // 微应用名字，与主应用注册的微应用名字保持一致
         useDevMode: true
       })

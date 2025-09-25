@@ -12,6 +12,16 @@ export default [
     }
   },
   {
+    path: "/micro-fep",
+    name: "Micro",
+    component: () => import("@/views/micro-fep/index.vue"),
+    meta: {
+      title: "微前端",
+      rank: 1,
+      showLink: false
+    }
+  },
+  {
     path: "/redirect",
     component: Layout,
     meta: {

@@ -8,8 +8,7 @@ import { createApp, type Directive } from "vue";
 import { useElementPlus } from "@/plugins/elementPlus";
 import { injectResponsiveStorage } from "@/utils/responsive";
 import { setupPlugins } from "./plugins";
-import initQianKun from "./qianKuninit";
-import { qiankunWindow } from "vite-plugin-qiankun/dist/helper";
+import { qiankunWindow, renderWithQiankun } from "vite-plugin-qiankun/dist/helper";
 import elementIcon from "@/plugins/svgicon";
 
 import Table from "@pureadmin/table";
@@ -27,52 +26,40 @@ import "./style/drugflow-global.scss";
 import "./assets/iconfont/iconfont.js";
 import "./assets/iconfont/iconfont.css";
 import websocket from "@drugflow/utils/websocket";
-const app = createApp(App);
 
 import VXETable from "vxe-table";
 import "vxe-table/lib/style.css";
 
 // 自定义指令
 import * as directives from "@/directives";
-Object.keys(directives).forEach(key => {
-  app.directive(key, (directives as { [key: string]: Directive })[key]);
-});
 
 // 全局注册@iconify/vue图标库
 import { IconifyIconOffline, IconifyIconOnline, FontIcon } from "./components/ReIcon";
-app.component("IconifyIconOffline", IconifyIconOffline);
-app.component("IconifyIconOnline", IconifyIconOnline);
-app.component("FontIcon", FontIcon);
 
 // 全局注册按钮级别权限组件
 import { Auth } from "@/components/ReAuth";
 import { Perms } from "@/components/RePerms";
-app.component("Auth", Auth);
-app.component("Perms", Perms);
 
 // 全局注册vue-tippy
 import "tippy.js/dist/tippy.css";
 import "tippy.js/themes/light.css";
 import VueTippy from "vue-tippy";
-app.use(VueTippy);
 
-// getPlatformConfig(app).then(async config => {
-//   setupStore(app);
-//   setupPlugins(app);
-//   app.use(elementIcon);
-//   app.use(VXETable);
-//   app.use(router);
-//   app.provide("websocket", websocket);
-//   await router.isReady();
-//   injectResponsiveStorage(app, config);
-//   app.use(MotionPlugin).use(useElementPlus).use(Table);
-//   // .use(PureDescriptions)
-//   // .use(useEcharts);
-//   app.mount("#app");
-// });
+let app = null;
 
-async function render(props: any = {}) {
-  const { container, activeRule } = props;
+function render(props = {}) {
+  const { container } = props;
+  app = createApp(App);
+  Object.keys(directives).forEach(key => {
+    app.directive(key, (directives as { [key: string]: Directive })[key]);
+  });
+  app.component("IconifyIconOffline", IconifyIconOffline);
+  app.component("IconifyIconOnline", IconifyIconOnline);
+  app.component("FontIcon", FontIcon);
+  app.component("Auth", Auth);
+  app.component("Perms", Perms);
+  app.use(VueTippy);
+
   getPlatformConfig(app).then(async config => {
     setupStore(app);
     setupPlugins(app);
@@ -85,14 +72,31 @@ async function render(props: any = {}) {
     app.use(MotionPlugin).use(useElementPlus).use(Table);
     // .use(PureDescriptions)
     // .use(useEcharts);
-    app.mount(container ? container.querySelector("#app") : "#app");
-
-    app.config.globalProperties.$activeRule = activeRule;
+    const containerEl = container ? container.querySelector("#app") : "#app";
+    app.mount(containerEl);
   });
 }
 
 if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
   render();
 } else {
-  initQianKun(render);
+  renderWithQiankun({
+    mount(props) {
+      console.log("[Vue微应用] mount", props);
+      render(props);
+    },
+    bootstrap() {
+      console.log("[Vue微应用] bootstrap");
+    },
+    update() {
+      console.log("[Vue微应用] update");
+    },
+    unmount() {
+      console.log("[Vue微应用] unmount");
+      if (app) {
+        app.unmount();
+        app = null;
+      }
+    }
+  });
 }
