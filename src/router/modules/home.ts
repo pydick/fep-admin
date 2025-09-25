@@ -28,6 +28,14 @@ export default {
       meta: {
         title: "test"
       }
+    },
+    {
+      path: "/g6demo",
+      name: "g6demo",
+      component: () => import("@/views/g6demo/index.vue"),
+      meta: {
+        title: "g6demo"
+      }
     }
   ]
 } satisfies RouteConfigsTable;
