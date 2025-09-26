@@ -23,7 +23,6 @@ export default {
     }
   ],
   rules: {
-    "no-empty-source": null,
     "prettier/prettier": true,
     "selector-class-pattern": null,
     "no-descending-specificity": null,

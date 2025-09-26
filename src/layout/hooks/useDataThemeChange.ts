@@ -68,12 +68,7 @@ export function useDataThemeChange() {
   }
 
   function setPropertyPrimary(mode: string, i: number, color: string) {
-    try {
-      document.documentElement.style.setProperty(`--el-color-primary-${mode}-${i}`, dataTheme.value ? darken(color, i / 10) : lighten(color, i / 10));
-    } catch (error) {
-      console.warn("setPropertyPrimary: error", error);
-      document.documentElement.style.setProperty(`--el-color-primary-${mode}-${i}`, color);
-    }
+    document.documentElement.style.setProperty(`--el-color-primary-${mode}-${i}`, dataTheme.value ? darken(color, i / 10) : lighten(color, i / 10));
   }
 
   /** 设置 `element-plus` 主题色 */

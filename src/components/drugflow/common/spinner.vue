@@ -1,23 +1,23 @@
 <template>
   <div
+    v-if="if_show == true"
     class="center"
     :class="{
       full_screen: full_screen == true,
-      background_cover: cover_flag == true,
+      background_cover: cover_flag == true
     }"
-    v-if="if_show == true"
   >
     <div
       class="atom-spinner"
       :class="{
         large_spinner: size == 'large',
-        small_spinner: size == 'small',
+        small_spinner: size == 'small'
       }"
     >
       <div class="spinner-inner">
-        <div class="spinner-line"></div>
-        <div class="spinner-line"></div>
-        <div class="spinner-line"></div>
+        <div class="spinner-line" />
+        <div class="spinner-line" />
+        <div class="spinner-line" />
         <!--Chrome renders little circles malformed :(-->
         <div class="spinner-circle">&#9679;</div>
       </div>
@@ -25,36 +25,36 @@
   </div>
 </template>
 <script>
-import { ref } from 'vue'
+import { ref } from "vue";
 export default {
-  name: 'SpinnerComp',
+  name: "SpinnerComp",
   props: {
-    size: { type: String, default: 'normal' },
+    size: { type: String, default: "normal" },
     full_screen: { type: Boolean, default: true },
     cover_flag: { type: Boolean, default: true }
   },
   setup() {
-    const if_show = ref(false)
+    const if_show = ref(false);
 
     return {
       if_show
-    }
+    };
   },
   methods: {
     show() {
-      if(!this.if_show){
-        this.if_show = true
-        document.body.style.overflow = 'hidden'
+      if (!this.if_show) {
+        this.if_show = true;
+        document.body.style.overflow = "hidden";
       }
     },
     hide() {
-      if(this.if_show) {
-        this.if_show = false
-        document.body.style.overflow = ''
+      if (this.if_show) {
+        this.if_show = false;
+        document.body.style.overflow = "";
       }
     }
   }
-}
+};
 </script>
 
 <style lang="css" scoped>

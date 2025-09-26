@@ -23,11 +23,11 @@
       "DOM"
     ],
     "paths": {
+       "@drugflow/*": [
+        "src/components/drugflow/*"
+      ],
       "@/*": [
         "src/*"
-      ],
-      "@drugflow/*": [
-        "src/components/drugflow/*"
       ],
       "@build/*": [
         "build/*"

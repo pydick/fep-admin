@@ -6,17 +6,21 @@ import LayNotice from "../lay-notice/index.vue";
 import { responsiveStorageNameSpace } from "@/config";
 import { ref, nextTick, computed, onMounted } from "vue";
 import { storageLocal, isAllEmpty } from "@pureadmin/utils";
+import { useTranslationLang } from "../../hooks/useTranslationLang";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 import LaySidebarItem from "../lay-sidebar/components/SidebarItem.vue";
 import LaySidebarFullScreen from "../lay-sidebar/components/SidebarFullScreen.vue";
 
+import GlobalizationIcon from "@/assets/svg/globalization.svg?component";
 import LogoutCircleRLine from "~icons/ri/logout-circle-r-line";
 import Setting from "~icons/ri/settings-3-line";
+import Check from "~icons/ep/check";
 
 const menuRef = ref();
 const showLogo = ref(storageLocal().getItem<StorageConfigs>(`${responsiveStorageNameSpace()}configure`)?.showLogo ?? true);
 
-const { route, title, logout, onPanel, getLogo, username, userAvatar, backTopMenu, avatarsStyle } = useNav();
+const { t, route, locale, translationCh, translationEn } = useTranslationLang(menuRef);
+const { title, logout, onPanel, getLogo, username, userAvatar, backTopMenu, avatarsStyle, getDropdownItemStyle, getDropdownItemClass } = useNav();
 
 const defaultActive = computed(() => (!isAllEmpty(route.meta?.activePath) ? route.meta.activePath : route.path));
 
@@ -43,6 +47,26 @@ onMounted(() => {
     <div class="horizontal-header-right">
       <!-- 菜单搜索 -->
       <LaySearch id="header-search" />
+      <!-- 国际化 -->
+      <el-dropdown id="header-translation" trigger="click">
+        <GlobalizationIcon class="navbar-bg-hover w-[40px] h-[48px] p-[11px] cursor-pointer outline-hidden" />
+        <template #dropdown>
+          <el-dropdown-menu class="translation">
+            <el-dropdown-item :style="getDropdownItemStyle(locale, 'zh')" :class="['dark:text-white!', getDropdownItemClass(locale, 'zh')]" @click="translationCh">
+              <span v-show="locale === 'zh'" class="check-zh">
+                <IconifyIconOffline :icon="Check" />
+              </span>
+              简体中文
+            </el-dropdown-item>
+            <el-dropdown-item :style="getDropdownItemStyle(locale, 'en')" :class="['dark:text-white!', getDropdownItemClass(locale, 'en')]" @click="translationEn">
+              <span v-show="locale === 'en'" class="check-en">
+                <IconifyIconOffline :icon="Check" />
+              </span>
+              English
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
       <!-- 全屏 -->
       <LaySidebarFullScreen id="full-screen" />
       <!-- 消息通知 -->
@@ -57,12 +81,12 @@ onMounted(() => {
           <el-dropdown-menu class="logout">
             <el-dropdown-item @click="logout">
               <IconifyIconOffline :icon="LogoutCircleRLine" style="margin: 5px" />
-              退出系统
+              {{ t("buttons.pureLoginOut") }}
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <span class="set-icon navbar-bg-hover" title="打开系统配置" @click="onPanel">
+      <span class="set-icon navbar-bg-hover" :title="t('buttons.pureOpenSystemSet')" @click="onPanel">
         <IconifyIconOffline :icon="Setting" />
       </span>
     </div>
@@ -72,6 +96,22 @@ onMounted(() => {
 <style lang="scss" scoped>
 :deep(.el-loading-mask) {
   opacity: 0.45;
+}
+
+.translation {
+  ::v-deep(.el-dropdown-menu__item) {
+    padding: 5px 40px;
+  }
+
+  .check-zh {
+    position: absolute;
+    left: 20px;
+  }
+
+  .check-en {
+    position: absolute;
+    left: 20px;
+  }
 }
 
 .logout {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { emitter } from "@/utils/mitt";
 import { onClickOutside } from "@vueuse/core";
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
@@ -12,6 +13,7 @@ const iconClass = computed(() => {
   return ["w-[22px]", "h-[22px]", "flex", "justify-center", "items-center", "outline-hidden", "rounded-[4px]", "cursor-pointer", "transition-colors", "hover:bg-[#0000000f]", "dark:hover:bg-[#ffffff1f]", "dark:hover:text-[#ffffffd9]"];
 });
 
+const { t } = useI18n();
 const { onReset } = useDataThemeChange();
 
 onClickOutside(target, (event: any) => {
@@ -36,10 +38,12 @@ onBeforeUnmount(() => {
     <div class="right-panel-background" />
     <div ref="target" class="right-panel bg-bg_color">
       <div class="project-configuration border-0 border-b-[1px] border-solid border-[var(--pure-border-color)]">
-        <h4 class="dark:text-white">系统配置</h4>
+        <h4 class="dark:text-white">
+          {{ t("panel.pureSystemSet") }}
+        </h4>
         <span
           v-tippy="{
-            content: '关闭配置',
+            content: t('panel.pureCloseSystemSet'),
             placement: 'bottom-start',
             zIndex: 41000
           }"
@@ -55,7 +59,7 @@ onBeforeUnmount(() => {
       <div class="flex justify-end p-3 border-0 border-t-[1px] border-solid border-[var(--pure-border-color)]">
         <el-button
           v-tippy="{
-            content: '清空缓存并返回登录页',
+            content: t('panel.pureClearCacheAndToLogin'),
             placement: 'left-start',
             zIndex: 41000
           }"
@@ -64,7 +68,7 @@ onBeforeUnmount(() => {
           bg
           @click="onReset"
         >
-          清空缓存
+          {{ t("panel.pureClearCache") }}
         </el-button>
       </div>
     </div>

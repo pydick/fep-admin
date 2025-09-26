@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { $t } from "@/plugins/i18n";
 import { emitter } from "@/utils/mitt";
 import { RouteConfigs } from "../../types";
 import { useTags } from "../../hooks/useTag";
@@ -18,7 +19,7 @@ import ArrowDown from "~icons/ri/arrow-down-s-line";
 import ArrowRightSLine from "~icons/ri/arrow-right-s-line";
 import ArrowLeftSLine from "~icons/ri/arrow-left-s-line";
 
-const { Close, route, router, visible, showTags, instance, multiTags, tagsViews, buttonTop, buttonLeft, showModel, translateX, isFixedTag, pureSetting, activeIndex, getTabStyle, isScrolling, iconIsActive, linkIsActive, currentSelect, scheduleIsActive, getContextMenuStyle, closeMenu, onMounted, onMouseenter, onMouseleave, onContentFullScreen } = useTags();
+const { Close, route, router, visible, showTags, instance, multiTags, tagsViews, buttonTop, buttonLeft, showModel, translateX, isFixedTag, pureSetting, activeIndex, getTabStyle, isScrolling, iconIsActive, linkIsActive, currentSelect, scheduleIsActive, getContextMenuStyle, closeMenu, onMounted, onMouseenter, onMouseleave, transformI18n, onContentFullScreen } = useTags();
 
 const tabDom = ref();
 const containerDom = ref();
@@ -274,10 +275,10 @@ function onClickDrop(key, item, selectRoute?: RouteConfigs) {
       setTimeout(() => {
         if (pureSetting.hiddenSideBar) {
           tagsViews[6].icon = ExitFullscreen;
-          tagsViews[6].text = "内容区退出全屏";
+          tagsViews[6].text = $t("buttons.pureContentExitFullScreen");
         } else {
           tagsViews[6].icon = Fullscreen;
-          tagsViews[6].text = "内容区全屏";
+          tagsViews[6].text = $t("buttons.pureContentFullScreen");
         }
       }, 100);
       break;
@@ -494,7 +495,7 @@ onBeforeUnmount(() => {
         <div v-for="(item, index) in multiTags" :ref="'dynamic' + index" :key="index" :class="['scroll-item is-closable', linkIsActive(item), showModel === 'chrome' && 'chrome-item', isFixedTag(item) && 'fixed-tag']" @contextmenu.prevent="openMenu(item, $event)" @mouseenter.prevent="onMouseenter(index)" @mouseleave.prevent="onMouseleave(index)" @click="tagOnClick(item)">
           <template v-if="showModel !== 'chrome'">
             <span class="tag-title dark:text-text_color_primary! dark:hover:text-primary!">
-              {{ item.meta.title }}
+              {{ transformI18n(item.meta.title) }}
             </span>
             <span v-if="isFixedTag(item) ? false : iconIsActive(item, index) || (index === activeIndex && index !== 0)" class="el-icon-close" @click.stop="deleteMenu(item)">
               <IconifyIconOffline :icon="Close" />
@@ -506,7 +507,7 @@ onBeforeUnmount(() => {
               <TagChrome />
             </div>
             <span class="tag-title">
-              {{ item.meta.title }}
+              {{ transformI18n(item.meta.title) }}
             </span>
             <span v-if="isFixedTag(item) ? false : index !== 0" class="chrome-close-btn" @click.stop="deleteMenu(item)">
               <IconifyIconOffline :icon="Close" />
@@ -525,7 +526,7 @@ onBeforeUnmount(() => {
         <div v-for="(item, key) in tagsViews.slice(0, 6)" :key="key" style="display: flex; align-items: center">
           <li v-if="item.show" @click="selectTag(key, item)">
             <IconifyIconOffline :icon="item.icon" />
-            {{ item.text }}
+            {{ transformI18n(item.text) }}
           </li>
         </div>
       </ul>
@@ -539,7 +540,7 @@ onBeforeUnmount(() => {
         <el-dropdown-menu>
           <el-dropdown-item v-for="(item, key) in tagsViews" :key="key" :command="{ key, item }" :divided="item.divided" :disabled="item.disabled">
             <IconifyIconOffline :icon="item.icon" />
-            {{ item.text }}
+            {{ transformI18n(item.text) }}
           </el-dropdown-item>
         </el-dropdown-menu>
       </template>

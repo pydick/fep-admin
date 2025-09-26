@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, unref, watch, reactive, computed, nextTick, onUnmounted, onBeforeMount } from "vue";
+import { useI18n } from "vue-i18n";
 import { emitter } from "@/utils/mitt";
 import LayPanel from "../lay-panel/index.vue";
 import { useNav } from "@/layout/hooks/useNav";
@@ -16,6 +17,7 @@ import DayIcon from "@/assets/svg/day.svg?component";
 import DarkIcon from "@/assets/svg/dark.svg?component";
 import SystemIcon from "@/assets/svg/system.svg?component";
 
+const { t } = useI18n();
 const { device } = useNav();
 const { isDark } = useDark();
 const { $storage } = useGlobal<GlobalPropertiesApi>();
@@ -126,13 +128,13 @@ function setFalse(Doms): any {
 const stretchTypeOptions = computed<Array<OptionsType>>(() => {
   return [
     {
-      label: "固定",
-      tip: "紧凑页面，轻松找到所需信息",
+      label: t("panel.pureStretchFixed"),
+      tip: t("panel.pureStretchFixedTip"),
       value: "fixed"
     },
     {
-      label: "自定义",
-      tip: "最小1280、最大1600",
+      label: t("panel.pureStretchCustom"),
+      tip: t("panel.pureStretchCustomTip"),
       value: "custom"
     }
   ];
@@ -168,24 +170,24 @@ const pClass = computed(() => {
 const themeOptions = computed<Array<OptionsType>>(() => {
   return [
     {
-      label: "浅色",
+      label: t("panel.pureOverallStyleLight"),
       icon: DayIcon,
       theme: "light",
-      tip: "清新启航，点亮舒适的工作界面",
+      tip: t("panel.pureOverallStyleLightTip"),
       iconAttrs: { fill: isDark.value ? "#fff" : "#000" }
     },
     {
-      label: "深色",
+      label: t("panel.pureOverallStyleDark"),
       icon: DarkIcon,
       theme: "dark",
-      tip: "月光序曲，沉醉于夜的静谧雅致",
+      tip: t("panel.pureOverallStyleDarkTip"),
       iconAttrs: { fill: isDark.value ? "#fff" : "#000" }
     },
     {
-      label: "自动",
+      label: t("panel.pureOverallStyleSystem"),
       icon: SystemIcon,
       theme: "system",
-      tip: "同步时光，界面随晨昏自然呼应",
+      tip: t("panel.pureOverallStyleSystemTip"),
       iconAttrs: { fill: isDark.value ? "#fff" : "#000" }
     }
   ];
@@ -194,18 +196,18 @@ const themeOptions = computed<Array<OptionsType>>(() => {
 const markOptions = computed<Array<OptionsType>>(() => {
   return [
     {
-      label: "灵动",
-      tip: "灵动标签，添趣生辉",
+      label: t("panel.pureTagsStyleSmart"),
+      tip: t("panel.pureTagsStyleSmartTip"),
       value: "smart"
     },
     {
-      label: "卡片",
-      tip: "卡片标签，高效浏览",
+      label: t("panel.pureTagsStyleCard"),
+      tip: t("panel.pureTagsStyleCardTip"),
       value: "card"
     },
     {
-      label: "谷歌",
-      tip: "谷歌风格，经典美观",
+      label: t("panel.pureTagsStyleChrome"),
+      tip: t("panel.pureTagsStyleChromeTip"),
       value: "chrome"
     }
   ];
@@ -288,7 +290,7 @@ onUnmounted(() => removeMatchMedia);
 <template>
   <LayPanel>
     <div class="p-5">
-      <p :class="pClass">整体风格</p>
+      <p :class="pClass">{{ t("panel.pureOverallStyle") }}</p>
       <Segmented
         resize
         class="select-none"
@@ -304,7 +306,7 @@ onUnmounted(() => removeMatchMedia);
         "
       />
 
-      <p :class="['mt-5!', pClass]">主题色</p>
+      <p :class="['mt-5!', pClass]">{{ t("panel.pureThemeColor") }}</p>
       <ul class="theme-color">
         <li v-for="(item, index) in themeColors" v-show="showThemeColors(item.themeColor)" :key="index" :style="getThemeColorStyle(item.color)" @click="setLayoutThemeColor(item.themeColor)">
           <el-icon style="margin: 0.1em 0.1em 0 0" :size="17" :color="getThemeColor(item.themeColor)">
@@ -313,12 +315,12 @@ onUnmounted(() => removeMatchMedia);
         </li>
       </ul>
 
-      <p :class="['mt-5!', pClass]">导航模式</p>
+      <p :class="['mt-5!', pClass]">{{ t("panel.pureLayoutModel") }}</p>
       <ul class="pure-theme">
         <li
           ref="verticalRef"
           v-tippy="{
-            content: '左侧菜单，亲切熟悉',
+            content: t('panel.pureVerticalTip'),
             zIndex: 41000
           }"
           :class="layoutTheme.layout === 'vertical' ? 'is-select' : ''"
@@ -331,7 +333,7 @@ onUnmounted(() => removeMatchMedia);
           v-if="device !== 'mobile'"
           ref="horizontalRef"
           v-tippy="{
-            content: '顶部菜单，简洁概览',
+            content: t('panel.pureHorizontalTip'),
             zIndex: 41000
           }"
           :class="layoutTheme.layout === 'horizontal' ? 'is-select' : ''"
@@ -344,7 +346,7 @@ onUnmounted(() => removeMatchMedia);
           v-if="device !== 'mobile'"
           ref="mixRef"
           v-tippy="{
-            content: '混合菜单，灵活多变',
+            content: t('panel.pureMixTip'),
             zIndex: 41000
           }"
           :class="layoutTheme.layout === 'mix' ? 'is-select' : ''"
@@ -356,7 +358,7 @@ onUnmounted(() => removeMatchMedia);
       </ul>
 
       <span v-if="useAppStoreHook().getViewportWidth > 1280">
-        <p :class="['mt-5!', pClass]">页宽</p>
+        <p :class="['mt-5!', pClass]">{{ t("panel.pureStretch") }}</p>
         <Segmented resize class="mb-2 select-none" :modelValue="isNumber(settings.stretch) ? 1 : 0" :options="stretchTypeOptions" @change="stretchTypeChange" />
         <el-input-number v-if="isNumber(settings.stretch)" v-model="settings.stretch as number" :min="1280" :max="1600" controls-position="right" @change="value => setStretch(value)" />
         <button v-else v-ripple="{ class: 'text-gray-300' }" class="bg-transparent flex-c w-full h-20 rounded-md border border-[var(--pure-border-color)]" @click="setStretch(!settings.stretch)">
@@ -368,34 +370,38 @@ onUnmounted(() => removeMatchMedia);
         </button>
       </span>
 
-      <p :class="['mt-4!', pClass]">页签风格</p>
+      <p :class="['mt-4!', pClass]">{{ t("panel.pureTagsStyle") }}</p>
       <Segmented resize class="select-none" :modelValue="markValue === 'smart' ? 0 : markValue === 'card' ? 1 : 2" :options="markOptions" @change="onChange" />
 
-      <p class="mt-5! font-medium text-sm dark:text-white">界面显示</p>
+      <p class="mt-5! font-medium text-sm dark:text-white">
+        {{ t("panel.pureInterfaceDisplay") }}
+      </p>
       <ul class="setting">
         <li>
-          <span class="dark:text-white">灰色模式</span>
-          <el-switch v-model="settings.greyVal" inline-prompt active-text="开" inactive-text="关" @change="greyChange" />
+          <span class="dark:text-white">{{ t("panel.pureGreyModel") }}</span>
+          <el-switch v-model="settings.greyVal" inline-prompt :active-text="t('buttons.pureOpenText')" :inactive-text="t('buttons.pureCloseText')" @change="greyChange" />
         </li>
         <li>
-          <span class="dark:text-white">色弱模式</span>
-          <el-switch v-model="settings.weakVal" inline-prompt active-text="开" inactive-text="关" @change="weekChange" />
+          <span class="dark:text-white">{{ t("panel.pureWeakModel") }}</span>
+          <el-switch v-model="settings.weakVal" inline-prompt :active-text="t('buttons.pureOpenText')" :inactive-text="t('buttons.pureCloseText')" @change="weekChange" />
         </li>
         <li>
-          <span class="dark:text-white">隐藏标签页</span>
-          <el-switch v-model="settings.tabsVal" inline-prompt active-text="开" inactive-text="关" @change="tagsChange" />
+          <span class="dark:text-white">{{ t("panel.pureHiddenTags") }}</span>
+          <el-switch v-model="settings.tabsVal" inline-prompt :active-text="t('buttons.pureOpenText')" :inactive-text="t('buttons.pureCloseText')" @change="tagsChange" />
         </li>
         <li>
-          <span class="dark:text-white">隐藏页脚</span>
-          <el-switch v-model="settings.hideFooter" inline-prompt active-text="开" inactive-text="关" @change="hideFooterChange" />
+          <span class="dark:text-white">{{ t("panel.pureHiddenFooter") }}</span>
+          <el-switch v-model="settings.hideFooter" inline-prompt :active-text="t('buttons.pureOpenText')" :inactive-text="t('buttons.pureCloseText')" @change="hideFooterChange" />
         </li>
         <li>
           <span class="dark:text-white">Logo</span>
-          <el-switch v-model="logoVal" inline-prompt :active-value="true" :inactive-value="false" active-text="开" inactive-text="关" @change="logoChange" />
+          <el-switch v-model="logoVal" inline-prompt :active-value="true" :inactive-value="false" :active-text="t('buttons.pureOpenText')" :inactive-text="t('buttons.pureCloseText')" @change="logoChange" />
         </li>
         <li>
-          <span class="dark:text-white">页签持久化</span>
-          <el-switch v-model="settings.multiTagsCache" inline-prompt active-text="开" inactive-text="关" @change="multiTagsCacheChange" />
+          <span class="dark:text-white">
+            {{ t("panel.pureMultiTagsCache") }}
+          </span>
+          <el-switch v-model="settings.multiTagsCache" inline-prompt :active-text="t('buttons.pureOpenText')" :inactive-text="t('buttons.pureCloseText')" @change="multiTagsCacheChange" />
         </li>
       </ul>
     </div>

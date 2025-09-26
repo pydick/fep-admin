@@ -1,4 +1,5 @@
 import Sortable from "sortablejs";
+import { transformI18n } from "@/plugins/i18n";
 import { useEpThemeStoreHook } from "@/store/modules/epTheme";
 import { type PropType, ref, unref, computed, nextTick, defineComponent, getCurrentInstance } from "vue";
 import { delay, cloneDeep, isBoolean, isFunction, getKeyList } from "@pureadmin/utils";
@@ -109,7 +110,7 @@ export default defineComponent({
     }
 
     function handleCheckColumnListChange(val: boolean, label: string) {
-      dynamicColumns.value.filter(item => item.label === label)[0].hide = !val;
+      dynamicColumns.value.filter(item => transformI18n(item.label) === transformI18n(label))[0].hide = !val;
     }
 
     async function onReset() {
@@ -168,7 +169,7 @@ export default defineComponent({
     };
 
     const isFixedColumn = (label: string) => {
-      return dynamicColumns.value.filter(item => item.label === label)[0].fixed ? true : false;
+      return dynamicColumns.value.filter(item => transformI18n(item.label) === transformI18n(label))[0].fixed ? true : false;
     };
 
     const rendTippyProps = (content: string) => {
@@ -230,8 +231,8 @@ export default defineComponent({
                             <div class="flex items-center">
                               <DragIcon class={["drag-btn w-[16px] mr-2", isFixedColumn(item) ? "cursor-no-drop!" : "cursor-grab!"]} onMouseenter={(event: { preventDefault: () => void }) => rowDrop(event)} />
                               <el-checkbox key={index} label={item} value={item} onChange={value => handleCheckColumnListChange(value, item)}>
-                                <span title={item} class="inline-block w-[120px] truncate hover:text-text_color_primary">
-                                  {item}
+                                <span title={transformI18n(item)} class="inline-block w-[120px] truncate hover:text-text_color_primary">
+                                  {transformI18n(item)}
                                 </span>
                               </el-checkbox>
                             </div>

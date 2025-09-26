@@ -1,6 +1,5 @@
 import { http as request } from "@/utils/http";
 
-
 export function get_molfact_ref_lig(smiles_id) {
   return request.get("/api/jobs/simple_job/molfact_ref_lig?smiles_id=" + smiles_id);
 }

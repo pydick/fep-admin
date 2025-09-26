@@ -50,13 +50,7 @@ export default defineConfig([
       ...configPrettier.rules,
       ...pluginPrettier.configs.recommended.rules,
       "no-debugger": "off",
-      "no-unused-vars": [
-        "error",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_"
-        }
-      ],
+      "no-unused-vars": "off",
       "prettier/prettier": [
         "error",
         {
@@ -87,13 +81,14 @@ export default defineConfig([
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "@typescript-eslint/consistent-type-imports": ["error", { disallowTypeAnnotations: false, fixStyle: "inline-type-imports" }],
       "@typescript-eslint/prefer-literal-enum-member": ["error", { allowBitwiseExpressions: true }],
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_"
-        }
-      ]
+      // "@typescript-eslint/no-unused-vars": [
+      //   "error",
+      //   {
+      //     argsIgnorePattern: "^_",
+      //     varsIgnorePattern: "^_"
+      //   }
+      // ]
+      "@typescript-eslint/no-unused-vars": "off"
     }
   }),
   {

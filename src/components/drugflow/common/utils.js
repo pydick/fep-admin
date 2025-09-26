@@ -1,5 +1,3 @@
-
-
 export function check_file(file, dict) {
   const name = file.name;
   const name_list = name.split(".");

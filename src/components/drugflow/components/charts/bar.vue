@@ -1,24 +1,24 @@
 <template>
-  <div class="" v-if="if_show">
-    <div :id="chart_id"></div>
+  <div v-if="if_show" class="">
+    <div :id="chart_id" />
   </div>
 </template>
 <script>
-import * as echarts from 'echarts'
+import * as echarts from "echarts";
 
 export default {
-  name: 'barChart',
+  name: "barChart",
   props: {
     data_list: {
       type: Array,
       default: function () {
         return [
           [
-            { name: 'name_0', value: 10 },
-            { name: 'name_1', value: 20 },
-            { name: 'name_2', value: 30 }
+            { name: "name_0", value: 10 },
+            { name: "name_1", value: 20 },
+            { name: "name_2", value: 30 }
           ]
-        ]
+        ];
       }
     },
     if_title: {
@@ -27,19 +27,19 @@ export default {
     },
     title: {
       type: String,
-      default: 'Residue'
+      default: "Residue"
     },
     height: {
       type: String,
-      default: '300px'
+      default: "300px"
     },
     width: {
       type: String,
-      default: 'auto'
+      default: "auto"
     },
     chart_id: {
       type: String,
-      default: 'charts_id'
+      default: "charts_id"
     },
     if_show: {
       type: Boolean,
@@ -50,7 +50,7 @@ export default {
     },
     y_name: {
       type: String,
-      default: 'Counts'
+      default: "Counts"
     },
     padNum: {
       type: Number,
@@ -62,85 +62,85 @@ export default {
     },
     task_type: {
       type: String,
-      default: 'H'
+      default: "H"
     }
   },
   setup(props, context) {
-    const myChart = ''
-    return { context, myChart }
+    const myChart = "";
+    return { context, myChart };
   },
   mounted() {
     // console.log(this.task_type)
-    const chart = document.getElementById(this.chart_id)
-    chart.innerHTML = ''
-    const chart_main = document.createElement('div')
-    chart_main.style.height = this.height
-    chart_main.style.width = this.width
-    chart.append(chart_main)
+    const chart = document.getElementById(this.chart_id);
+    chart.innerHTML = "";
+    const chart_main = document.createElement("div");
+    chart_main.style.height = this.height;
+    chart_main.style.width = this.width;
+    chart.append(chart_main);
     this.$nextTick(() => {
-      this.myChart = echarts.init(chart_main)
-      this.drawChart(this.data_list, this.myChart, this.task_type)
-    })
+      this.myChart = echarts.init(chart_main);
+      this.drawChart(this.data_list, this.myChart, this.task_type);
+    });
   },
   methods: {
     resize() {
-      this.myChart.resize()
+      this.myChart.resize();
     },
     drawChart(data, myChart, task_type) {
-      const dimensions = ['product']
+      const dimensions = ["product"];
       // const chartData = []
       Object.keys(data).forEach(key => {
         Object.keys(data[key]).forEach(keys => {
-          if (keys !== 'product') {
-            dimensions.push(keys)
+          if (keys !== "product") {
+            dimensions.push(keys);
           }
-        })
-      })
-      const series = []
+        });
+      });
+      const series = [];
       for (let i = 0; i < this.num; i++) {
         series.push({
-          type: 'bar',
-          barWidth: '25%',
+          type: "bar",
+          barWidth: "25%",
           barMinHeight: 2,
           label: {
             show: true,
-            position: 'top'
+            position: "top"
           }
           // barGap: '100%',
-        })
+        });
       }
       // 绘制图表
       myChart.setOption({
-        width: '70%',
+        width: "70%",
         legend: {
-          orient: 'vertical',
-          left: 'right'
+          orient: "vertical",
+          left: "right"
         },
         tooltip: {
           show: this.tooltip,
-          trigger: 'item',
+          trigger: "item",
           formatter: function (parms, api) {
-            let str = ''
-            if(task_type === 'H'){
+            let str = "";
+            if (task_type === "H") {
               str += `<p>${parms.name} ~ ${data[parms.dataIndex + 1].product}</p>
                 <p>
                   <div style="border-radius: 50%;width: 10px;height: 10px;display: inline-block;background: ${parms.color}"></div>
                    ${parms.seriesName}
                    <b style="margin-left: 20px;">${data[parms.dataIndex][parms.seriesName]}</b>
-                </p>`
+                </p>`;
             } else {
               str += `<p>${parms.name}</p>
                 <p>
                   <div style="border-radius: 50%;width: 10px;height: 10px;display: inline-block;background: ${parms.color}"></div>
                    ${parms.seriesName}
                    <b style="margin-left: 20px;">${data[parms.dataIndex][parms.seriesName]}</b>
-                </p>`
+                </p>`;
             }
-            return str
+            return str;
           },
           // triggerOn: this.if_tooltip,
           axisPointer: {
-            type: 'shadow'
+            type: "shadow"
           }
         },
         dataset: {
@@ -148,21 +148,21 @@ export default {
           source: data
         },
         xAxis: {
-          type: 'category',
+          type: "category",
           axisLabel: {
             padding: [0, 0, 0, this.padNum]
           }
         },
         grid: {
-          left: '5%',
-          right: '5%',
-          bottom: '5%',
+          left: "5%",
+          right: "5%",
+          bottom: "5%",
           containLabel: true
         },
         yAxis: [
           {
             name: this.y_name,
-            nameLocation: 'center',
+            nameLocation: "center",
             nameGap: 40,
             axisLine: {
               show: true
@@ -170,10 +170,10 @@ export default {
           }
         ],
         series
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="css" scoped></style>

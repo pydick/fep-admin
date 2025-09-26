@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { match } from "pinyin-pro";
+import { useI18n } from "vue-i18n";
 import { getConfig } from "@/config";
 import { useRouter } from "vue-router";
 import SearchResult from "./SearchResult.vue";
 import SearchFooter from "./SearchFooter.vue";
 import { useNav } from "@/layout/hooks/useNav";
+import { transformI18n } from "@/plugins/i18n";
 import SearchHistory from "./SearchHistory.vue";
 import type { optionsItem, dragItem } from "../types";
 import { ref, computed, shallowRef, watch } from "vue";
@@ -27,6 +29,7 @@ const emit = defineEmits<Emits>();
 const props = withDefaults(defineProps<Props>(), {});
 
 const router = useRouter();
+const { t, locale } = useI18n();
 
 const HISTORY_TYPE = "history";
 const COLLECT_TYPE = "collect";
@@ -102,7 +105,7 @@ function flatTree(arr) {
 /** 查询 */
 function search() {
   const flatMenusData = flatTree(menusData.value);
-  resultOptions.value = flatMenusData.filter(menu => (keyword.value ? menu.meta?.title.toLocaleLowerCase().includes(keyword.value.toLocaleLowerCase().trim()) || !isAllEmpty(match(menu.meta?.title.toLocaleLowerCase(), keyword.value.toLocaleLowerCase().trim())) : false));
+  resultOptions.value = flatMenusData.filter(menu => (keyword.value ? transformI18n(menu.meta?.title).toLocaleLowerCase().includes(keyword.value.toLocaleLowerCase().trim()) || (locale.value === "zh" && !isAllEmpty(match(transformI18n(menu.meta?.title).toLocaleLowerCase(), keyword.value.toLocaleLowerCase().trim()))) : false));
   activePath.value = resultOptions.value?.length > 0 ? resultOptions.value[0].path : "";
 }
 
@@ -259,14 +262,14 @@ onKeyStroke("ArrowDown", handleDown);
     @opened="inputRef.focus()"
     @closed="inputRef.blur()"
   >
-    <el-input ref="inputRef" v-model="keyword" size="large" clearable placeholder="搜索菜单（支持拼音搜索）" @input="handleSearch">
+    <el-input ref="inputRef" v-model="keyword" size="large" clearable :placeholder="t('search.purePlaceholder')" @input="handleSearch">
       <template #prefix>
         <IconifyIconOffline :icon="SearchIcon" class="text-primary w-[24px] h-[24px]" />
       </template>
     </el-input>
     <div class="search-content">
       <el-scrollbar ref="scrollbarRef" max-height="calc(90vh - 140px)">
-        <el-empty v-if="showEmpty" description="暂无搜索结果" />
+        <el-empty v-if="showEmpty" :description="t('search.pureEmpty')" />
         <SearchHistory v-if="showSearchHistory" ref="historyRef" v-model:value="historyPath" :options="historyOptions" @click="handleEnter" @delete="handleDelete" @collect="handleCollect" @drag="handleDrag" />
         <SearchResult v-if="showSearchResult" ref="resultRef" v-model:value="activePath" :options="resultOptions" @click="handleEnter" />
       </el-scrollbar>

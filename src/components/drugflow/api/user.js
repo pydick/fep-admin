@@ -1,4 +1,3 @@
-
 import { http as request } from "@/utils/http";
 export function signup_api(params) {
   return get_csrf_token().then(res => {
