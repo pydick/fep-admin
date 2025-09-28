@@ -93,3 +93,15 @@ html[data-theme="auroraGreen"] {
   --pure-theme-menu-title-hover: #fff;
   --pure-theme-menu-active-before: #60ac80;
 }
+
+/* 自定义蓝绿色主题 */
+html[data-theme="customTeal"] {
+  --pure-theme-sub-menu-active-text: #fff;
+  --pure-theme-menu-bg: #004d40;
+  --pure-theme-menu-hover: rgb(0 150 136 / 15%);
+  --pure-theme-sub-menu-bg: #00251a;
+  --pure-theme-menu-text: rgb(254 254 254 / 65%);
+  --pure-theme-sidebar-logo: #00695c;
+  --pure-theme-menu-title-hover: #fff;
+  --pure-theme-menu-active-before: #009688;
+}

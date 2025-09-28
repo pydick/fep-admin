@@ -12,6 +12,7 @@ import task_card from "@drugflow/components/task/task_card.vue";
 import csv_details from "@drugflow/components/file_process/csv_details.vue";
 import multi_ligand_dock_frame from "@drugflow/components/molecule/multi_ligand/multi_ligand_dock_frame.vue";
 import { data2 } from "./data2.js";
+import TestSvg from "@/assets/svg/dymicTest.svg?component";
 
 export default {
   name: "ScreenDocking",
@@ -25,7 +26,8 @@ export default {
     Upload,
     task_card,
     csv_details,
-    multi_ligand_dock_frame
+    multi_ligand_dock_frame,
+    TestSvg
   },
   setup() {
     const form = reactive({
@@ -168,6 +170,7 @@ export default {
 
     <p>-------------svgBox------------------</p>
     <svgBox ref="svg_box" :if_wait="true" width="200px" height="200px" />
+    <TestSvg />
     <p>----------------Data_select------------</p>
     <el-button @click="show_Data_select">show_Data_select</el-button>
     <Data_select v-model:if_show="show_data_list" :data_list="data_list" :name="'hale'" />
