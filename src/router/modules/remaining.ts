@@ -13,13 +13,23 @@ export default [
     }
   },
   {
-    path: "/login",
-    name: "Login",
-    component: () => import("@/views/login/index.vue"),
+    path: "/signin",
+    name: "Signin",
+    component: () => import("@/views/login/signin/index.vue"),
     meta: {
       title: $t("menus.pureLogin"),
       showLink: false,
       rank: 101
+    }
+  },
+  {
+    path: "/signup",
+    name: "Signup",
+    component: () => import("@/views/login/signup/index.vue"),
+    meta: {
+      title: $t("menus.pureLogin"),
+      showLink: false
+      // rank: 101
     }
   },
   {
