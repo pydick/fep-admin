@@ -12,9 +12,12 @@ import { useUserStoreHook } from "@/store/modules/user";
 import { initRouter, getTopMenu } from "@/router/utils";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { signin_api } from "@drugflow/api/user.js";
+import { useI18n } from "vue-i18n";
 
 import Lock from "~icons/ri/lock-fill";
 import User from "~icons/ri/user-3-fill";
+
+const { t } = useI18n();
 
 defineOptions({
   name: "Signin"
@@ -82,6 +85,12 @@ const onRegister = () => {
 
 <template>
   <AuthLayout>
+    <Motion :delay="50">
+      <el-form-item>
+        {{ t("login.pureNoAccount") }}
+        <el-button link type="primary" @click="onRegister">{{ t("login.pureCreateAccount") }}</el-button>
+      </el-form-item>
+    </Motion>
     <el-form ref="ruleFormRef" :model="ruleForm" :rules="loginRules" size="large">
       <Motion :delay="100">
         <el-form-item
@@ -94,21 +103,20 @@ const onRegister = () => {
           ]"
           prop="username"
         >
-          <el-input v-model="ruleForm.username" clearable placeholder="账号" :prefix-icon="useRenderIcon(User)" />
+          <el-input v-model="ruleForm.username" clearable :placeholder="t('login.pureUsername')" :prefix-icon="useRenderIcon(User)" />
         </el-form-item>
       </Motion>
 
       <Motion :delay="150">
         <el-form-item prop="password">
-          <el-input v-model="ruleForm.password" clearable show-password placeholder="密码" :prefix-icon="useRenderIcon(Lock)" />
+          <el-input v-model="ruleForm.password" clearable show-password :placeholder="t('login.purePassword')" :prefix-icon="useRenderIcon(Lock)" />
         </el-form-item>
       </Motion>
 
       <Motion :delay="250">
-        <el-button class="w-full mt-4!" size="default" type="primary" :loading="loading" :disabled="disabled" @click="onLogin(ruleFormRef)">登录</el-button>
+        <el-button class="w-full mt-4!" size="default" type="primary" :loading="loading" :disabled="disabled" @click="onLogin(ruleFormRef)">{{ t("login.pureLogin") }}</el-button>
       </Motion>
     </el-form>
-    <el-button class="w-full mt-4!" size="default" type="primary" @click="onRegister">注册</el-button>
   </AuthLayout>
 </template>
 

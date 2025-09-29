@@ -68,7 +68,7 @@ const onUpdate = async (formEl: FormInstance | undefined) => {
   });
 };
 
-function onBack() {
+function onSignin() {
   router.push("/signin");
   // useVerifyCode().end();
   // useUserStoreHook().SET_CURRENTPAGE(0);
@@ -76,6 +76,12 @@ function onBack() {
 </script>
 
 <template>
+  <Motion :delay="50">
+    <el-form-item>
+      {{ t("login.pureNoAccount") }}
+      <el-button link type="primary" @click="onSignin">{{ t("login.pureSignin") }}</el-button>
+    </el-form-item>
+  </Motion>
   <el-form ref="ruleFormRef" :model="ruleForm" :rules="updateRules" size="large">
     <Motion>
       <el-form-item
@@ -136,14 +142,6 @@ function onBack() {
       <el-form-item>
         <el-button class="w-full" size="default" type="primary" :loading="loading" @click="onUpdate(ruleFormRef)">
           {{ t("login.pureDefinite") }}
-        </el-button>
-      </el-form-item>
-    </Motion>
-
-    <Motion :delay="400">
-      <el-form-item>
-        <el-button class="w-full" size="default" @click="onBack">
-          {{ t("login.pureBack") }}
         </el-button>
       </el-form-item>
     </Motion>

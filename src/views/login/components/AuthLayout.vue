@@ -7,6 +7,7 @@ import dayIcon from "@/assets/svg/day.svg?component";
 import darkIcon from "@/assets/svg/dark.svg?component";
 import { useLayout } from "@/layout/hooks/useLayout";
 import Motion from "../utils/motion";
+import { useTranslationLang } from "@/layout/hooks/useTranslationLang";
 
 defineOptions({
   name: "AuthLayout"
@@ -14,6 +15,7 @@ defineOptions({
 
 const { initStorage } = useLayout();
 initStorage();
+useTranslationLang();
 
 const { dataTheme, overallStyle, dataThemeChange } = useDataThemeChange();
 dataThemeChange(overallStyle.value);
@@ -38,9 +40,11 @@ defineSlots<{
       </div>
       <div class="login-box">
         <div class="login-form">
-          <avatar class="avatar" />
           <Motion>
-            <h2 class="outline-hidden">{{ title }}</h2>
+            <h2 class="outline-hidden">
+              <avatar class="avatar inline-block! align-middle mr-[10px]" />
+              <span class="inline-block! align-middle h-[45px] leading-[45px]">{{ title }}</span>
+            </h2>
           </Motion>
           <!-- 内容插槽 -->
           <slot />

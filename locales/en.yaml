@@ -81,6 +81,9 @@ status:
   pureNoNotify: No Notify
   pureNoTodo: No Todo
 login:
+  pureNoAccount: No Account?
+  pureCreateAccount: Create New Account
+  pureSignin: Signin
   pureUsername: Username
   purePassword: Password
   pureVerifyCode: VerifyCode
