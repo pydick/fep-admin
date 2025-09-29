@@ -29,8 +29,8 @@ const disabled = ref(false);
 const ruleFormRef = ref<FormInstance>();
 
 const ruleForm = reactive({
-  username: "admin",
-  password: "admin123"
+  username: "",
+  password: ""
 });
 
 const onLogin = async (formEl: FormInstance | undefined) => {
@@ -97,7 +97,7 @@ const onRegister = () => {
           :rules="[
             {
               required: true,
-              message: '请输入账号',
+              message: t('login.pureUsernameReg'),
               trigger: 'blur'
             }
           ]"
