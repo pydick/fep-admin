@@ -1,7 +1,7 @@
 <script>
 import { reactive, ref } from "vue";
 import protein3d_molstar from "@drugflow/components/molecule/protein3d_molstar.vue";
-import app_frame from "@drugflow/components/layout/app_frame.vue";
+// import app_frame from "@drugflow/components/layout/app_frame.vue";
 import { data } from "./data.js";
 import doc_link from "@drugflow/components/layout/doc_link.vue";
 import SvgBox from "@drugflow/common/svgBox.vue";
@@ -15,10 +15,10 @@ import { data2 } from "./data2.js";
 import TestSvg from "@/assets/svg/dymicTest.svg?component";
 
 export default {
-  name: "ScreenDocking",
+  name: "Test",
   components: {
     Protein3dMolstar: protein3d_molstar,
-    app_frame,
+    // app_frame,
     doc_link,
     SvgBox,
     Data_select,

@@ -22,22 +22,6 @@ export default {
         showLink: VITE_HIDE_HOME === "true" ? false : true,
         auths: ["permission:btn:add", "permission:btn:edit"]
       }
-    },
-    {
-      path: "/test",
-      name: "test",
-      component: () => import("@/views/test/index.vue"),
-      meta: {
-        title: "test"
-      }
-    },
-    {
-      path: "/g6demo",
-      name: "g6demo",
-      component: () => import("@/views/g6demo/index.vue"),
-      meta: {
-        title: "g6demo"
-      }
     }
   ]
 } satisfies RouteConfigsTable;

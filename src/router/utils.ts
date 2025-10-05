@@ -25,7 +25,10 @@ function handRank(routeInfo: any) {
 function ascending(arr: any[]) {
   arr.forEach((v, index) => {
     // 当rank不存在时，根据顺序自动创建，首页路由永远在第一位
-    if (handRank(v)) v.meta.rank = index + 2;
+    if (handRank(v)) {
+      v.meta = v.meta ?? {};
+      v.meta.rank = index + 2;
+    }
   });
   return arr.sort((a: { meta: { rank: number } }, b: { meta: { rank: number } }) => {
     return a?.meta.rank - b?.meta.rank;
