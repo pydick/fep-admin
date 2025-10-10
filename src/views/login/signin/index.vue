@@ -38,14 +38,14 @@ const onLogin = async (formEl: FormInstance | undefined) => {
   await formEl.validate(async valid => {
     if (valid) {
       loading.value = true;
-      const formData = new FormData();
-      formData.append("phone", "1234567890");
-      formData.append("email", ruleForm.username);
-      formData.append("password", ruleForm.password);
-      const res = await signin_api(formData);
-      if (res.success) {
-        localStorage.setItem("cs_signined", "true");
-      }
+      // const formData = new FormData();
+      // formData.append("phone", "1234567890");
+      // formData.append("email", ruleForm.username);
+      // formData.append("password", ruleForm.password);
+      // const res = await signin_api(formData);
+      // if (res.success) {
+      //   localStorage.setItem("cs_signined", "true");
+      // }
       useUserStoreHook()
         .loginByUsername({
           username: ruleForm.username,
