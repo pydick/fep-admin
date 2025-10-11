@@ -11,7 +11,7 @@ import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { darken, lighten, useGlobal, storageLocal } from "@pureadmin/utils";
 
 export function useDataThemeChange() {
-  const { layoutTheme, layout } = useLayout();
+  const { layoutTheme, layout, initStorage } = useLayout();
   const themeColors = ref<Array<themeColorsType>>([
     /* 亮白色 */
     { color: "#ffffff", themeColor: "light" },
@@ -47,6 +47,9 @@ export function useDataThemeChange() {
 
   /** 设置导航主题色 */
   function setLayoutThemeColor(theme = getConfig().Theme ?? "light", isClick = true) {
+    if (!layoutTheme.value) {
+      initStorage();
+    }
     layoutTheme.value.theme = theme;
     document.documentElement.setAttribute("data-theme", theme);
     // 如果非isClick，保留之前的themeColor
