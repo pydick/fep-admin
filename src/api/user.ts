@@ -1,4 +1,5 @@
 import { http } from "@/utils/http";
+import { apiV1 } from "@/config/api";
 
 export type UserResult = {
   success: boolean;
@@ -34,12 +35,30 @@ export type RefreshTokenResult = {
   };
 };
 
+interface IRegisterParams {
+  username: string;
+  password: string;
+  phone: string;
+}
+
+interface ILoginParams {
+  username: string;
+  password: string;
+}
+
 /** 登录 */
-export const getLogin = (data?: object) => {
-  return http.request<UserResult>("post", "/login", { data });
+// 改写mock
+export const getLogin = (data?: ILoginParams) => {
+  return http.request<UserResult>("post", `${apiV1}/auth/login`, { data });
 };
 
 /** 刷新`token` */
 export const refreshTokenApi = (data?: object) => {
   return http.request<RefreshTokenResult>("post", "/refresh-token", { data });
+};
+
+/** 注册 */
+// 返回any?
+export const signup = (data?: IRegisterParams) => {
+  return http.request<any>("post", `${apiV1}/auth/register`, { data });
 };

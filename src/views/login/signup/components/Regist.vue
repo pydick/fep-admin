@@ -5,7 +5,6 @@ import Motion from "../../utils/motion";
 import { message } from "@/utils/message";
 import { updateRules } from "../../utils/rule";
 import type { FormInstance } from "element-plus";
-import { useVerifyCode } from "../../utils/verifyCode";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useUserStoreHook } from "@/store/modules/user";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
@@ -22,12 +21,10 @@ const loading = ref(false);
 const ruleForm = reactive({
   username: "",
   phone: "",
-  verifyCode: "",
   password: "",
   repeatPassword: ""
 });
 const ruleFormRef = ref<FormInstance>();
-const { isDisabled, text } = useVerifyCode();
 const repeatPasswordRule = [
   {
     validator: (rule, value, callback) => {
@@ -46,16 +43,26 @@ const repeatPasswordRule = [
 const onUpdate = async (formEl: FormInstance | undefined) => {
   loading.value = true;
   if (!formEl) return;
-  await formEl.validate(valid => {
+  await formEl.validate(async valid => {
     if (valid) {
       if (checked.value) {
-        // 模拟请求，需根据实际开发进行修改
-        setTimeout(() => {
+        const res = await useUserStoreHook().register({
+          username: ruleForm.username,
+          password: ruleForm.password,
+          phone: ruleForm.phone
+        });
+        if (res.success) {
           message(transformI18n($t("login.pureRegisterSuccess")), {
             type: "success"
           });
           loading.value = false;
-        }, 2000);
+          router.push("/signin");
+        } else {
+          message(transformI18n($t("login.pureRegisterFailed")), {
+            type: "error"
+          });
+          loading.value = false;
+        }
       } else {
         loading.value = false;
         message(transformI18n($t("login.pureTickPrivacy")), {
@@ -104,7 +111,7 @@ function onSignin() {
       </el-form-item>
     </Motion>
 
-    <Motion :delay="150">
+    <!-- <Motion :delay="150">
       <el-form-item prop="verifyCode">
         <div class="w-full flex justify-between">
           <el-input v-model="ruleForm.verifyCode" autocomplete="new-verifyCode" clearable :placeholder="t('login.pureSmsVerifyCode')" :prefix-icon="useRenderIcon(Keyhole)" />
@@ -113,7 +120,7 @@ function onSignin() {
           </el-button>
         </div>
       </el-form-item>
-    </Motion>
+    </Motion> -->
 
     <Motion :delay="200">
       <el-form-item prop="password">

@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
 import { type userType, store, router, resetRouter, routerArrays, storageLocal } from "../utils";
-import { type UserResult, type RefreshTokenResult, getLogin, refreshTokenApi } from "@/api/user";
+import { type UserResult, type RefreshTokenResult, getLogin, refreshTokenApi, signup } from "@/api/user";
 import { useMultiTagsStoreHook } from "./multiTags";
 import { type DataInfo, setToken, removeToken, userKey } from "@/utils/auth";
+import { userDefault } from "@/config/const";
 
 export const useUserStore = defineStore("pure-user", {
   state: (): userType => ({
@@ -54,14 +55,21 @@ export const useUserStore = defineStore("pure-user", {
     async loginByUsername(data) {
       return new Promise<UserResult>((resolve, reject) => {
         getLogin(data)
-          .then(data => {
-            if (data?.success) setToken(data.data);
-            resolve(data);
+          .then(res => {
+            if (res?.success) {
+              const userInfo = { ...res.data, ...userDefault };
+              setToken(userInfo);
+            }
+            resolve(res);
           })
           .catch(error => {
             reject(error);
           });
       });
+    },
+    /** 注册 */
+    async register(data) {
+      return signup(data);
     },
     /** 前端登出（不调用接口） */
     logOut() {
