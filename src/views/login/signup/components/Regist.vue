@@ -58,7 +58,7 @@ const onUpdate = async (formEl: FormInstance | undefined) => {
           loading.value = false;
           router.push("/signin");
         } else {
-          message(transformI18n($t("login.pureRegisterFailed")), {
+          message(res.message, {
             type: "error"
           });
           loading.value = false;

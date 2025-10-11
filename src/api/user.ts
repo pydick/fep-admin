@@ -3,6 +3,7 @@ import { apiV1 } from "@/config/api";
 
 export type UserResult = {
   success: boolean;
+  message: string;
   data: {
     /** 头像 */
     avatar: string;

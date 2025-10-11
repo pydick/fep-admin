@@ -11,7 +11,6 @@ import type { FormInstance } from "element-plus";
 import { useUserStoreHook } from "@/store/modules/user";
 import { initRouter, getTopMenu } from "@/router/utils";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { signin_api } from "@drugflow/api/user.js";
 import { useI18n } from "vue-i18n";
 
 import Lock from "~icons/ri/lock-fill";
@@ -38,14 +37,6 @@ const onLogin = async (formEl: FormInstance | undefined) => {
   await formEl.validate(async valid => {
     if (valid) {
       loading.value = true;
-      // const formData = new FormData();
-      // formData.append("phone", "1234567890");
-      // formData.append("email", ruleForm.username);
-      // formData.append("password", ruleForm.password);
-      // const res = await signin_api(formData);
-      // if (res.success) {
-      //   localStorage.setItem("cs_signined", "true");
-      // }
       useUserStoreHook()
         .loginByUsername({
           username: ruleForm.username,
@@ -64,7 +55,7 @@ const onLogin = async (formEl: FormInstance | undefined) => {
                 .finally(() => (disabled.value = false));
             });
           } else {
-            message("登录失败", { type: "error" });
+            message(res.message, { type: "error" });
           }
         })
         .finally(() => (loading.value = false));
