@@ -33,8 +33,14 @@ export const multipleTabsKey = "multiple-tabs";
 
 /** 获取`token` */
 export function getToken(): DataInfo<number> {
-  // 此处与`TokenKey`相同，此写法解决初始化时`Cookies`中不存在`TokenKey`报错
-  return Cookies.get(TokenKey) ? JSON.parse(Cookies.get(TokenKey)) : storageLocal().getItem(userKey);
+  // 此处与`TokenKey`相同，此写法解决初始化时`Cookies`中不存在`TokenKey`报错 不应该回退到storageLocal的
+  // return Cookies.get(TokenKey) ? JSON.parse(Cookies.get(TokenKey)) : storageLocal().getItem(userKey);
+  const cookieData = Cookies.get(TokenKey);
+  if (cookieData) {
+    return JSON.parse(cookieData);
+  }
+  // Cookie 不存在，说明 token 已经失效，不应该回退到 localStorage
+  return null;
 }
 
 /**
