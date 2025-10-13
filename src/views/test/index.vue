@@ -1,6 +1,6 @@
 <script>
 import { reactive, ref } from "vue";
-import protein3d_molstar from "@drugflow/components/molecule/protein3d_molstar.vue";
+import protein3d_molstar from "@/components/CSmolecule/Protein3d/index.vue";
 // import app_frame from "@drugflow/components/layout/app_frame.vue";
 import { data } from "./data.js";
 import doc_link from "@drugflow/components/layout/doc_link.vue";
@@ -156,16 +156,16 @@ export default {
 
 <template>
   <div class="drugflow-scope">
-    <p>-------------配体预览------------------</p>
+    <!-- <p>-------------配体预览------------------</p>
     <div style="position: relative; width: 800px; height: 800px">
       <multi_ligand_dock_frame ref="ngl_ref" :job_id="task_id" :smiles_id_list_str="JSON.stringify(frame_data)" />
-    </div>
+    </div> -->
     <p>-------------分子预览------------------</p>
     <div style="width: 800px; height: 800px">
       <el-button @click="show_protein">show_protein</el-button>
       <Protein3dMolstar ref="molstar3dRef" v-model:box_x="form.X_center" v-model:box_y="form.Y_center" v-model:box_z="form.Z_center" v-model:l1="form.X_dimension" v-model:l2="form.Y_dimension" v-model:l3="form.Z_dimension" v-model:ligand_select="form.box_ligand" v-model:theme="theme" v-model:if_changed_box="form.box_changed_by_user" :if_show_box="if_show_box" />
     </div>
-    <p>-------------doc_link----------------------</p>
+    <!-- <p>-------------doc_link----------------------</p>
     <doc_link algo_type="Docking" />
 
     <p>-------------svgBox------------------</p>
@@ -182,7 +182,7 @@ export default {
     <p>----------task_card-----------------</p>
     <task_card v-model:task_name="task_name" :ori_task_name="ori_task_name" :space_id="103" task_type="docking" @goto_tab="change_tab" />
     <p>-----------------------------csv_details------------------</p>
-    <csv_details ref="csv_details_ref" :dataset_id="ligands_id" :is_overview="false" :smiles_label="label_col" />
+    <csv_details ref="csv_details_ref" :dataset_id="ligands_id" :is_overview="false" :smiles_label="label_col" /> -->
     <!-- <P>--------app_frame-----------</P>
     <app_frame tab_name="Docking" @space_id="handle_space_id">
       <template #title>title</template>
