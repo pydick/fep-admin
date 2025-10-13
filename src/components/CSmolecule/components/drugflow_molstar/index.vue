@@ -47,8 +47,6 @@ const pdb_info = ref({
 });
 
 // ==================== 界面控制状态 ====================
-/** 是否显示工具栏 */
-const show_tool = ref(true);
 
 // ==================== 分子表示方式控制 ====================
 /**
@@ -1025,7 +1023,6 @@ defineExpose({
   granularity,
   expand_number,
   pdb_info,
-  show_tool,
   chain_repr,
   old_repr,
   quick_select,
@@ -1045,7 +1042,7 @@ defineExpose({
 <template>
   <div class="relative w-full h-full" :class="{ full_frame: full_screen_type }">
     <div :id="canvas_id" ref="molstar_ref" class="drugflow_molstar w-full h-full min-w-[300px] min-h-[300px]" :class="{ drugflow_molstar_no_sequence: !props.if_sequence_panel }" />
-    <div v-show="props.show_tool && show_tool" class="absolute top-[8px] w-full">
+    <div v-show="props.show_tool" class="absolute top-[8px] w-full">
       <el-row class="mx-auto w-[40rem]">
         <el-col :span="3" class="flex_def" />
         <el-col :span="3" class="flex_def">
