@@ -1,8 +1,8 @@
 <template>
-  <div style="position: relative; width: 100%; height: 100%" :class="{ full_frame: full_screen_type }">
-    <div :id="canvas_id" ref="molstar_ref" class="drugflow_molstar" :class="{ drugflow_molstar_no_sequence: !props.if_sequence_panel }" style="width: 100%; height: 100%; min-width: 300px; min-height: 300px" />
-    <div v-show="props.show_tool && show_tool" style="position: absolute; top: 0.5rem; width: 100%">
-      <el-row style="margin: 0 auto; width: 40rem">
+  <div class="relative w-full h-full" :class="{ full_frame: full_screen_type }">
+    <div :id="canvas_id" ref="molstar_ref" class="drugflow_molstar w-full h-full min-w-[300px] min-h-[300px]" :class="{ drugflow_molstar_no_sequence: !props.if_sequence_panel }" />
+    <div v-show="props.show_tool && show_tool" class="absolute top-[8px] w-full">
+      <el-row class="mx-auto w-[40rem]">
         <el-col :span="3" class="flex_def" />
         <el-col :span="3" class="flex_def">
           <el-popover placement="bottom" title="Set Granularity" :width="80" trigger="hover" popper-class="molstar_popper">
@@ -26,14 +26,14 @@
               <div v-for="item in pdb_info.chain" :key="item.key">
                 <el-button link size="small" class="molstar_btn_inner" @click="quick_select(item)">Chain: {{ item.auth_asym_id }}</el-button>
               </div>
-              <el-divider v-if="pdb_info.ligand.length" style="margin: 8px 0" />
+              <el-divider v-if="pdb_info.ligand.length" class="my-[8px]" />
               <div>
                 <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'ligands'))">All Ligands</el-button>
               </div>
               <div v-for="item in pdb_info.ligand" :key="item.key">
                 <el-button link size="small" class="molstar_btn_inner" @click="quick_select(item)">{{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}</el-button>
               </div>
-              <el-divider v-if="pdb_info.water.length" style="margin: 8px 0" />
+              <el-divider v-if="pdb_info.water.length" class="my-[8px]" />
               <div v-if="pdb_info.water.length">
                 <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'water'))">All Water</el-button>
               </div>
@@ -52,17 +52,17 @@
             <div>
               <el-button link size="small" class="molstar_btn_inner" @click="invert_select()">Invert Select</el-button>
             </div>
-            <el-divider style="margin: 8px 0" />
-            <div style="font-size: 12px; margin: 8px 0">Expand</div>
+            <el-divider class="my-[8px]" />
+            <div class="text-[12px] my-[8px]">Expand</div>
             <el-row :gutter="8">
               <el-col :span="12">
                 <el-input v-model="expand_number" size="small" :min="1" :max="10" />
               </el-col>
               <el-col :span="2">
-                <div style="font-size: 12px">Å</div>
+                <div class="text-[12px]">Å</div>
               </el-col>
               <el-col :span="10" class="flex_def">
-                <el-button type="primary" size="small" style="width: 30px; margin-left: 8px" @click="expand_selection">OK</el-button>
+                <el-button type="primary" size="small" class="w-[30px] ml-[8px]" @click="expand_selection">OK</el-button>
               </el-col>
             </el-row>
           </el-popover>
@@ -77,22 +77,22 @@
               <div>
                 <el-button link size="small" class="molstar_btn_inner" @click="create_surface(undefined, 'selection')">For Selection</el-button>
               </div>
-              <el-divider v-if="pdb_info.chain.length" style="margin: 8px 0" />
+              <el-divider v-if="pdb_info.chain.length" class="my-[8px]" />
               <div v-for="item in pdb_info.chain" :key="item.key">
                 <el-button link size="small" class="molstar_btn_inner" @click="create_surface(item)">Chain: {{ item.auth_asym_id }}</el-button>
               </div>
-              <el-divider v-if="pdb_info.ligand.length" style="margin: 8px 0" />
+              <el-divider v-if="pdb_info.ligand.length" class="my-[8px]" />
               <div v-for="item in pdb_info.ligand" :key="item.key">
                 <el-button link size="small" class="molstar_btn_inner" @click="create_surface(item)">{{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}</el-button>
               </div>
-              <el-divider v-if="surface_list.length" style="margin: 8px 0" />
-              <div v-for="item in surface_list" :key="item" style="margin-bottom: 0.3rem">
+              <el-divider v-if="surface_list.length" class="my-[8px]" />
+              <div v-for="item in surface_list" :key="item" class="mb-[5px]">
                 <el-button
                   v-show="item.if_show_name"
                   type="primary"
                   :class="{ gray_btn: item.hide }"
                   size="small"
-                  style="width: 70px; margin-right: 12px"
+                  class="w-[70px] mr-[12px]"
                   @click="
                     item.hide = !item.hide;
                     set_visibility('Surface_' + item.timestamp);
@@ -100,7 +100,7 @@
                 >
                   {{ item.name }}
                 </el-button>
-                <el-input v-show="!item.if_show_name" v-model="item.name" size="small" style="width: 70px; margin-right: 12px" @keyup.enter="item.if_show_name = !item.if_show_name" />
+                <el-input v-show="!item.if_show_name" v-model="item.name" size="small" class="w-[70px] mr-[12px]" @keyup.enter="item.if_show_name = !item.if_show_name" />
                 <el-button size="small" circle @click="item.if_show_name = !item.if_show_name">
                   <el-icon><Edit /></el-icon>
                 </el-button>
@@ -121,11 +121,11 @@
               <div v-if="pdb_info.ligand.length === 0">
                 <el-button link size="small" class="molstar_btn_inner" disabled>No Pocket</el-button>
               </div>
-              <el-divider style="margin: 8px 0" />
+              <el-divider class="my-8px" />
               <div>
                 <el-button link size="small" class="molstar_btn_inner" @click="create_pocket(undefined, (type = 'clean'))">Clean Pocket</el-button>
               </div>
-              <el-divider v-if="has_pocket" style="margin: 8px 0" />
+              <el-divider v-if="has_pocket" class="my-8px" />
               <div v-if="has_pocket">
                 <el-checkbox v-model="if_hide_chain" label="Hide Non-Pocket Atoms" size="small" @change="hide_chain" />
               </div>
@@ -142,7 +142,7 @@
               <div>
                 <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'ligands'))">All Ligands</el-button>
               </div>
-              <el-divider style="margin: 8px 0" />
+              <el-divider class="my-[8px]" />
               <div>
                 <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'clean'))">Clean Label</el-button>
               </div>
@@ -169,7 +169,7 @@
                   <el-button link size="small" class="molstar_btn_inner" @click="add_dihedral()">Add Dihedral</el-button>
                 </el-tooltip>
               </div>
-              <el-divider style="margin: 8px 0" />
+              <el-divider class="my-[8px]" />
               <div>
                 <el-button link size="small" class="molstar_btn_inner" @click="clean_measure()">Clean Measure</el-button>
               </div>
@@ -208,12 +208,12 @@
             <template #reference>
               <molstar_btn svg_name="cartoon" title="Change Repr" :disabled="props.disable_comp_btn" />
             </template>
-            <el-radio-group v-model="chain_repr" style="align-items: flex-start; flex-direction: column" @change="change_repr">
+            <el-radio-group v-model="chain_repr" class="items-start flex-col" @change="change_repr">
               <el-radio label="cartoon" size="small">Cartoon</el-radio>
               <el-radio label="bs" size="small">Ball & Stick</el-radio>
               <el-radio label="sf" size="small">
                 Spacefill
-                <span style="width: 60px" />
+                <span class="w-[60px]" />
               </el-radio>
               <el-radio label="line" size="small">Line</el-radio>
             </el-radio-group>
