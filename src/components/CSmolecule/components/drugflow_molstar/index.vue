@@ -1,241 +1,3 @@
-<template>
-  <div class="relative w-full h-full" :class="{ full_frame: full_screen_type }">
-    <div :id="canvas_id" ref="molstar_ref" class="drugflow_molstar w-full h-full min-w-[300px] min-h-[300px]" :class="{ drugflow_molstar_no_sequence: !props.if_sequence_panel }" />
-    <div v-show="props.show_tool && show_tool" class="absolute top-[8px] w-full">
-      <el-row class="mx-auto w-[40rem]">
-        <el-col :span="3" class="flex_def" />
-        <el-col :span="3" class="flex_def">
-          <el-popover placement="bottom" title="Set Granularity" :width="80" trigger="hover" popper-class="molstar_popper">
-            <template #reference>
-              <molstar_btn svg_name="granularity" title="Set Granularity" />
-            </template>
-            <el-radio-group v-model="granularity" @change="set_granularity">
-              <el-radio label="chain" size="small">Chain</el-radio>
-              <el-radio label="residue" size="small">Residue</el-radio>
-              <el-radio label="element" size="small">Atom</el-radio>
-            </el-radio-group>
-          </el-popover>
-          <el-popover placement="bottom" title="Quick Select" :width="80" trigger="hover" popper-class="molstar_popper">
-            <template #reference>
-              <molstar_btn svg_name="quick_select" title="Quick Select" />
-            </template>
-            <div class="flex_column">
-              <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'chains'))">All Chains</el-button>
-              </div>
-              <div v-for="item in pdb_info.chain" :key="item.key">
-                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(item)">Chain: {{ item.auth_asym_id }}</el-button>
-              </div>
-              <el-divider v-if="pdb_info.ligand.length" class="my-[8px]" />
-              <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'ligands'))">All Ligands</el-button>
-              </div>
-              <div v-for="item in pdb_info.ligand" :key="item.key">
-                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(item)">{{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}</el-button>
-              </div>
-              <el-divider v-if="pdb_info.water.length" class="my-[8px]" />
-              <div v-if="pdb_info.water.length">
-                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'water'))">All Water</el-button>
-              </div>
-            </div>
-          </el-popover>
-          <el-popover placement="bottom" title="More Selection" :width="80" trigger="hover" popper-class="molstar_popper">
-            <template #reference>
-              <molstar_btn svg_name="expand" title="More Selection" />
-            </template>
-            <div>
-              <el-button link size="small" class="molstar_btn_inner" @click="select_all()">Select All</el-button>
-            </div>
-            <div>
-              <el-button link size="small" class="molstar_btn_inner" @click="select_none()">Select None</el-button>
-            </div>
-            <div>
-              <el-button link size="small" class="molstar_btn_inner" @click="invert_select()">Invert Select</el-button>
-            </div>
-            <el-divider class="my-[8px]" />
-            <div class="text-[12px] my-[8px]">Expand</div>
-            <el-row :gutter="8">
-              <el-col :span="12">
-                <el-input v-model="expand_number" size="small" :min="1" :max="10" />
-              </el-col>
-              <el-col :span="2">
-                <div class="text-[12px]">Å</div>
-              </el-col>
-              <el-col :span="10" class="flex_def">
-                <el-button type="primary" size="small" class="w-[30px] ml-[8px]" @click="expand_selection">OK</el-button>
-              </el-col>
-            </el-row>
-          </el-popover>
-        </el-col>
-        <el-col :span="1" class="flex_def" />
-        <el-col :span="5" class="flex_def">
-          <el-popover placement="bottom" title="Create Surface" :width="180" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn">
-            <template #reference>
-              <molstar_btn svg_name="create_surface" title="Create Surface" :disabled="props.disable_comp_btn" />
-            </template>
-            <div class="flex_column">
-              <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="create_surface(undefined, 'selection')">For Selection</el-button>
-              </div>
-              <el-divider v-if="pdb_info.chain.length" class="my-[8px]" />
-              <div v-for="item in pdb_info.chain" :key="item.key">
-                <el-button link size="small" class="molstar_btn_inner" @click="create_surface(item)">Chain: {{ item.auth_asym_id }}</el-button>
-              </div>
-              <el-divider v-if="pdb_info.ligand.length" class="my-[8px]" />
-              <div v-for="item in pdb_info.ligand" :key="item.key">
-                <el-button link size="small" class="molstar_btn_inner" @click="create_surface(item)">{{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}</el-button>
-              </div>
-              <el-divider v-if="surface_list.length" class="my-[8px]" />
-              <div v-for="item in surface_list" :key="item" class="mb-[5px]">
-                <el-button
-                  v-show="item.if_show_name"
-                  type="primary"
-                  :class="{ gray_btn: item.hide }"
-                  size="small"
-                  class="w-[70px] mr-[12px]"
-                  @click="
-                    item.hide = !item.hide;
-                    set_visibility('Surface_' + item.timestamp);
-                  "
-                >
-                  {{ item.name }}
-                </el-button>
-                <el-input v-show="!item.if_show_name" v-model="item.name" size="small" class="w-[70px] mr-[12px]" @keyup.enter="item.if_show_name = !item.if_show_name" />
-                <el-button size="small" circle @click="item.if_show_name = !item.if_show_name">
-                  <el-icon><Edit /></el-icon>
-                </el-button>
-                <el-button type="danger" size="small" circle @click="create_surface(undefined, 'clean', item.timestamp)">
-                  <el-icon><Delete /></el-icon>
-                </el-button>
-              </div>
-            </div>
-          </el-popover>
-          <el-popover placement="bottom" title="Create Pocket" :width="180" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn || wait_proif">
-            <template #reference>
-              <molstar_btn svg_name="create_pocket" title="Create Pocket" :disabled="props.disable_comp_btn" />
-            </template>
-            <div class="flex_column">
-              <div v-for="item in pdb_info.ligand" :key="item.key">
-                <el-button link size="small" class="molstar_btn_inner" @click="create_pocket(item)">{{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}</el-button>
-              </div>
-              <div v-if="pdb_info.ligand.length === 0">
-                <el-button link size="small" class="molstar_btn_inner" disabled>No Pocket</el-button>
-              </div>
-              <el-divider class="my-8px" />
-              <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="create_pocket(undefined, (type = 'clean'))">Clean Pocket</el-button>
-              </div>
-              <el-divider v-if="has_pocket" class="my-8px" />
-              <div v-if="has_pocket">
-                <el-checkbox v-model="if_hide_chain" label="Hide Non-Pocket Atoms" size="small" @change="hide_chain" />
-              </div>
-            </div>
-          </el-popover>
-          <el-popover placement="bottom" title="Create Label" :width="80" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn">
-            <template #reference>
-              <molstar_btn svg_name="create_label" title="Create Label" :disabled="props.disable_comp_btn" />
-            </template>
-            <div class="flex_column">
-              <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'selection'))">For Selection</el-button>
-              </div>
-              <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'ligands'))">All Ligands</el-button>
-              </div>
-              <el-divider class="my-[8px]" />
-              <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'clean'))">Clean Label</el-button>
-              </div>
-            </div>
-          </el-popover>
-
-          <el-popover placement="bottom" title="Create Measurement" :width="80" trigger="hover" popper-class="molstar_popper">
-            <template #reference>
-              <molstar_btn svg_name="measure" title="Measure" />
-            </template>
-            <div class="flex_column">
-              <div>
-                <el-tooltip effect="light" content="请先选择两个原子再添加距离测量" placement="right">
-                  <el-button link size="small" class="molstar_btn_inner" @click="add_distance()">Add Distance</el-button>
-                </el-tooltip>
-              </div>
-              <div>
-                <el-tooltip effect="light" content="请先选择三个原子再添加角度测量" placement="right">
-                  <el-button link size="small" class="molstar_btn_inner" @click="add_angle()">Add Angle</el-button>
-                </el-tooltip>
-              </div>
-              <div>
-                <el-tooltip effect="light" content="请先选择四个原子再添加二面角测量" placement="right">
-                  <el-button link size="small" class="molstar_btn_inner" @click="add_dihedral()">Add Dihedral</el-button>
-                </el-tooltip>
-              </div>
-              <el-divider class="my-[8px]" />
-              <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="clean_measure()">Clean Measure</el-button>
-              </div>
-            </div>
-          </el-popover>
-
-          <el-popover placement="bottom" title="More" :width="80" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn">
-            <template #reference>
-              <molstar_btn svg_name="more" title="More" :disabled="props.disable_comp_btn" />
-            </template>
-            <div class="flex_column">
-              <div>
-                <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="hide_selection()">Hide Selection</el-button>
-              </div>
-              <div>
-                <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="show_selection((type = 'prev'))">Show Selection</el-button>
-              </div>
-              <div>
-                <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="show_selection((type = 'all'))">Show All</el-button>
-              </div>
-            </div>
-          </el-popover>
-        </el-col>
-        <el-col :span="1" class="flex_def" />
-        <el-col :span="8" class="flex_def">
-          <el-popover placement="bottom" title="Change Background" :width="80" trigger="hover" popper-class="molstar_popper">
-            <template #reference>
-              <molstar_btn svg_name="moon" title="Change Background" />
-            </template>
-            <el-radio-group v-model="background" @change="change_background">
-              <el-radio label="white" size="small">White</el-radio>
-              <el-radio label="black" size="small">Black</el-radio>
-            </el-radio-group>
-          </el-popover>
-          <el-popover placement="bottom" title="Change Repr" :width="80" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn">
-            <template #reference>
-              <molstar_btn svg_name="cartoon" title="Change Repr" :disabled="props.disable_comp_btn" />
-            </template>
-            <el-radio-group v-model="chain_repr" class="items-start flex-col" @change="change_repr">
-              <el-radio label="cartoon" size="small">Cartoon</el-radio>
-              <el-radio label="bs" size="small">Ball & Stick</el-radio>
-              <el-radio label="sf" size="small">
-                Spacefill
-                <span class="w-[60px]" />
-              </el-radio>
-              <el-radio label="line" size="small">Line</el-radio>
-            </el-radio-group>
-          </el-popover>
-          <!-- <molstar_btn svg_name="water" @click="change_water_repr" title="Water" :disabled="props.disable_comp_btn"/> -->
-          <molstar_btn svg_name="interaction" title="Show 2D Interaction" @click="show_prolif_func" />
-          <molstar_btn svg_name="screen_shot" title="Screen Shot" @click="make_screenshot" />
-          <molstar_btn svg_name="goto_center" title="Goto Center" @click="reset_camera" />
-          <molstar_btn svg_name="rotate" title="Rotate" @click="toggle_spin" />
-          <molstar_btn svg_name="full_screen" @click="full_screen" />
-          <molstar_btn svg_name="reset" title="Reset" @click="reset_all" />
-          <!-- <molstar_btn svg_name="close" @click="show_tool=false" title="Close Toolbar" /> -->
-        </el-col>
-        <el-col :span="3" class="flex_def" />
-      </el-row>
-    </div>
-    <el-dialog v-model="show_prolif" title="2D Interaction" width="70%" top="4vh">
-      <prolif_iframe ref="prolif_ref" :pdb_ligand_inter_list="pdb_ligand_inter_list" :show_ligname="props.prolif_show_ligname" />
-    </el-dialog>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted, defineEmits, nextTick } from "vue";
 import molstar_btn from "./components/molstar_btn.vue";
@@ -1279,6 +1041,242 @@ defineExpose({
   show_prolif_func
 });
 </script>
+
+<template>
+  <div class="relative w-full h-full" :class="{ full_frame: full_screen_type }">
+    <div :id="canvas_id" ref="molstar_ref" class="drugflow_molstar w-full h-full min-w-[300px] min-h-[300px]" :class="{ drugflow_molstar_no_sequence: !props.if_sequence_panel }" />
+    <div v-show="props.show_tool && show_tool" class="absolute top-[8px] w-full">
+      <el-row class="mx-auto w-[40rem]">
+        <el-col :span="3" class="flex_def" />
+        <el-col :span="3" class="flex_def">
+          <el-popover placement="bottom" title="Set Granularity" :width="80" trigger="hover" popper-class="molstar_popper">
+            <template #reference>
+              <molstar_btn svg_name="granularity" title="Set Granularity" />
+            </template>
+            <el-radio-group v-model="granularity" @change="set_granularity">
+              <el-radio label="chain" size="small">Chain</el-radio>
+              <el-radio label="residue" size="small">Residue</el-radio>
+              <el-radio label="element" size="small">Atom</el-radio>
+            </el-radio-group>
+          </el-popover>
+          <el-popover placement="bottom" title="Quick Select" :width="80" trigger="hover" popper-class="molstar_popper">
+            <template #reference>
+              <molstar_btn svg_name="quick_select" title="Quick Select" />
+            </template>
+            <div class="flex_column">
+              <div>
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'chains'))">All Chains</el-button>
+              </div>
+              <div v-for="item in pdb_info.chain" :key="item.key">
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(item)">Chain: {{ item.auth_asym_id }}</el-button>
+              </div>
+              <el-divider v-if="pdb_info.ligand.length" class="my-[8px]" />
+              <div>
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'ligands'))">All Ligands</el-button>
+              </div>
+              <div v-for="item in pdb_info.ligand" :key="item.key">
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(item)">{{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}</el-button>
+              </div>
+              <el-divider v-if="pdb_info.water.length" class="my-[8px]" />
+              <div v-if="pdb_info.water.length">
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'water'))">All Water</el-button>
+              </div>
+            </div>
+          </el-popover>
+          <el-popover placement="bottom" title="More Selection" :width="80" trigger="hover" popper-class="molstar_popper">
+            <template #reference>
+              <molstar_btn svg_name="expand" title="More Selection" />
+            </template>
+            <div>
+              <el-button link size="small" class="molstar_btn_inner" @click="select_all()">Select All</el-button>
+            </div>
+            <div>
+              <el-button link size="small" class="molstar_btn_inner" @click="select_none()">Select None</el-button>
+            </div>
+            <div>
+              <el-button link size="small" class="molstar_btn_inner" @click="invert_select()">Invert Select</el-button>
+            </div>
+            <el-divider class="my-[8px]" />
+            <div class="text-[12px] my-[8px]">Expand</div>
+            <el-row :gutter="8">
+              <el-col :span="12">
+                <el-input v-model="expand_number" size="small" :min="1" :max="10" />
+              </el-col>
+              <el-col :span="2">
+                <div class="text-[12px]">Å</div>
+              </el-col>
+              <el-col :span="10" class="flex_def">
+                <el-button type="primary" size="small" class="w-[30px] ml-[8px]" @click="expand_selection">OK</el-button>
+              </el-col>
+            </el-row>
+          </el-popover>
+        </el-col>
+        <el-col :span="1" class="flex_def" />
+        <el-col :span="5" class="flex_def">
+          <el-popover placement="bottom" title="Create Surface" :width="180" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn">
+            <template #reference>
+              <molstar_btn svg_name="create_surface" title="Create Surface" :disabled="props.disable_comp_btn" />
+            </template>
+            <div class="flex_column">
+              <div>
+                <el-button link size="small" class="molstar_btn_inner" @click="create_surface(undefined, 'selection')">For Selection</el-button>
+              </div>
+              <el-divider v-if="pdb_info.chain.length" class="my-[8px]" />
+              <div v-for="item in pdb_info.chain" :key="item.key">
+                <el-button link size="small" class="molstar_btn_inner" @click="create_surface(item)">Chain: {{ item.auth_asym_id }}</el-button>
+              </div>
+              <el-divider v-if="pdb_info.ligand.length" class="my-[8px]" />
+              <div v-for="item in pdb_info.ligand" :key="item.key">
+                <el-button link size="small" class="molstar_btn_inner" @click="create_surface(item)">{{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}</el-button>
+              </div>
+              <el-divider v-if="surface_list.length" class="my-[8px]" />
+              <div v-for="item in surface_list" :key="item" class="mb-[5px]">
+                <el-button
+                  v-show="item.if_show_name"
+                  type="primary"
+                  :class="{ gray_btn: item.hide }"
+                  size="small"
+                  class="w-[70px] mr-[12px]"
+                  @click="
+                    item.hide = !item.hide;
+                    set_visibility('Surface_' + item.timestamp);
+                  "
+                >
+                  {{ item.name }}
+                </el-button>
+                <el-input v-show="!item.if_show_name" v-model="item.name" size="small" class="w-[70px] mr-[12px]" @keyup.enter="item.if_show_name = !item.if_show_name" />
+                <el-button size="small" circle @click="item.if_show_name = !item.if_show_name">
+                  <el-icon><Edit /></el-icon>
+                </el-button>
+                <el-button type="danger" size="small" circle @click="create_surface(undefined, 'clean', item.timestamp)">
+                  <el-icon><Delete /></el-icon>
+                </el-button>
+              </div>
+            </div>
+          </el-popover>
+          <el-popover placement="bottom" title="Create Pocket" :width="180" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn || wait_proif">
+            <template #reference>
+              <molstar_btn svg_name="create_pocket" title="Create Pocket" :disabled="props.disable_comp_btn" />
+            </template>
+            <div class="flex_column">
+              <div v-for="item in pdb_info.ligand" :key="item.key">
+                <el-button link size="small" class="molstar_btn_inner" @click="create_pocket(item)">{{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}</el-button>
+              </div>
+              <div v-if="pdb_info.ligand.length === 0">
+                <el-button link size="small" class="molstar_btn_inner" disabled>No Pocket</el-button>
+              </div>
+              <el-divider class="my-8px" />
+              <div>
+                <el-button link size="small" class="molstar_btn_inner" @click="create_pocket(undefined, (type = 'clean'))">Clean Pocket</el-button>
+              </div>
+              <el-divider v-if="has_pocket" class="my-8px" />
+              <div v-if="has_pocket">
+                <el-checkbox v-model="if_hide_chain" label="Hide Non-Pocket Atoms" size="small" @change="hide_chain" />
+              </div>
+            </div>
+          </el-popover>
+          <el-popover placement="bottom" title="Create Label" :width="80" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn">
+            <template #reference>
+              <molstar_btn svg_name="create_label" title="Create Label" :disabled="props.disable_comp_btn" />
+            </template>
+            <div class="flex_column">
+              <div>
+                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'selection'))">For Selection</el-button>
+              </div>
+              <div>
+                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'ligands'))">All Ligands</el-button>
+              </div>
+              <el-divider class="my-[8px]" />
+              <div>
+                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'clean'))">Clean Label</el-button>
+              </div>
+            </div>
+          </el-popover>
+
+          <el-popover placement="bottom" title="Create Measurement" :width="80" trigger="hover" popper-class="molstar_popper">
+            <template #reference>
+              <molstar_btn svg_name="measure" title="Measure" />
+            </template>
+            <div class="flex_column">
+              <div>
+                <el-tooltip effect="light" content="请先选择两个原子再添加距离测量" placement="right">
+                  <el-button link size="small" class="molstar_btn_inner" @click="add_distance()">Add Distance</el-button>
+                </el-tooltip>
+              </div>
+              <div>
+                <el-tooltip effect="light" content="请先选择三个原子再添加角度测量" placement="right">
+                  <el-button link size="small" class="molstar_btn_inner" @click="add_angle()">Add Angle</el-button>
+                </el-tooltip>
+              </div>
+              <div>
+                <el-tooltip effect="light" content="请先选择四个原子再添加二面角测量" placement="right">
+                  <el-button link size="small" class="molstar_btn_inner" @click="add_dihedral()">Add Dihedral</el-button>
+                </el-tooltip>
+              </div>
+              <el-divider class="my-[8px]" />
+              <div>
+                <el-button link size="small" class="molstar_btn_inner" @click="clean_measure()">Clean Measure</el-button>
+              </div>
+            </div>
+          </el-popover>
+
+          <el-popover placement="bottom" title="More" :width="80" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn">
+            <template #reference>
+              <molstar_btn svg_name="more" title="More" :disabled="props.disable_comp_btn" />
+            </template>
+            <div class="flex_column">
+              <div>
+                <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="hide_selection()">Hide Selection</el-button>
+              </div>
+              <div>
+                <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="show_selection((type = 'prev'))">Show Selection</el-button>
+              </div>
+              <div>
+                <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="show_selection((type = 'all'))">Show All</el-button>
+              </div>
+            </div>
+          </el-popover>
+        </el-col>
+        <el-col :span="1" class="flex_def" />
+        <el-col :span="8" class="flex_def">
+          <el-popover placement="bottom" title="Change Background" :width="80" trigger="hover" popper-class="molstar_popper">
+            <template #reference>
+              <molstar_btn svg_name="moon" title="Change Background" />
+            </template>
+            <el-radio-group v-model="background" @change="change_background">
+              <el-radio label="white" size="small">White</el-radio>
+              <el-radio label="black" size="small">Black</el-radio>
+            </el-radio-group>
+          </el-popover>
+          <el-popover placement="bottom" title="Change Repr" :width="80" trigger="hover" popper-class="molstar_popper" :disabled="props.disable_comp_btn">
+            <template #reference>
+              <molstar_btn svg_name="cartoon" title="Change Repr" :disabled="props.disable_comp_btn" />
+            </template>
+            <el-radio-group v-model="chain_repr" class="items-start flex-col" @change="change_repr">
+              <el-radio label="cartoon" size="small">Cartoon</el-radio>
+              <el-radio label="bs" size="small">Ball & Stick</el-radio>
+              <el-radio label="sf" size="small">
+                Spacefill
+                <span class="w-[60px]" />
+              </el-radio>
+              <el-radio label="line" size="small">Line</el-radio>
+            </el-radio-group>
+          </el-popover>
+          <molstar_btn svg_name="interaction" title="Show 2D Interaction" @click="show_prolif_func" />
+          <molstar_btn svg_name="screen_shot" title="Screen Shot" @click="make_screenshot" />
+          <molstar_btn svg_name="goto_center" title="Goto Center" @click="reset_camera" />
+          <molstar_btn svg_name="rotate" title="Rotate" @click="toggle_spin" />
+          <molstar_btn svg_name="full_screen" @click="full_screen" />
+          <molstar_btn svg_name="reset" title="Reset" @click="reset_all" />
+        </el-col>
+        <el-col :span="3" class="flex_def" />
+      </el-row>
+    </div>
+    <el-dialog v-model="show_prolif" title="2D Interaction" width="70%" top="4vh">
+      <prolif_iframe ref="prolif_ref" :pdb_ligand_inter_list="pdb_ligand_inter_list" :show_ligname="props.prolif_show_ligname" />
+    </el-dialog>
+  </div>
+</template>
 
 <style scoped lang="css">
 .gray_btn {
