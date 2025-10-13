@@ -1,5 +1,5 @@
-<script setup>
-import { ref, onMounted, defineEmits, nextTick } from "vue";
+<script setup lang="ts">
+import { ref, onMounted, nextTick, type Ref } from "vue";
 import molstar_btn from "./components/molstar_btn.vue";
 import prolif_iframe from "./components/prolif_iframe.vue";
 import "drugflow-molstar/build/drugflow-molstar-light.css";
@@ -9,25 +9,120 @@ import { Color, ColorMap } from "molstar/lib/mol-util/color";
 import { ColorNames } from "molstar/lib/mol-util/color/names";
 import { get_interaction_iframe_api } from "@/api/molecular.js";
 
+// ==================== 类型定义 ====================
+/** 分子组件信息接口 */
+interface MoleculeComponent {
+  auth_asym_id: string;
+  auth_residue_number: number | string;
+  residue_name?: string;
+  label_comp_id?: string;
+  atom_id?: number;
+  [key: string]: any;
+}
+
+/** PDB结构信息接口 */
+interface PDBInfo {
+  chain: MoleculeComponent[];
+  ligand: MoleculeComponent[];
+  pocket: MoleculeComponent[];
+  other: MoleculeComponent[];
+  water: MoleculeComponent[];
+}
+
+/** 表示方式状态接口 */
+interface ReprState {
+  cartoon: boolean;
+  bs: boolean;
+  sf: boolean;
+  line: boolean;
+}
+
+/** 加载结构参数接口 */
+interface LoadStructureParams {
+  url?: string;
+  format: string;
+  is_binary?: boolean;
+  input: string;
+  if_render?: boolean;
+  render_type: string;
+  render_id: string;
+  ligand_name?: string;
+  if_clean?: boolean;
+  pdb_name?: string;
+  carbon_color?: string;
+  residue_full_info?: any;
+}
+
+/** 相互作用数据接口 */
+interface InteractionDict {
+  ligand_name: string;
+  ligand_chain_id: string;
+  ligand_residue_number: string;
+  ligand_atom_id: number;
+  prot_atom_id: number;
+  interaction_type: string;
+}
+
+/** PDB配体相互作用列表项接口 */
+interface PDBLigandInteraction {
+  pdb_string: string;
+  pdb_name: string;
+  ligand_list: MoleculeComponent[];
+  prolif_data: any[];
+  render_id: string;
+  residue_full_info?: any;
+  prolif_id_list: string[];
+}
+
+/** 表面信息接口 */
+interface SurfaceInfo {
+  cnt: number;
+  timestamp: number;
+  name: string;
+  if_show_name: boolean;
+  select_info: MoleculeComponent[];
+  hide?: boolean;
+}
+
+/** RGB颜色接口 */
+interface RGBColor {
+  r: number;
+  g: number;
+  b: number;
+}
+
+/** Molstar实例接口（扩展声明） */
+interface MolstarInstance {
+  viewerInstance?: any;
+  [key: string]: any;
+}
+
+/** 选择返回结果接口 */
+interface SelectionResult {
+  polymer: boolean;
+  ligand: boolean;
+  water: boolean;
+}
+
 // ==================== Molstar 核心组件引用 ====================
 /** Molstar组件的DOM引用，用于获取viewerInstance实例 */
-const molstar_ref = ref(null);
+const molstar_ref: Ref<MolstarInstance | null> = ref(null);
 
 /** 动态生成的Canvas容器ID，确保每个实例的唯一性 */
-const canvas_id = "molstar-canvas-" + Date.now();
+const canvas_id: string = "molstar-canvas-" + Date.now();
 
 // ==================== 视图控制状态 ====================
 /** 是否处于全屏模式 */
-const full_screen_type = ref(false);
+const full_screen_type: Ref<boolean> = ref(false);
 
 /** 选择粒度级别：'chain'(链)、'residue'(残基)、'element'(原子) */
-const granularity = ref("residue");
+const granularity: Ref<string> = ref("residue");
 
 /** 背景颜色：'white'(白色) 或 'black'(黑色) */
-const background = ref("white");
+const background: Ref<string> = ref("white");
 
 /** 选择扩展范围（单位：埃） */
-const expand_number = ref(5);
+const expand_number: Ref<number> = ref(5);
 
 // ==================== 分子结构数据 ====================
 /**
@@ -38,7 +133,7 @@ const expand_number = ref(5);
  * - other: 其他分子组件数组
  * - water: 水分子信息数组
  */
-const pdb_info = ref({
+const pdb_info: Ref<PDBInfo> = ref({
   chain: [],
   ligand: [],
   pocket: [],
@@ -53,10 +148,10 @@ const pdb_info = ref({
  * 当前蛋白质链的表示方式
  * 可选值：'cartoon'(卡通)、'bs'(球棍)、'sf'(空间填充)、'line'(线条)
  */
-const chain_repr = ref("cartoon");
+const chain_repr: Ref<string> = ref("cartoon");
 
 /** 上一个激活的表示方式，用于切换时的状态管理 */
-const old_repr = ref("Polymer_cartoon");
+const old_repr: Ref<string | null> = ref("Polymer_cartoon");
 
 /**
  * 各种表示方式的显示状态
@@ -65,74 +160,65 @@ const old_repr = ref("Polymer_cartoon");
  * - sf: 空间填充表示是否激活
  * - line: 线条表示是否激活
  */
-const repr_state = ref({ cartoon: true, bs: false, sf: false, line: false });
+const repr_state: Ref<ReprState> = ref({ cartoon: true, bs: false, sf: false, line: false });
 
 // ==================== 初始化和重置相关 ====================
 /** 保存初始化参数，用于重置功能 */
-const init_params = ref({});
+const init_params: Ref<LoadStructureParams | Record<string, any>> = ref({});
 
 // ==================== 功能模块状态标记 ====================
 /** 是否当前存在口袋可视化 */
-const has_pocket = ref(false);
+const has_pocket: Ref<boolean> = ref(false);
 
 /** 是否当前存在表面可视化 */
-const has_surface = ref(false);
+const has_surface: Ref<boolean> = ref(false);
 
 /** 是否隐藏非口袋区域的蛋白质链 */
-const if_hide_chain = ref(false);
+const if_hide_chain: Ref<boolean> = ref(false);
 
 // ==================== 2D相互作用图相关 ====================
 /** 是否显示2D相互作用图对话框 */
-const show_prolif = ref(false);
+const show_prolif: Ref<boolean> = ref(false);
 
 /** 2D相互作用图组件的引用 */
-const prolif_ref = ref(null);
+const prolif_ref: Ref<any> = ref(null);
 
 /**
  * PDB与配体相互作用数据列表
  * 存储每个加载的结构及其对应的相互作用分析结果
  */
-const pdb_ligand_inter_list = ref([]);
+const pdb_ligand_inter_list: Ref<PDBLigandInteraction[]> = ref([]);
 
 /** 是否正在等待prolif数据计算完成 */
-const wait_proif = ref(true);
+const wait_proif: Ref<boolean> = ref(true);
 
 /** prolif相互作用分析的原始数据 */
-const prolif_data = ref([]);
+const prolif_data: Ref<any[]> = ref([]);
 
 /**
  * 组件属性定义
  * 用于配置Molstar分子可视化组件的外观和行为
  */
-const props = defineProps({
+interface Props {
   /**
    * 3D场景背景颜色（十六进制颜色值）
    * 默认值：0x1100CC（深蓝色）
    */
-  box_bg_color: {
-    type: Number,
-    default: 0x1100cc
-  },
+  box_bg_color?: number;
 
   /**
    * 是否显示序列面板
    * true: 显示底部的蛋白质序列面板
    * false: 隐藏序列面板，获得更大的3D视图空间
    */
-  if_sequence_panel: {
-    type: Boolean,
-    default: true
-  },
+  if_sequence_panel?: boolean;
 
   /**
    * 是否显示工具栏
    * true: 显示顶部的分子操作工具栏
    * false: 隐藏工具栏，仅显示3D视图
    */
-  show_tool: {
-    type: Boolean,
-    default: true
-  },
+  show_tool?: boolean;
 
   /**
    * 是否禁用复杂操作按钮
@@ -140,33 +226,40 @@ const props = defineProps({
    * false: 启用所有功能按钮
    * 用于性能较低的设备或简化界面的场景
    */
-  disable_comp_btn: {
-    type: Boolean,
-    default: false
-  },
+  disable_comp_btn?: boolean;
 
   /**
    * 在2D相互作用图中是否显示配体名称
    * true: 在prolif相互作用分析图中显示配体分子名称
    * false: 隐藏配体名称，简化显示
    */
-  prolif_show_ligname: {
-    type: Boolean,
-    default: true
-  }
+  prolif_show_ligname?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  box_bg_color: 0x1100cc,
+  if_sequence_panel: true,
+  show_tool: true,
+  disable_comp_btn: false,
+  prolif_show_ligname: true
 });
-const emit = defineEmits(["init-complete"]);
+
+const emit = defineEmits<{
+  (e: "init-complete"): void;
+}>();
 
 /**
  * 初始化Molstar 3D分子可视化插件
  * 创建Molstar实例并进行基本配置
  */
-const init = async () => {
+const init = async (): Promise<void> => {
   // 创建Drugflow定制的Molstar插件实例
-  molstar_ref.value.viewerInstance = new DrugflowMolstarPlugin();
+  if (!molstar_ref.value) return;
+  molstar_ref.value.viewerInstance = new (window as any).DrugflowMolstarPlugin();
 
   // 获取DOM容器元素
-  let viewerContainer = document.getElementById(canvas_id);
+  const viewerContainer = document.getElementById(canvas_id);
+  if (!viewerContainer) return;
 
   // 初始化Molstar插件，配置序列面板显示选项
   await molstar_ref.value.viewerInstance.init(viewerContainer, {
@@ -182,18 +275,10 @@ const init = async () => {
 
 /**
  * 异步加载分子结构到Molstar中
- * @param {Object} input_params - 加载参数配置对象
- * @param {string} input_params.url - 结构文件URL（可选）
- * @param {string} input_params.format - 文件格式（如'pdb', 'cif'等）
- * @param {boolean} input_params.is_binary - 是否为二进制格式
- * @param {string} input_params.input - 结构数据字符串
- * @param {boolean} input_params.if_render - 是否立即渲染
- * @param {string} input_params.render_type - 渲染类型（'default'或'ligand'）
- * @param {string} input_params.render_id - 渲染标识ID
- * @param {string} input_params.ligand_name - 配体名称
- * @param {boolean} input_params.if_clean - 是否清理之前的结构
+ * @param input_params - 加载参数配置对象
  */
-const load_structure = async input_params => {
+const load_structure = async (input_params: LoadStructureParams): Promise<void> => {
+  if (!molstar_ref.value) return;
   // 保存初始化参数用于重置功能
   init_params.value = input_params;
 
@@ -290,16 +375,17 @@ const load_structure = async input_params => {
   }
 };
 
-const set_occlusion = () => {
+const set_occlusion = (): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.plugin.canvas3d.setProps({
     postprocessing: { occlusion: { name: "off", params: {} } }
   });
 };
 
-const find_UNL_dict = interaction_list => {
-  const ret_dict = {};
+const find_UNL_dict = (interaction_list: any[]): Record<string, any> => {
+  const ret_dict: Record<string, any> = {};
   for (let i = 0; i < interaction_list.length; i++) {
-    if (interaction_list[i].interaction_dict[0] && interaction_list[i].interaction_dict[0].ligand_name == "UNL") {
+    if (interaction_list[i].interaction_dict[0] && interaction_list[i].interaction_dict[0].ligand_name === "UNL") {
       ret_dict["auth_asym_id"] = interaction_list[i].interaction_dict[0].ligand_chain_id;
       ret_dict["auth_residue_number"] = interaction_list[i].interaction_dict[0].ligand_residue_number;
       break;
@@ -308,7 +394,8 @@ const find_UNL_dict = interaction_list => {
   return ret_dict;
 };
 
-const recreate_repr = async (alpha = 1, recreate_polymer = true, recreate_ligand = true, recreate_water = true) => {
+const recreate_repr = async (alpha: number = 1, recreate_polymer: boolean = true, recreate_ligand: boolean = true, recreate_water: boolean = true): Promise<void> => {
+  if (!molstar_ref.value) return;
   if (recreate_polymer) {
     await molstar_ref.value.viewerInstance.update_comp_repr("Polymer", "Polymer_cartoon", repr_state.value.cartoon, {
       type: "cartoon",
@@ -358,7 +445,8 @@ const recreate_repr = async (alpha = 1, recreate_polymer = true, recreate_ligand
   set_occlusion();
 };
 
-const add_or_update_ligand_view_repr = async (ligand_id, color_name) => {
+const add_or_update_ligand_view_repr = async (ligand_id: string, color_name: string): Promise<void> => {
+  if (!molstar_ref.value) return;
   await molstar_ref.value.viewerInstance.update_comp_repr("Ligand_" + ligand_id, "Ligand_" + ligand_id + "_bs", true, {
     type: "ball-and-stick",
     typeParams: {
@@ -413,11 +501,12 @@ const add_or_update_ligand_view_repr = async (ligand_id, color_name) => {
 /**
  * 添加或更新默认的分子表示方式
  * 为蛋白质、配体和水分子设置标准的可视化表示
- * @param {number} alpha - 透明度值 (0-1)
- * @param {boolean} if_hetatm - 是否显示异原子分子（配体和水）
- * @param {boolean} not_change_visible - 是否保持当前可见性状态
+ * @param alpha - 透明度值 (0-1)
+ * @param if_hetatm - 是否显示异原子分子（配体和水）
+ * @param not_change_visible - 是否保持当前可见性状态
  */
-const add_or_update_default_repr = async (alpha = 1, if_hetatm = true, not_change_visible = true) => {
+const add_or_update_default_repr = async (alpha: number = 1, if_hetatm: boolean = true, not_change_visible: boolean = true): Promise<void> => {
+  if (!molstar_ref.value) return;
   // 蛋白质主链：卡通表示法（默认显示）
   await molstar_ref.value.viewerInstance.update_comp_repr("Polymer", "Polymer_cartoon", true, { type: "cartoon", typeParams: { alpha: alpha } });
 
@@ -481,32 +570,37 @@ const add_or_update_default_repr = async (alpha = 1, if_hetatm = true, not_chang
   set_occlusion();
 };
 
-const reset_all = async () => {
+const reset_all = async (): Promise<void> => {
+  if (!molstar_ref.value) return;
   await molstar_ref.value.viewerInstance.clear();
-  await load_structure(init_params.value);
+  await load_structure(init_params.value as LoadStructureParams);
 };
 
-const add_mouse_event = func => {
+const add_mouse_event = (func: Function): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.add_mouse_event(func);
 };
 
-const get_pdb_info = () => {
+const get_pdb_info = (): PDBInfo => {
   return pdb_info.value;
 };
 
-const add_shape = params => {
+const add_shape = (params: any): any => {
+  if (!molstar_ref.value) return;
   const structure = molstar_ref.value.viewerInstance.plugin.state.data.select("Structure_0")[0];
   return molstar_ref.value.viewerInstance.add_shape(structure, params);
 };
 
-const remove_shape = selector => {
+const remove_shape = (selector: string): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.remove_shape(selector);
 };
 
 /**
  * 切换全屏显示模式
  */
-const full_screen = () => {
+const full_screen = (): void => {
+  if (!molstar_ref.value) return;
   full_screen_type.value = !full_screen_type.value;
   molstar_ref.value.viewerInstance.canvas.toggleExpanded(full_screen_type.value);
 };
@@ -514,16 +608,18 @@ const full_screen = () => {
 /**
  * 重置相机到初始位置和角度
  */
-const reset_camera = () => {
+const reset_camera = (): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.visual.camera_reset();
 };
 
 /**
  * 截取当前3D视图的屏幕截图并下载
  */
-const make_screenshot = () => {
+const make_screenshot = (): void => {
   // 获取Canvas元素
   const c = document.getElementsByTagName("canvas")[0];
+  if (!c) return;
   // 转换为base64图片数据
   const base64Img = c.toDataURL("image/png");
   // 创建下载链接
@@ -537,14 +633,15 @@ const make_screenshot = () => {
 /**
  * 切换分子结构的自动旋转
  */
-const toggle_spin = () => {
+const toggle_spin = (): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.visual.toggleSpin();
 };
 
 /**
  * 根据当前背景设置切换背景颜色（黑白切换）
  */
-const change_background = () => {
+const change_background = (): void => {
   if (background.value === "white") {
     set_background({ r: 255, g: 255, b: 255 }); // 设置为白色背景
   } else {
@@ -552,11 +649,13 @@ const change_background = () => {
   }
 };
 
-const set_visibility = ref => {
+const set_visibility = (ref: string): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.set_visibility(ref);
 };
 
-const change_repr = () => {
+const change_repr = (): void => {
+  if (!molstar_ref.value) return;
   if (old_repr.value === "Polymer_" + chain_repr.value) {
     return;
   }
@@ -583,18 +682,20 @@ const change_repr = () => {
   old_repr.value = "Polymer_" + chain_repr.value;
 };
 
-const hide_chain = val => {
+const hide_chain = (val: any): void => {
+  if (!molstar_ref.value) return;
   if (old_repr.value) {
     molstar_ref.value.viewerInstance.set_visibility(old_repr.value);
   }
 };
 
-const set_ligand_view_id_visibility = smiles_id => {
+const set_ligand_view_id_visibility = (smiles_id: string): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.set_visibility("Ligand_" + smiles_id);
   molstar_ref.value.viewerInstance.set_visibility("Ligand_plus_" + smiles_id);
 
   for (let j = 0; j < pdb_ligand_inter_list.value.length; j++) {
-    if (pdb_ligand_inter_list.value[j]["render_id"] == smiles_id) {
+    if (pdb_ligand_inter_list.value[j]["render_id"] === smiles_id) {
       for (let i = 0; i < pdb_ligand_inter_list.value[j].prolif_id_list.length; i++) {
         molstar_ref.value.viewerInstance.set_visibility(pdb_ligand_inter_list.value[j].prolif_id_list[i]);
       }
@@ -603,7 +704,8 @@ const set_ligand_view_id_visibility = smiles_id => {
   }
 };
 
-const remove_ligand_view_pdb = async smiles_id => {
+const remove_ligand_view_pdb = async (smiles_id: string): Promise<void> => {
+  if (!molstar_ref.value) return;
   await remove_prolif_line(smiles_id);
   await molstar_ref.value.viewerInstance.remove_tmp_comp("Structure_" + smiles_id, smiles_id);
 
@@ -616,22 +718,24 @@ const remove_ligand_view_pdb = async smiles_id => {
   }
 };
 
-const set_background = color => {
-  // {r, g, b}
+const set_background = (color: RGBColor): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.canvas.setBgColor(color);
 };
 
-const set_granularity = value => {
+const set_granularity = (value: string): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.visual.changeProps(value);
 };
 
 /**
  * 快速选择分子结构中的特定组件
- * @param {Object|Array} item - 要选择的项目对象或数组
- * @param {string} type - 选择类型：'single'(单个)、'chains'(所有链)、'ligands'(所有配体)、'water'(水分子)
- * @param {boolean} not_focus - 是否不进行焦点聚焦
+ * @param item - 要选择的项目对象或数组
+ * @param type - 选择类型：'single'(单个)、'chains'(所有链)、'ligands'(所有配体)、'water'(水分子)
+ * @param not_focus - 是否不进行焦点聚焦
  */
-const quick_select = (item, type = "single", not_focus) => {
+const quick_select = (item: MoleculeComponent | MoleculeComponent[], type: string = "single", not_focus?: boolean): void => {
+  if (!molstar_ref.value) return;
   if (type === "chains") {
     // 选择所有蛋白质链
     molstar_ref.value.viewerInstance.visual.select(pdb_info.value.chain);
@@ -656,15 +760,16 @@ const quick_select = (item, type = "single", not_focus) => {
   }
 };
 
-const surface_list = ref([]);
+const surface_list: Ref<SurfaceInfo[]> = ref([]);
 
 /**
  * 创建分子表面
- * @param {Object} item - 要创建表面的分子组件对象
- * @param {string} type - 操作类型：'single'(为选定组件创建表面)、'clean'(清理指定表面)
- * @param {string} name - 表面名称标识符（用于清理操作）
+ * @param item - 要创建表面的分子组件对象
+ * @param type - 操作类型：'single'(为选定组件创建表面)、'clean'(清理指定表面)
+ * @param name - 表面名称标识符（用于清理操作）
  */
-const create_surface = async (item, type = "single", name = "abcd") => {
+const create_surface = async (item?: MoleculeComponent | MoleculeComponent[], type: string = "single", name: string | number = "abcd"): Promise<void> => {
+  if (!molstar_ref.value) return;
   if (type === "single") {
     // 清除当前选择并选择指定项目
     molstar_ref.value.viewerInstance.visual.select_none();
@@ -729,7 +834,8 @@ const create_surface = async (item, type = "single", name = "abcd") => {
   }
 };
 
-const find_and_add_prolif_data = async (item, render_id = "0") => {
+const find_and_add_prolif_data = async (item: Record<string, any>, render_id: string = "0"): Promise<void> => {
+  if (!molstar_ref.value) return;
   const bond_color_dict = {
     VdWContact: ColorNames.orange,
     Hydrophobic: ColorNames.green,
@@ -778,9 +884,10 @@ const find_and_add_prolif_data = async (item, render_id = "0") => {
   }
 };
 
-const remove_prolif_line = async (render_id = "0") => {
+const remove_prolif_line = async (render_id: string = "0"): Promise<void> => {
+  if (!molstar_ref.value) return;
   for (let j = 0; j < pdb_ligand_inter_list.value.length; j++) {
-    if (pdb_ligand_inter_list.value[j]["render_id"] == render_id) {
+    if (pdb_ligand_inter_list.value[j]["render_id"] === render_id) {
       for (let i = 0; i < pdb_ligand_inter_list.value[j].prolif_id_list.length; i++) {
         await molstar_ref.value.viewerInstance.remove_tmp_comp(pdb_ligand_inter_list.value[j].prolif_id_list[i], render_id);
       }
@@ -793,10 +900,11 @@ const remove_prolif_line = async (render_id = "0") => {
 /**
  * 创建结合口袋可视化
  * 高亮显示配体周围的结合位点并添加相互作用线条
- * @param {Object} item - 配体对象，包含链ID和残基编号
- * @param {string} type - 操作类型：'single'(创建口袋)、'clean'(清理口袋)
+ * @param item - 配体对象，包含链ID和残基编号
+ * @param type - 操作类型：'single'(创建口袋)、'clean'(清理口袋)
  */
-const create_pocket = async (item, type = "single") => {
+const create_pocket = async (item?: MoleculeComponent, type: string = "single"): Promise<void> => {
+  if (!molstar_ref.value) return;
   // 移除之前的相互作用线条
   await remove_prolif_line();
 
@@ -852,7 +960,8 @@ const create_pocket = async (item, type = "single") => {
   molstar_ref.value.viewerInstance.visual.focus([item]);
 };
 
-const create_label = async (item, type = "single") => {
+const create_label = async (item?: MoleculeComponent | MoleculeComponent[], type: string = "single"): Promise<void> => {
+  if (!molstar_ref.value) return;
   if (type === "clean") {
     await molstar_ref.value.viewerInstance.remove_tmp_comp("Label_tmp");
     return;
@@ -868,11 +977,13 @@ const create_label = async (item, type = "single") => {
   });
 };
 
-const hide_selection = () => {
+const hide_selection = (): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.visual.hideSelect();
 };
 
-const show_selection = async (type = "prev", show_params = []) => {
+const show_selection = async (type: string = "prev", show_params: MoleculeComponent[] = []): Promise<void> => {
+  if (!molstar_ref.value) return;
   let ret;
   if (type === "prev") {
     ret = await molstar_ref.value.viewerInstance.visual.show_prev();
@@ -913,11 +1024,11 @@ const show_selection = async (type = "prev", show_params = []) => {
   await recreate_repr(1, ret.polymer, ret.ligand, ret.water);
 };
 
-const reverse_show = async (ret, show_params) => {
+const reverse_show = async (ret: SelectionResult, show_params: MoleculeComponent[]): Promise<void> => {
   if (show_params.length === 0) {
     return;
   }
-  let hide_params = [];
+  let hide_params: MoleculeComponent[] = [];
   for (let i = 0; i < show_params.length; i++) {
     if (ret.polymer) {
       hide_params = pdb_info.value.chain.filter(item => item.auth_asym_id !== show_params[i].auth_asym_id);
@@ -936,68 +1047,79 @@ const reverse_show = async (ret, show_params) => {
   }
 };
 
-const expand_selection = () => {
+const expand_selection = (): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.visual.expand_select(Number(expand_number.value));
 };
 
 /**
  * 添加距离测量（需要先选择两个原子）
  */
-const add_distance = () => {
+const add_distance = (): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.measure.add_distance();
 };
 
 /**
  * 添加角度测量（需要先选择三个原子）
  */
-const add_angle = () => {
+const add_angle = (): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.measure.add_angle();
 };
 
 /**
  * 添加二面角测量（需要先选择四个原子）
  */
-const add_dihedral = () => {
+const add_dihedral = (): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.measure.add_dihedral();
 };
 
 /**
  * 清除所有测量标记
  */
-const clean_measure = () => {
+const clean_measure = (): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.measure.clean_all_measure();
 };
 
 /**
  * 选择所有可见的分子组件
  */
-const select_all = () => {
+const select_all = (): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.visual.select_all();
 };
 
 /**
  * 取消所有选择
  */
-const select_none = () => {
+const select_none = (): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.visual.select_none();
 };
 
 /**
  * 反选当前选择的组件
  */
-const invert_select = () => {
+const invert_select = (): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.visual.inverse_select();
 };
 
-const change_water_repr = () => {
+const change_water_repr = (): void => {
+  if (!molstar_ref.value) return;
   molstar_ref.value.viewerInstance.set_visibility("Water");
 };
 
-const show_prolif_func = () => {
+const show_prolif_func = (): void => {
   show_prolif.value = !show_prolif.value;
   if (show_prolif.value) {
     nextTick(() => {
-      prolif_ref.value.set_ligand_from_outer();
+      if (prolif_ref.value) {
+        prolif_ref.value.set_ligand_from_outer();
+      }
     });
   }
 };
@@ -1062,21 +1184,21 @@ defineExpose({
             </template>
             <div class="flex_column">
               <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'chains'))">All Chains</el-button>
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, 'chains')">All Chains</el-button>
               </div>
               <div v-for="item in pdb_info.chain" :key="item.key">
                 <el-button link size="small" class="molstar_btn_inner" @click="quick_select(item)">Chain: {{ item.auth_asym_id }}</el-button>
               </div>
               <el-divider v-if="pdb_info.ligand.length" class="my-[8px]" />
               <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'ligands'))">All Ligands</el-button>
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, 'ligands')">All Ligands</el-button>
               </div>
               <div v-for="item in pdb_info.ligand" :key="item.key">
                 <el-button link size="small" class="molstar_btn_inner" @click="quick_select(item)">{{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}</el-button>
               </div>
               <el-divider v-if="pdb_info.water.length" class="my-[8px]" />
               <div v-if="pdb_info.water.length">
-                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, (type = 'water'))">All Water</el-button>
+                <el-button link size="small" class="molstar_btn_inner" @click="quick_select(undefined, 'water')">All Water</el-button>
               </div>
             </div>
           </el-popover>
@@ -1127,7 +1249,7 @@ defineExpose({
                 <el-button link size="small" class="molstar_btn_inner" @click="create_surface(item)">{{ item.auth_asym_id }}: {{ item.residue_name }}: {{ item.auth_residue_number }}</el-button>
               </div>
               <el-divider v-if="surface_list.length" class="my-[8px]" />
-              <div v-for="item in surface_list" :key="item" class="mb-[5px]">
+              <div v-for="item in surface_list" :key="item.timestamp" class="mb-[5px]">
                 <el-button
                   v-show="item.if_show_name"
                   type="primary"
@@ -1164,7 +1286,7 @@ defineExpose({
               </div>
               <el-divider class="my-8px" />
               <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="create_pocket(undefined, (type = 'clean'))">Clean Pocket</el-button>
+                <el-button link size="small" class="molstar_btn_inner" @click="create_pocket(undefined, 'clean')">Clean Pocket</el-button>
               </div>
               <el-divider v-if="has_pocket" class="my-8px" />
               <div v-if="has_pocket">
@@ -1178,14 +1300,14 @@ defineExpose({
             </template>
             <div class="flex_column">
               <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'selection'))">For Selection</el-button>
+                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, 'selection')">For Selection</el-button>
               </div>
               <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'ligands'))">All Ligands</el-button>
+                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, 'ligands')">All Ligands</el-button>
               </div>
               <el-divider class="my-[8px]" />
               <div>
-                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, (type = 'clean'))">Clean Label</el-button>
+                <el-button link size="small" class="molstar_btn_inner" @click="create_label(undefined, 'clean')">Clean Label</el-button>
               </div>
             </div>
           </el-popover>
@@ -1226,10 +1348,10 @@ defineExpose({
                 <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="hide_selection()">Hide Selection</el-button>
               </div>
               <div>
-                <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="show_selection((type = 'prev'))">Show Selection</el-button>
+                <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="show_selection('prev')">Show Selection</el-button>
               </div>
               <div>
-                <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="show_selection((type = 'all'))">Show All</el-button>
+                <el-button link size="small" class="molstar_btn_inner" :disabled="has_pocket || has_surface || props.disable_comp_btn" @click="show_selection('all')">Show All</el-button>
               </div>
             </div>
           </el-popover>
