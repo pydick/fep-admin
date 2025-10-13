@@ -12,9 +12,11 @@ import { useUserStoreHook } from "@/store/modules/user";
 import { initRouter, getTopMenu } from "@/router/utils";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { useI18n } from "vue-i18n";
+import { signin_api } from "@drugflow/api/user.js";
 
 import Lock from "~icons/ri/lock-fill";
 import User from "~icons/ri/user-3-fill";
+import { log } from "console";
 
 const { t } = useI18n();
 
@@ -37,6 +39,13 @@ const onLogin = async (formEl: FormInstance | undefined) => {
   await formEl.validate(async valid => {
     if (valid) {
       loading.value = true;
+      /*----------暂存测试使用--------------------------------*/
+      const formData = new FormData();
+      formData.append("phone", "1234567890");
+      formData.append("email", "yewenling@carbonsilicon.ai");
+      formData.append("password", "ywl1005123");
+      await signin_api(formData);
+      /*----------暂存测试使用--------------------------------*/
       useUserStoreHook()
         .loginByUsername({
           username: ruleForm.username,
