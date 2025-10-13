@@ -103,7 +103,7 @@ const transitionMain = defineComponent({
               <el-backtop :title="t('buttons.pureBackTop')" target=".app-main .el-scrollbar__wrap">
                 <BackTopIcon />
               </el-backtop>
-              <div class="grow">
+              <div class="grow flex">
                 <transitionMain :route="route">
                   <keep-alive v-if="isKeepAlive" :include="usePermissionStoreHook().cachePageList">
                     <component :is="Comp" :key="fullPath" :frameInfo="frameInfo" class="main-content" />

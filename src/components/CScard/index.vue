@@ -5,7 +5,7 @@ defineOptions({
 </script>
 
 <template>
-  <el-card>
+  <el-card class="flex-1">
     <template #header>
       <slot name="header" />
     </template>
