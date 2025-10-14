@@ -23,11 +23,15 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 </script>
 
 <template>
-  <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+  <el-tabs v-model="activeName" class="h-full" @tab-click="handleClick">
     <el-tab-pane v-for="item in tabList" :key="item.name" :label="item.label" :name="item.name">
       <slot :name="item.name" />
     </el-tab-pane>
   </el-tabs>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+:deep(.el-tab-pane) {
+  height: 100%;
+}
+</style>
