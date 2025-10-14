@@ -1,20 +1,31 @@
 <script setup lang="ts">
 import Protein3d from "./Protein3d/index.vue";
-import CStab from "@/components/CStab/index.vue";
 import { ref, provide } from "vue";
 import ProteinPreprocess from "./ProteinPreprocess/index.vue";
 import LigandPreprocess from "./LigandPreprocess/index.vue";
 import CalculationParameters from "./CalculationParameters/index.vue";
+import CSstep from "@/components/CSstep/index.vue";
 
 defineOptions({
   name: "CreateTask"
 });
-const tabList = ref<{ label: string; name: string }[]>([
-  { label: "蛋白预处理", name: "proteinPreprocess" },
-  { label: "配体预处理", name: "ligandPreprocess" },
-  { label: "计算参数", name: "calculationParameters" }
-]);
+const stepList = ref<string[]>(["蛋白预处理", "配体预处理", "计算参数"]);
+const activeStep = ref(1);
 const protein3dRef = ref();
+
+const stepRef = ref();
+
+const handleNext = () => {
+  stepRef.value?.next();
+};
+
+const handlePrev = () => {
+  stepRef.value?.prev();
+};
+
+const handleSubmit = () => {
+  console.log("提交任务");
+};
 provide("protein3dRef", protein3dRef);
 </script>
 
@@ -23,12 +34,16 @@ provide("protein3dRef", protein3dRef);
     <el-col :span="12" class="h-full">
       <Protein3d ref="protein3dRef" />
     </el-col>
-    <el-col :span="12" class="h-full">
-      <CStab :tabList="tabList">
-        <template #proteinPreprocess><ProteinPreprocess /></template>
-        <template #ligandPreprocess><LigandPreprocess /></template>
-        <template #calculationParameters><CalculationParameters /></template>
-      </CStab>
+    <el-col :span="12" class="h-full flex! flex-col">
+      <CSstep ref="stepRef" v-model:active="activeStep" class="max-w-full!" :titleList="stepList" />
+      <ProteinPreprocess v-show="activeStep === 1" />
+      <LigandPreprocess v-show="activeStep === 2" />
+      <CalculationParameters v-show="activeStep === 3" />
+      <div>
+        <el-button v-show="activeStep !== 1" @click="handlePrev">上一步</el-button>
+        <el-button v-show="activeStep !== 3" @click="handleNext">下一步</el-button>
+        <el-button v-show="activeStep === 3" @click="handleSubmit">提交任务</el-button>
+      </div>
     </el-col>
   </el-row>
 </template>

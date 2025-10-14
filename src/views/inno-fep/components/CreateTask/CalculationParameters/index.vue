@@ -5,7 +5,7 @@ defineOptions({
 </script>
 
 <template>
-  <div>CalculationParameters</div>
+  <el-row class="flex-1">CalculationParameters</el-row>
 </template>
 
 <style lang="scss" scoped></style>

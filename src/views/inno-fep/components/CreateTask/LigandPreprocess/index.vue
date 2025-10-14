@@ -5,7 +5,7 @@ defineOptions({
 </script>
 
 <template>
-  <div>LigandPreprocess</div>
+  <el-row class="flex-1">LigandPreprocess</el-row>
 </template>
 
 <style lang="scss" scoped></style>

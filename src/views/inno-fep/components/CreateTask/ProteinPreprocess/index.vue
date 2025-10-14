@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { data } from "./data.js";
 import { inject } from "vue";
+import CScard from "@/components/CScard/index.vue";
 defineOptions({
   name: "ProteinPreprocess"
 });
@@ -12,11 +13,9 @@ const show_protein = () => {
 </script>
 
 <template>
-  <div>
+  <el-row class="flex-1">
     <el-button @click="show_protein">show_protein</el-button>
-  </div>
+  </el-row>
 </template>
-
-<style lang="scss" scoped></style>
 
 <style lang="scss" scoped></style>
