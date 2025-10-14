@@ -101,10 +101,10 @@ const set_ligand = async () => {
     })
   );
   const res = await get_interaction_iframe_api(form);
-  if (res.data.status === false || !res.data.iframe_string[0].iframe) {
+  if (res.status === false || !res.iframe_string[0].iframe) {
     prolif.value.innerHTML = '<p style="font-size: 1.5rem; padding: 6rem 0; margin: 0 auto; width: 10rem;">No Interaction</p>';
   } else {
-    prolif.value.innerHTML = res.data.iframe_string[0].iframe;
+    prolif.value.innerHTML = res.iframe_string[0].iframe;
   }
   // res.data.iframe_string = res.data.iframe_string.replace('height="590px"', 'height=' + props.height)
 
