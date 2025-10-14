@@ -155,7 +155,7 @@ export default {
 </script>
 
 <template>
-  <div class="drugflow-scope">
+  <div>
     <!-- <p>-------------配体预览------------------</p>
     <div style="position: relative; width: 800px; height: 800px">
       <multi_ligand_dock_frame ref="ngl_ref" :job_id="task_id" :smiles_id_list_str="JSON.stringify(frame_data)" />

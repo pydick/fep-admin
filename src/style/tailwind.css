@@ -44,3 +44,5 @@
 @utility navbar-bg-hover {
   @apply dark:text-white dark:hover:bg-[#242424]!;
 }
+/*  不能用layer包裹，优先级element-plus样式高 */
+@import "./drugflow.scss";
