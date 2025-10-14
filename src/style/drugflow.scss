@@ -812,3 +812,15 @@
   .task_shadow {
     box-shadow: 2px 4px 8px 0px rgb(0 0 0 / 3%);
   }
+
+  .label_1 {
+    width: 100%;
+    border-left: #0160ee solid 5px;
+    padding-left: 10px;
+    margin: 20px 0 20px 0;
+    font-size: 18px;
+    display: flex;
+    align-items: flex-start;
+    /* 将子元素上对齐 */
+    font-weight: bold;
+  }
