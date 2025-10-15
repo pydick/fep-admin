@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ProteinInput from "./components/ProteinInput/index.vue";
 import { data } from "./data.js";
 import { inject, ref, reactive, onMounted } from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
@@ -433,20 +432,6 @@ onMounted(() => {
 
 <template>
   <el-form ref="el_form_first" :model="form" class="w_90 flex-1">
-    <!-- <ProteinInput>
-      <template #Tab>
-        <Proteintab />
-      </template>
-      <template #DatabaseInput>
-        <Databaseinput />
-      </template>
-      <template #FileUpload>
-        <fileupload />
-      </template>
-      <template #DataCenter>
-        <datacenter />
-      </template>
-    </ProteinInput> -->
     <p class="label_1 m_top5">输入蛋白</p>
     <el-form-item prop="input_tab" :rules="[{ required: true, message: 'This is required' }]">
       <el-radio-group v-model="form.input_tab">
