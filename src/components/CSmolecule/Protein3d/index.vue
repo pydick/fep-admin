@@ -460,7 +460,7 @@ defineExpose({
 
 <template>
   <div id="protein_frame" class="relative h-full min-w-[200px] min-h-[400px]">
-    <div class="relative h-[calc(100%+1px)] min-h-[500px] min-w-[540px] w-[calc(100%+1px)] overflow-visible">
+    <div class="relative h-[calc(100%)] min-h-[500px] min-w-[540px] w-[calc(100%)] overflow-visible">
       <drugflow_molstar ref="molstar_ref" />
     </div>
 
@@ -512,10 +512,11 @@ defineExpose({
   z-index: 1001;
 }
 .cover_img {
-  width: 70%;
-  max-width: 500px;
-  margin-top: 100px;
+  width: 800px;
+  max-width: 800px;
   opacity: 0.2;
+  display: block;
+  margin: 0 auto;
 }
 .cover_frame {
   position: absolute;
@@ -525,7 +526,9 @@ defineExpose({
   top: 0;
   left: 0;
   z-index: 1001;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .cover_tips {
   position: absolute;

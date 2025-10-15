@@ -111,7 +111,7 @@ const transitionMain = defineComponent({
                   <component :is="Comp" v-else :key="fullPath" :frameInfo="frameInfo" class="main-content" />
                 </transitionMain>
               </div>
-              <LayFooter v-if="!hideFooter" />
+              <!-- <LayFooter v-if="!hideFooter" /> -->
             </el-scrollbar>
             <div v-else class="grow">
               <transitionMain :route="route">
@@ -147,6 +147,6 @@ const transitionMain = defineComponent({
 }
 
 .main-content {
-  margin: 24px;
+  /* margin: 24px; */
 }
 </style>

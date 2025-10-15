@@ -18,7 +18,15 @@ defineExpose({
 </script>
 
 <template>
-  <Protein3d ref="protein3dRef" />
+  <div class="border border-[var(--el-card-border-color)] box-border">
+    <Protein3d ref="protein3dRef" class="protein3d" />
+  </div>
 </template>
 
-<style lang="scss" scoped />
+<style lang="scss" scoped>
+.protein3d {
+  :deep(.msp-plugin .msp-viewport) {
+    background: none;
+  }
+}
+</style>

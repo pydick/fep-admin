@@ -821,6 +821,31 @@
     font-size: 18px;
     display: flex;
     align-items: flex-start;
-    /* 将子元素上对齐 */
     font-weight: bold;
   }
+  .label_1_1 {
+    width: 100%;
+    padding: 10px 0 10px 0;
+    font-size: 14px;
+    display: flex;
+    align-items: flex-start;
+    font-weight: bold;
+  }
+
+  .label_1_1::before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #0160ee;
+    margin-right: 10px;
+    margin-top: 3px
+  }
+        .label_3 {
+          font-size: 14px;
+          color: #999999;
+          line-height: 20px;
+          margin-top: -15px;
+          margin-bottom: 15px;
+        }

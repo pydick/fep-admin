@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <el-card class="flex-1 flex flex-col" body-class="flex-1" :shadow="shadow">
+  <el-card class="flex-1 flex flex-col" :shadow="shadow">
     <template v-if="$slots.header" #header>
       <slot name="header" />
     </template>

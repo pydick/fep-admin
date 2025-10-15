@@ -10,7 +10,7 @@ const cardHeader = {
 </script>
 
 <template>
-  <div>
+  <div class="border border-[var(--el-card-border-color)] p-[20px]">
     <h2 class="font-extrabold">{{ cardHeader.title }}</h2>
     <p>
       <span class="height-[21px] leading-[21px] align-middle">{{ cardHeader.description }}</span>
@@ -18,5 +18,3 @@ const cardHeader = {
     </p>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

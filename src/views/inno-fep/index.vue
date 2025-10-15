@@ -19,7 +19,7 @@ const handleTabClick = (name: string) => {
 </script>
 
 <template>
-  <CScard>
+  <CScard body-class="flex-1 pt-0!" header-class="border-b-0! pt-0">
     <template #header>
       <FepHeader />
     </template>

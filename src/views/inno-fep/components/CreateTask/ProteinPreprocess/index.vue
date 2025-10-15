@@ -537,4 +537,121 @@ onMounted(() => {
   </el-form>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+:deep(.el-tabs__item.is-disabled) {
+  color: #333;
+}
+:deep(.el-upload-list) {
+  margin: 0;
+}
+:deep(.el-checkbox__input.is-checked + .el-checkbox__label) {
+  color: #606266;
+}
+:deep(.el-radio__input.is-checked + .el-radio__label) {
+  color: #606266;
+}
+:deep(.el-input-number.is-without-controls .el-input__wrapper) {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+:deep(.el-form-item__content > .w_100 > span) {
+  width: 100%;
+}
+:deep(.el-form-item__content > .w_100) {
+  padding: 0;
+}
+:deep(.el-button > span) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1rem;
+}
+:deep(.el-upload) {
+  width: 100%;
+}
+.w_90 {
+  width: 90%;
+}
+.el-form-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+:deep(.el-form-item__label) {
+  justify-content: flex-start;
+}
+:deep(.el-form-item__content) {
+  margin-bottom: 10px;
+}
+.no_data {
+  width: 100%;
+  text-align: center;
+  color: #909399;
+}
+.table_head {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ebeef5;
+  .table_head_td {
+    padding-left: 5px;
+    padding-right: 5px;
+    border-right: 1px solid #ebeef5;
+  }
+  .table_head_td:last-child {
+    border-right: 0;
+  }
+}
+.table_body {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ebeef5;
+  border-top: 0;
+  .table_body_td {
+    border-right: 1px solid #ebeef5;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .table_body_td:last-child {
+    border-right: 0;
+  }
+}
+.water_item {
+  padding: 2px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+.water_item:hover {
+  border: 1px solid #5794ff;
+}
+.het_title {
+  width: 95px;
+  border-right: 1px solid #ebeef5;
+  cursor: pointer;
+  &:hover {
+    color: #0160ee;
+  }
+}
+.red_str {
+  color: red;
+}
+.empty_data {
+  color: #909399;
+  text-align: center;
+  border: 1px solid #ebeef5;
+  border-top: 0;
+}
+</style>
+
+<style lang="css">
+.el-popover.water_popover {
+  min-width: 60px !important;
+  width: 60px !important;
+  padding: 5px 0;
+  font-size: 12px;
+  text-align: center;
+  cursor: pointer;
+  &:hover {
+    color: #409eff;
+  }
+}
+</style>
