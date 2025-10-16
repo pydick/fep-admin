@@ -145,7 +145,7 @@ class PureHttp {
         $error.isCancelRequest = Axios.isCancel($error);
         // 关闭进度条动画
         NProgress.done();
-        if (error.response.status === 403) {
+        if (error.response.status === 401) {
           removeToken();
           router.push("/signin");
         }
