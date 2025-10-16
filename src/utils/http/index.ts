@@ -7,6 +7,8 @@ import router from "@/router";
 import { useUserStoreHook } from "@/store/modules/user";
 import { removeToken } from "@/utils/auth";
 import { camelToSnake } from "@/utils/golbal";
+import { ElMessage, ElMessageBox } from "element-plus";
+import type { Action } from "element-plus";
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
   // 请求超时时间
@@ -78,8 +80,7 @@ class PureHttp {
                     PureHttp.isRefreshing = true;
                     // token过期刷新
                     useUserStoreHook()
-                      // .handRefreshToken(camelToSnake({ refreshToken: data.refreshToken }))
-                      .handRefreshToken(camelToSnake({ refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJwZW5neW9uZyIsInVzZXJfaWQiOjQsInJvbGUiOiJ1c2Vy" }))
+                      .handRefreshToken(camelToSnake({ refreshToken: data.refreshToken }))
                       .then(res => {
                         console.log(res);
                         if (res.success) {
@@ -88,9 +89,15 @@ class PureHttp {
                           PureHttp.requests.forEach(cb => cb(token));
                           PureHttp.requests = [];
                         } else {
-                          PureHttp.requests = []; // 清空待重试的请求队列
-                          removeToken(); // 清除本地存储的token
-                          router.push("/signin"); // 跳转到登录页面
+                          ElMessageBox.alert(res.message, "错误信息:", {
+                            confirmButtonText: "返回登录",
+                            showClose: false,
+                            callback: (action: Action) => {
+                              PureHttp.requests = []; // 清空待重试的请求队列
+                              removeToken(); // 清除本地存储的token
+                              router.push("/signin"); // 跳转到登录页面
+                            }
+                          });
                         }
                       })
                       .finally(() => {
@@ -98,7 +105,7 @@ class PureHttp {
                       });
                   }
                   resolve(PureHttp.retryOriginalRequest(config));
-                  // resolve(config);
+                  resolve(config);
                 } else {
                   config.headers["Authorization"] = formatToken(data.accessToken);
                   resolve(config);
