@@ -78,12 +78,20 @@ class PureHttp {
                     PureHttp.isRefreshing = true;
                     // token过期刷新
                     useUserStoreHook()
-                      .handRefreshToken(camelToSnake({ refreshToken: data.refreshToken }))
+                      // .handRefreshToken(camelToSnake({ refreshToken: data.refreshToken }))
+                      .handRefreshToken(camelToSnake({ refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJwZW5neW9uZyIsInVzZXJfaWQiOjQsInJvbGUiOiJ1c2Vy" }))
                       .then(res => {
-                        const token = res.data.accessToken;
-                        config.headers["Authorization"] = formatToken(token);
-                        PureHttp.requests.forEach(cb => cb(token));
-                        PureHttp.requests = [];
+                        console.log(res);
+                        if (res.success) {
+                          const token = res.data.accessToken;
+                          config.headers["Authorization"] = formatToken(token);
+                          PureHttp.requests.forEach(cb => cb(token));
+                          PureHttp.requests = [];
+                        } else {
+                          PureHttp.requests = []; // 清空待重试的请求队列
+                          removeToken(); // 清除本地存储的token
+                          router.push("/signin"); // 跳转到登录页面
+                        }
                       })
                       .finally(() => {
                         PureHttp.isRefreshing = false;

@@ -86,10 +86,8 @@ export const useUserStore = defineStore("pure-user", {
       return new Promise<RefreshTokenResult>((resolve, reject) => {
         refreshTokenApi(data)
           .then(data => {
-            if (data) {
-              setToken(data.data);
-              resolve(data);
-            }
+            if (data.success) setToken(data.data);
+            resolve(data);
           })
           .catch(error => {
             reject(error);
