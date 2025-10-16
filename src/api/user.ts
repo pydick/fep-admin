@@ -55,11 +55,16 @@ export const getLogin = (data?: ILoginParams) => {
 
 /** 刷新`token` */
 export const refreshTokenApi = (data?: object) => {
-  return http.request<RefreshTokenResult>("post", "/refresh-token", { data });
+  return http.request<RefreshTokenResult>("post", `${apiV1}/auth/refresh`, { data });
 };
 
 /** 注册 */
 // 返回any?
 export const signup = (data?: IRegisterParams) => {
   return http.request<any>("post", `${apiV1}/auth/register`, { data });
+};
+
+/** 获取当前用户  */
+export const getMe = (data?: IRegisterParams) => {
+  return http.request<any>("get", `${apiV1}/auth/me`, { data });
 };

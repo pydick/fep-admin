@@ -3,8 +3,10 @@ import type { PureHttpError, RequestMethods, PureHttpResponse, PureHttpRequestCo
 import { stringify } from "qs";
 import NProgress from "../progress";
 import { getToken, formatToken } from "@/utils/auth";
+import router from "@/router";
 import { useUserStoreHook } from "@/store/modules/user";
-
+import { removeToken } from "@/utils/auth";
+import { camelToSnake } from "@/utils/golbal";
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
   // 请求超时时间
@@ -19,7 +21,6 @@ const defaultConfig: AxiosRequestConfig = {
     serialize: stringify as unknown as CustomParamsSerializer
   }
 };
-
 class PureHttp {
   constructor() {
     this.httpInterceptorsRequest();
@@ -64,7 +65,7 @@ class PureHttp {
           return config;
         }
         /** 请求白名单，放置一些不需要`token`的接口（通过设置请求白名单，防止`token`过期后再请求造成的死循环问题） */
-        const whiteList = ["/refresh-token", "/login"];
+        const whiteList = ["/refresh", "/login"];
         return whiteList.some(url => config.url.endsWith(url))
           ? config
           : new Promise(resolve => {
@@ -77,7 +78,7 @@ class PureHttp {
                     PureHttp.isRefreshing = true;
                     // token过期刷新
                     useUserStoreHook()
-                      .handRefreshToken({ refreshToken: data.refreshToken })
+                      .handRefreshToken(camelToSnake({ refreshToken: data.refreshToken }))
                       .then(res => {
                         const token = res.data.accessToken;
                         config.headers["Authorization"] = formatToken(token);
@@ -89,6 +90,7 @@ class PureHttp {
                       });
                   }
                   resolve(PureHttp.retryOriginalRequest(config));
+                  // resolve(config);
                 } else {
                   config.headers["Authorization"] = formatToken(data.accessToken);
                   resolve(config);
@@ -128,6 +130,10 @@ class PureHttp {
         $error.isCancelRequest = Axios.isCancel($error);
         // 关闭进度条动画
         NProgress.done();
+        if (error.response.status === 403) {
+          removeToken();
+          router.push("/signin");
+        }
         // 所有的响应异常 区分来源为取消请求/非取消请求
         return Promise.reject($error);
       }
