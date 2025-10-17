@@ -9,12 +9,13 @@ defineOptions({
 });
 const handleClick = () => {
   let data = getToken();
-  let deepData = JSON.parse(JSON.stringify(data));
-  const newexpires = dayjs(data.expires).subtract(3, "hour").valueOf();
-  data.expires = newexpires;
-  Cookies.set("authorized-token", JSON.stringify(data));
-  const test = Cookies.get("authorized-token");
-  expires.value = dayjs(JSON.parse(test).expires).format("YYYY-MM-DD HH:mm:ss");
+  if (data) {
+    const newexpires = dayjs(data.expires).subtract(3, "hour").valueOf();
+    data.expires = newexpires;
+    Cookies.set("authorized-token", JSON.stringify(data));
+    const test = Cookies.get("authorized-token");
+    expires.value = dayjs(JSON.parse(test).expires).format("YYYY-MM-DD HH:mm:ss");
+  }
 };
 const testGetMe = async () => {
   const res = await getMe({});
@@ -22,7 +23,9 @@ const testGetMe = async () => {
 };
 const expires = ref("");
 onMounted(() => {
-  expires.value = dayjs(getToken().expires).format("YYYY-MM-DD HH:mm:ss");
+  if (getToken()) {
+    expires.value = dayjs(getToken().expires).format("YYYY-MM-DD HH:mm:ss");
+  }
 });
 </script>
 
