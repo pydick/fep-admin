@@ -4,18 +4,18 @@
  */
 
 // 设计稿基准宽度（1920px）
-const BASE_WIDTH = 1920
+const BASE_WIDTH = 1920;
 // 设计稿基准高度（1080px）
-const BASE_HEIGHT = 1080
+const BASE_HEIGHT = 1080;
 // 基准根字体大小（16px）
-const BASE_FONT_SIZE = 16
+const BASE_FONT_SIZE = 16;
 
 /**
  * 设置根字体大小
  * @param fontSize 字体大小
  */
 function setRootFontSize(fontSize: number): void {
-  document.documentElement.style.fontSize = `${fontSize}px`
+  document.documentElement.style.fontSize = `${fontSize}px`;
 }
 
 /**
@@ -23,26 +23,23 @@ function setRootFontSize(fontSize: number): void {
  * @returns 计算后的根字体大小
  */
 function calculateFontSize(): number {
-  const { innerWidth, innerHeight } = window
+  const { innerWidth, innerHeight } = window;
   
-  // 计算宽高比
-  const currentRatio = innerWidth / innerHeight
-  const baseRatio = BASE_WIDTH / BASE_HEIGHT
+  // 计算缩放比例
+  const scaleX = innerWidth / BASE_WIDTH;
+  const scaleY = innerHeight / BASE_HEIGHT;
+  const scale = Math.min(scaleX, scaleY);
   
-  let fontSize: number
+  // 设置最小缩放比例为 1（即不小于基准字体大小）
+  const minScale = 1;
+  const finalScale = Math.max(minScale, scale);
   
-  if (currentRatio > baseRatio) {
-    // 宽屏：以高度为基准
-    fontSize = (innerHeight / BASE_HEIGHT) * BASE_FONT_SIZE
-  } else {
-    // 高屏：以宽度为基准
-    fontSize = (innerWidth / BASE_WIDTH) * BASE_FONT_SIZE
-  }
+  let fontSize = BASE_FONT_SIZE * finalScale;
   
-  // 限制字体大小范围，避免过小或过大
-  fontSize = Math.max(12, Math.min(24, fontSize))
+  // 限制字体大小范围
+  fontSize = Math.max(12, Math.min(24, fontSize));
   
-  return fontSize
+  return fontSize;
 }
 
 /**
@@ -50,29 +47,29 @@ function calculateFontSize(): number {
  */
 function initRem(): void {
   // 设置初始字体大小
-  const fontSize = calculateFontSize()
-  setRootFontSize(fontSize)
-  
+  const fontSize = calculateFontSize();
+  setRootFontSize(fontSize);
+
   // 监听窗口大小变化
-  let resizeTimer: NodeJS.Timeout | null = null
-  
+  let resizeTimer: NodeJS.Timeout | null = null;
+
   const handleResize = (): void => {
     if (resizeTimer) {
-      clearTimeout(resizeTimer)
+      clearTimeout(resizeTimer);
     }
-    
+
     resizeTimer = setTimeout(() => {
-      const newFontSize = calculateFontSize()
-      setRootFontSize(newFontSize)
-    }, 100)
-  }
-  
-  window.addEventListener('resize', handleResize)
-  
+      const newFontSize = calculateFontSize();
+      setRootFontSize(newFontSize);
+    }, 100);
+  };
+
+  window.addEventListener("resize", handleResize);
+
   // 监听系统缩放变化（如果支持）
   if (window.devicePixelRatio !== undefined) {
-    const mediaQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
-    mediaQuery.addEventListener('change', handleResize)
+    const mediaQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+    mediaQuery.addEventListener("change", handleResize);
   }
 }
 
@@ -82,8 +79,8 @@ function initRem(): void {
  * @returns rem 值
  */
 function pxToRem(px: number): string {
-  const fontSize = parseFloat(document.documentElement.style.fontSize) || BASE_FONT_SIZE
-  return `${px / fontSize}rem`
+  const fontSize = parseFloat(document.documentElement.style.fontSize) || BASE_FONT_SIZE;
+  return `${px / fontSize}rem`;
 }
 
 /**
@@ -92,18 +89,8 @@ function pxToRem(px: number): string {
  * @returns px 值
  */
 function remToPx(rem: number): number {
-  const fontSize = parseFloat(document.documentElement.style.fontSize) || BASE_FONT_SIZE
-  return rem * fontSize
+  const fontSize = parseFloat(document.documentElement.style.fontSize) || BASE_FONT_SIZE;
+  return rem * fontSize;
 }
 
-export {
-  initRem,
-  calculateFontSize,
-  setRootFontSize,
-  pxToRem,
-  remToPx,
-  BASE_WIDTH,
-  BASE_HEIGHT,
-  BASE_FONT_SIZE
-}
-
+export { initRem, calculateFontSize, setRootFontSize, pxToRem, remToPx, BASE_WIDTH, BASE_HEIGHT, BASE_FONT_SIZE };

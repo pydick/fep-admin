@@ -7,7 +7,7 @@ import { useGlobal, isNumber } from "@pureadmin/utils";
 import BackTopIcon from "@/assets/svg/back_top.svg?component";
 import { h, computed, Transition, defineComponent } from "vue";
 import { usePermissionStoreHook } from "@/store/modules/permission";
-
+import { pxToRem } from "@/utils/rem";
 const props = defineProps({
   fixedHeader: Boolean
 });
@@ -47,7 +47,7 @@ const getMainWidth = computed(() => {
 });
 
 const getSectionStyle = computed(() => {
-  return [hideTabs.value && layout ? "padding-top: 48px;" : "", !hideTabs.value && layout ? (showModel.value == "chrome" ? "padding-top: 85px;" : "padding-top: 81px;") : "", hideTabs.value && !layout.value ? "padding-top: 48px;" : "", !hideTabs.value && !layout.value ? (showModel.value == "chrome" ? "padding-top: 85px;" : "padding-top: 81px;") : "", props.fixedHeader ? "" : `padding-top: 0;${hideTabs.value ? "min-height: calc(100vh - 48px);" : "min-height: calc(100vh - 86px);"}`];
+  return [hideTabs.value && layout ? `padding-top:  ${pxToRem(48)};` : "", !hideTabs.value && layout ? (showModel.value == "chrome" ? "padding-top: 85px;" : "padding-top: 81px;") : "", hideTabs.value && !layout.value ? `padding-top:  ${pxToRem(48)};` : "", !hideTabs.value && !layout.value ? (showModel.value == "chrome" ? "padding-top: 85px;" : "padding-top: 81px;") : "", props.fixedHeader ? "" : `padding-top: 0;${hideTabs.value ? "min-height: calc(100vh - 48px);" : "min-height: calc(100vh - 86px);"}`];
 });
 
 const transitionMain = defineComponent({
