@@ -432,7 +432,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-form ref="el_form_first" :model="form" class="w_90 flex-1">
+  <el-form ref="el_form_first" :model="form" class="flex-1 py-[10px]">
     <!-- <ProteinInput>
       <template #Tab>
         <Proteintab />
@@ -447,7 +447,7 @@ onMounted(() => {
         <datacenter />
       </template>
     </ProteinInput> -->
-    <p class="label_1 m_top5">输入蛋白</p>
+    <p class="label_1">输入蛋白</p>
     <el-form-item prop="input_tab" :rules="[{ required: true, message: 'This is required' }]">
       <el-radio-group v-model="form.input_tab">
         <el-radio-button label="数据库导入">数据库导入</el-radio-button>
@@ -487,7 +487,7 @@ onMounted(() => {
       <el-switch v-model="form.need_prot_process" style="margin-left: 10px" />
     </p>
     <p class="label_3">如果您的蛋白已经做过蛋白预处理，您可以直接点击下一步。如果没有，建议您打开开关进行预处理相关的操作</p>
-    <el-card v-show="form.need_prot_process" shadow="never" body-style="padding: 0 0.25rem 0 0.75rem">
+    <el-card v-show="form.need_prot_process" shadow="never" class="mt-[15px]" body-style="padding: 0 0.25rem 0 0.75rem">
       <p slot="label" class="label_1_1">选择需要保留的蛋白链</p>
       <el-form-item prop="box_ligand" :rules="[{ validator: check_box_ligand, trigger: 'change' }]">
         <p v-if="form.protein_chain.length == 0" class="no_data">暂无数据</p>
@@ -589,13 +589,14 @@ onMounted(() => {
 .el-form-item {
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
+  margin-top: 15px;
 }
 :deep(.el-form-item__label) {
   justify-content: flex-start;
 }
 :deep(.el-form-item__content) {
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 .no_data {
   width: 100%;

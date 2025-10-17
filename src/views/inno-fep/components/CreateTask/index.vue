@@ -35,8 +35,8 @@ provide("protein3dRef", protein3dRef);
       <Protein3d ref="protein3dRef" class="h-full" />
     </el-col>
     <el-col :span="12" class="pl-[10px] h-full">
-      <div class="h-full flex flex-col border border-[var(--el-card-border-color)] pt-[20px] pr-[20px] pb-[20px] pl-[20px]">
-        <div class="pt-[20px] pb-[15px] bg-[var(--el-fill-color-light)]">
+      <div class="h-full flex flex-col border border-[var(--el-card-border-color)] pt-[15px] pr-[20px] pb-[15px] pl-[20px]">
+        <div class="pt-[15px] pb-[10px] bg-[var(--el-fill-color-light)]">
           <CSstep ref="stepRef" v-model:active="activeStep" class="max-w-full!" :titleList="stepList" />
         </div>
         <div class="flex-1 overflow-y-auto basis-0">

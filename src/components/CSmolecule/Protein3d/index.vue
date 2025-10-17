@@ -512,8 +512,8 @@ defineExpose({
   z-index: 1001;
 }
 .cover_img {
-  width: 800px;
-  max-width: 800px;
+  width: 450px;
+  max-width: 450px;
   opacity: 0.2;
   display: block;
   margin: 0 auto;

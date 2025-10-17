@@ -817,7 +817,7 @@
     width: 100%;
     border-left: #0160ee solid 5px;
     padding-left: 10px;
-    margin: 20px 0 20px 0;
+    margin: 15px 0 0 0;
     font-size: 18px;
     display: flex;
     align-items: flex-start;
@@ -842,10 +842,10 @@
     margin-right: 10px;
     margin-top: 3px
   }
-        .label_3 {
-          font-size: 14px;
-          color: #999999;
-          line-height: 20px;
-          margin-top: -15px;
-          margin-bottom: 15px;
-        }
+  .label_3 {
+    font-size: 14px;
+    color: #999999;
+    line-height: 20px;
+    margin-top: 15px;
+    margin-bottom: 0px;
+  }

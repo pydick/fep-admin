@@ -432,7 +432,7 @@ onMounted(() => {
 
 <template>
   <el-form ref="el_form_first" :model="form" class="w_90 flex-1">
-    <p class="label_1 m_top5">输入蛋白</p>
+    <p class="label_1 my-[15px]">输入蛋白</p>
     <el-form-item prop="input_tab" :rules="[{ required: true, message: 'This is required' }]">
       <el-radio-group v-model="form.input_tab">
         <el-radio-button label="数据库导入">数据库导入</el-radio-button>

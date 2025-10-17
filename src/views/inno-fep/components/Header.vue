@@ -10,9 +10,9 @@ const cardHeader = {
 </script>
 
 <template>
-  <div class="border border-[var(--el-card-border-color)] p-[20px]">
-    <h2 class="font-extrabold">{{ cardHeader.title }}</h2>
-    <p>
+  <div class="border border-[var(--el-card-border-color)] py-[15px] px-[20px]">
+    <h2 class="h-[24px] font-black leading-[24px]">{{ cardHeader.title }}</h2>
+    <p class="pb-0">
       <span class="height-[21px] leading-[21px] align-middle">{{ cardHeader.description }}</span>
       <el-link type="primary" :href="cardHeader.link" target="_blank" underline="never">更多详情</el-link>
     </p>
