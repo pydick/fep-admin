@@ -25,6 +25,9 @@ import { Auth } from "@/components/ReAuth";
 import { Perms } from "@/components/RePerms";
 // import PureDescriptions from "@pureadmin/descriptions";
 
+// 引入 rem 适配工具
+import { initRem } from "@/utils/rem";
+
 // 引入重置样式
 import "./style/reset.scss";
 // 导入公共样式
@@ -44,8 +47,12 @@ import "vxe-table/lib/style.css";
 
 let app = null;
 
-function render(props = {}) {
+function render(props: any = {}) {
   const { container } = props;
+
+  // 初始化 rem 适配
+  initRem();
+
   app = createApp(App);
   Object.keys(directives).forEach(key => {
     app.directive(key, (directives as { [key: string]: Directive })[key]);
