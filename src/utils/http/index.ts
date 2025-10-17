@@ -111,6 +111,14 @@ class PureHttp {
                   resolve(config);
                 }
               } else {
+                ElMessageBox.alert("token过期/不存在，请重新登录", "错误信息:", {
+                  confirmButtonText: "返回登录",
+                  showClose: false,
+                  callback: (action: Action) => {
+                    removeToken(); // 清除本地存储的token
+                    router.push("/signin"); // 跳转到登录页面
+                  }
+                });
                 resolve(config);
               }
             });
