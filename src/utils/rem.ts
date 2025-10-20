@@ -25,19 +25,20 @@ function setRootFontSize(fontSize: number): void {
 function calculateFontSize(): number {
   const devicePixelRatio = window.devicePixelRatio || 1;
 
-  // 使用屏幕尺寸而不是窗口尺寸
-  // screen.width 在 Windows 上通常已经是逻辑分辨率
-  const logicalWidth = screen.width;
-  const logicalHeight = screen.height;
+  // 获取实际屏幕尺寸
+  const actualWidth = screen.width;
+  const actualHeight = screen.height;
+
+  // 计算逻辑分辨率（考虑系统缩放）
+  const logicalWidth = actualWidth / devicePixelRatio;
+  const logicalHeight = actualHeight / devicePixelRatio;
 
   // 使用逻辑分辨率计算缩放比例
   const scaleX = logicalWidth / BASE_WIDTH;
   const scaleY = logicalHeight / BASE_HEIGHT;
   const scale = Math.min(scaleX, scaleY);
 
-  // 设置最小缩放比例为 1（即不小于基准字体大小）
-  const minScale = 1;
-  const finalScale = Math.max(minScale, scale);
+  const finalScale = scale; // 直接使用 scale
 
   let fontSize = BASE_FONT_SIZE * finalScale;
 
@@ -47,11 +48,9 @@ function calculateFontSize(): number {
   // 添加调试信息
   if (process.env.NODE_ENV === "development") {
     console.log("[REM调试]", {
-      screenSize: `${screen.width}x${screen.height}`,
-      availSize: `${screen.availWidth}x${screen.availHeight}`,
-      windowSize: `${window.innerWidth}x${window.innerHeight}`,
+      screenSize: `${actualWidth}x${actualHeight}`,
+      logicalSize: `${logicalWidth.toFixed(0)}x${logicalHeight.toFixed(0)}`,
       devicePixelRatio,
-      logicalSize: `${logicalWidth}x${logicalHeight}`,
       scale: scale.toFixed(3),
       finalScale: finalScale.toFixed(3),
       fontSize: fontSize.toFixed(2)
@@ -96,10 +95,12 @@ function initRem(): void {
  * px 转 rem
  * @param px px 值
  * @returns rem 值
+ * 注意：使用基准字体大小计算，这样 rem 值会随根字体大小按比例缩放
  */
 function pxToRem(px: number): string {
-  const fontSize = parseFloat(document.documentElement.style.fontSize) || BASE_FONT_SIZE;
-  return `${px / fontSize}rem`;
+  // 始终使用基准字体大小计算，让 rem 值固定
+  // 这样实际像素值会随根字体大小自动缩放
+  return `${px / BASE_FONT_SIZE}rem`;
 }
 
 /**
@@ -108,8 +109,7 @@ function pxToRem(px: number): string {
  * @returns px 值
  */
 function remToPx(rem: number): number {
-  const fontSize = parseFloat(document.documentElement.style.fontSize) || BASE_FONT_SIZE;
-  return rem * fontSize;
+  return rem * BASE_FONT_SIZE;
 }
 
 export { initRem, calculateFontSize, setRootFontSize, pxToRem, remToPx, BASE_WIDTH, BASE_HEIGHT, BASE_FONT_SIZE };

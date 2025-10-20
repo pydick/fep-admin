@@ -16,6 +16,7 @@ import { useEpThemeStoreHook } from "@/store/modules/epTheme";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 import ExitFullscreen from "~icons/ri/fullscreen-exit-fill";
 import Fullscreen from "~icons/ri/fullscreen-fill";
+import { pxToRem } from "@/utils/rem";
 
 const errorInfo = "The current routing configuration is incorrect, please check the configuration";
 
@@ -64,7 +65,7 @@ export function useNav() {
   });
 
   const avatarsStyle = computed(() => {
-    return username.value ? { marginRight: "10px" } : "";
+    return username.value ? { marginRight: pxToRem(10) } : "";
   });
 
   const isCollapse = computed(() => {

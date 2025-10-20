@@ -43,11 +43,11 @@ const layout = computed(() => {
 });
 
 const getMainWidth = computed(() => {
-  return isNumber(stretch.value) ? stretch.value + "px" : stretch.value ? "1440px" : "100%";
+  return isNumber(stretch.value) ? pxToRem(stretch.value) : stretch.value ? pxToRem(1440) : "100%";
 });
 
 const getSectionStyle = computed(() => {
-  return [hideTabs.value && layout ? `padding-top:  ${pxToRem(48)};` : "", !hideTabs.value && layout ? (showModel.value == "chrome" ? "padding-top: 85px;" : "padding-top: 81px;") : "", hideTabs.value && !layout.value ? `padding-top:  ${pxToRem(48)};` : "", !hideTabs.value && !layout.value ? (showModel.value == "chrome" ? "padding-top: 85px;" : "padding-top: 81px;") : "", props.fixedHeader ? "" : `padding-top: 0;${hideTabs.value ? "min-height: calc(100vh - 48px);" : "min-height: calc(100vh - 86px);"}`];
+  return [hideTabs.value && layout ? `padding-top: ${pxToRem(48)};` : "", !hideTabs.value && layout ? (showModel.value == "chrome" ? `padding-top: ${pxToRem(85)};` : `padding-top: ${pxToRem(81)};`) : "", hideTabs.value && !layout.value ? `padding-top: ${pxToRem(48)};` : "", !hideTabs.value && !layout.value ? (showModel.value == "chrome" ? `padding-top: ${pxToRem(85)};` : `padding-top: ${pxToRem(81)};`) : "", props.fixedHeader ? "" : `padding-top: 0;${hideTabs.value ? `min-height: calc(100vh - ${pxToRem(48)});` : `min-height: calc(100vh - ${pxToRem(86)});`}`];
 });
 
 const transitionMain = defineComponent({

@@ -9,6 +9,7 @@ import SidebarLinkItem from "./SidebarLinkItem.vue";
 import SidebarExtraIcon from "./SidebarExtraIcon.vue";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { type PropType, type CSSProperties, ref, toRaw, computed, useAttrs } from "vue";
+import { pxToRem } from "@/utils/rem";
 
 import ArrowUp from "~icons/ep/arrow-up-bold";
 import EpArrowDown from "~icons/ep/arrow-down-bold";
@@ -45,7 +46,7 @@ const getSubMenuIconStyle = computed((): CSSProperties => {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    margin: layout.value === "horizontal" ? "0 5px 0 0" : isCollapse.value ? "0 auto" : "0 5px 0 0"
+    margin: layout.value === "horizontal" ? `0 ${pxToRem(5)} 0 0` : isCollapse.value ? "0 auto" : `0 ${pxToRem(5)} 0 0`
   };
 });
 

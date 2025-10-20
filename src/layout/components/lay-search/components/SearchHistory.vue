@@ -6,6 +6,7 @@ import type { optionsItem, dragItem, Props } from "../types";
 import { useEpThemeStoreHook } from "@/store/modules/epTheme";
 import { useResizeObserver, isArray, delay } from "@pureadmin/utils";
 import { ref, watch, nextTick, computed, getCurrentInstance } from "vue";
+import { pxToRem } from "@/utils/rem";
 
 interface Emits {
   (e: "update:value", val: string): void;
@@ -30,7 +31,7 @@ const itemStyle = computed(() => {
     return {
       background: item?.path === active.value ? useEpThemeStoreHook().epThemeColor : "",
       color: item.path === active.value ? "#fff" : "",
-      fontSize: item.path === active.value ? "16px" : "14px"
+      fontSize: item.path === active.value ? pxToRem(16) : pxToRem(14)
     };
   };
 });

@@ -499,7 +499,7 @@ onMounted(() => {
         </el-scrollbar>
       </el-form-item>
       <p slot="label" class="label_1_1">选择需要保留的小分子及水分子</p>
-      <p class="label_3" style="margin-top: -5px">此处默认展示pdb文件中所有的小分子及其5Å范围内的水分子，系统会默认删除5Å范围外的水，而5Å范围内的水由用户自行决定是否删除。其中具有水桥作用的水分子做了特殊标记，您可以通过【快速删除】按钮一步删除没有水桥作用的水分子</p>
+      <p class="label_3 -mt-[5px]">此处默认展示pdb文件中所有的小分子及其5Å范围内的水分子，系统会默认删除5Å范围外的水，而5Å范围内的水由用户自行决定是否删除。其中具有水桥作用的水分子做了特殊标记，您可以通过【快速删除】按钮一步删除没有水桥作用的水分子</p>
       <el-form-item>
         <div style="display: flex; align-items: flex-start; width: 100%">
           <el-scrollbar style="width: 80%">

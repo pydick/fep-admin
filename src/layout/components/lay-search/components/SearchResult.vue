@@ -6,6 +6,7 @@ import { useEpThemeStoreHook } from "@/store/modules/epTheme";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { ref, computed, getCurrentInstance, onMounted } from "vue";
 import EnterOutlined from "@/assets/svg/enter_outlined.svg?component";
+import { pxToRem } from "@/utils/rem";
 
 interface Emits {
   (e: "update:value", val: string): void;
@@ -23,7 +24,7 @@ const itemStyle = computed(() => {
     return {
       background: item?.path === active.value ? useEpThemeStoreHook().epThemeColor : "",
       color: item.path === active.value ? "#fff" : "",
-      fontSize: item.path === active.value ? "16px" : "14px"
+      fontSize: item.path === active.value ? pxToRem(16) : pxToRem(14)
     };
   };
 });
