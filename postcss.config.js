@@ -8,8 +8,16 @@ export default {
       rootValue: 16,
       // 需要转换的属性，* 表示所有
       propList: ["*"],
-      // 排除不需要转换的文件
-      exclude: /node_modules/i,
+      // 排除所有 node_modules，但保留 element-plus
+      exclude: function (file) {
+        // 如果文件路径包含 node_modules
+        if (file.includes("node_modules")) {
+          // 但如果是 element-plus，则不排除（返回 false 表示不排除）
+          return !file.includes("element-plus");
+        }
+        // 其他文件不排除
+        return false;
+      },
       // 保留小数位数
       unitPrecision: 5,
       // 媒体查询中是否转换 px
