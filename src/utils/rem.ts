@@ -23,22 +23,41 @@ function setRootFontSize(fontSize: number): void {
  * @returns 计算后的根字体大小
  */
 function calculateFontSize(): number {
-  const { innerWidth, innerHeight } = window;
-  
-  // 计算缩放比例
-  const scaleX = innerWidth / BASE_WIDTH;
-  const scaleY = innerHeight / BASE_HEIGHT;
+  const devicePixelRatio = window.devicePixelRatio || 1;
+
+  // 使用屏幕尺寸而不是窗口尺寸
+  // screen.width 在 Windows 上通常已经是逻辑分辨率
+  const logicalWidth = screen.width;
+  const logicalHeight = screen.height;
+
+  // 使用逻辑分辨率计算缩放比例
+  const scaleX = logicalWidth / BASE_WIDTH;
+  const scaleY = logicalHeight / BASE_HEIGHT;
   const scale = Math.min(scaleX, scaleY);
-  
+
   // 设置最小缩放比例为 1（即不小于基准字体大小）
   const minScale = 1;
   const finalScale = Math.max(minScale, scale);
-  
+
   let fontSize = BASE_FONT_SIZE * finalScale;
-  
+
   // 限制字体大小范围
   fontSize = Math.max(12, Math.min(24, fontSize));
-  
+
+  // 添加调试信息
+  if (process.env.NODE_ENV === "development") {
+    console.log("[REM调试]", {
+      screenSize: `${screen.width}x${screen.height}`,
+      availSize: `${screen.availWidth}x${screen.availHeight}`,
+      windowSize: `${window.innerWidth}x${window.innerHeight}`,
+      devicePixelRatio,
+      logicalSize: `${logicalWidth}x${logicalHeight}`,
+      scale: scale.toFixed(3),
+      finalScale: finalScale.toFixed(3),
+      fontSize: fontSize.toFixed(2)
+    });
+  }
+
   return fontSize;
 }
 
