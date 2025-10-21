@@ -14,6 +14,7 @@
 import { useI18n } from "vue-i18n";
 import { check_file_size } from "@/utils/common";
 import { check_pdb_api, dataset_content, ds_duplicate, presign_url, save_file, upload, create_oss } from "@/api/data";
+import { ossUpload } from "@/api/fep";
 // import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref } from "vue";
 
@@ -73,7 +74,24 @@ export default {
       formData.append("pdb_file", file);
       return check_pdb_api(formData);
     },
-    file_on_change(file, fileList) {
+    async file_on_change(file, fileList) {
+      if (fileList.length > 1) {
+        fileList.splice(0, 1);
+      }
+      if (fileList.length) {
+        const formData = new FormData();
+        formData.append("file", file.raw);
+        console.log(file);
+        const res = await ossUpload(formData);
+        if (res.success) {
+          this.$emit("uploadSuc", res.key);
+        } else {
+          alert("上传失败");
+        }
+        console.log(111, res);
+      }
+    },
+    file_on_change1(file, fileList) {
       if (fileList.length > 1) {
         fileList.splice(0, 1);
       }

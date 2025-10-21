@@ -273,6 +273,9 @@ const quick_delete_click = async () => {
   protein3dRef.value.select_none();
 };
 
+const uploadSuc = id => {
+  getPdbById(id);
+};
 const pdbidInput = debounce(value => {
   const id = `proteins/${value}.pdb`;
   getPdbById(id);
@@ -462,7 +465,7 @@ onMounted(async () => {
       </el-input>
     </el-form-item>
     <el-form-item v-if="form.input_tab === '上传文件'" prop="protein_file" :rules="[{ required: true, message: '请上传蛋白pdb文件', trigger: 'submit' }]">
-      <CSupload :file_name="protein_name" inp_placeholder="上传" :ws_id="space.ws_id" file_accept=".pdb" task_type="docking" :is_slot="false" @custom-event="pdbCustomEvent" @show-event="loadingShow" @hide-event="loadingHide" />
+      <CSupload inp_placeholder="上传" file_accept=".pdb" :is_slot="false" @uploadSuc="uploadSuc" />
     </el-form-item>
     <el-form-item v-if="form.input_tab === '数据中心'" :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="protein_data">
       <el-button class="w-full" @click="show_dialog('protein')">
