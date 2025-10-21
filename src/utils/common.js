@@ -467,3 +467,8 @@ export function change_pocket_to_xyz(coords_info, expand = 10) {
     l3: coords_info.max_z - coords_info.min_z + expand
   };
 }
+
+export const base64ToBlob = base64 => {
+  const byteCharacters = atob(base64);
+  return byteCharacters;
+};

@@ -7,8 +7,9 @@ import CSupload from "@/components/CSupload/index.vue";
 import CSspinner from "@/components/CSspinner/index.vue";
 import { check_pdb_api, datalists, basic_info, ds_duplicate, examples, get_space, pdb_ctx, pdb_datalists, upload } from "@/api/data";
 import { pxToRem } from "@/utils/rem";
-import { ossList, ossGetDownload } from "@/api/fep";
+import { ossList, ossGetDownload, fetchFileAsBlob } from "@/api/fep";
 import { ossBucket } from "@/config/api";
+import { base64ToBlob } from "@/utils/common";
 defineOptions({
   name: "ProteinPreprocess"
 });
@@ -271,12 +272,20 @@ const quick_delete_click = async () => {
   protein3dRef.value.select_none();
 };
 
-const getPdbById = async id => {
+const pdbidInput = () => {
+  console.log(form.pdbid_input);
+};
+
+const exampleChoose = async id => {
   console.log(id);
-  const res = await ossGetDownload({ key: id, bucket: ossBucket });
-  console.log(1112, res);
-  const file = new Blob([data.data], { type: "text/plain" });
-  show_protein(res, "pdb");
+  const res = await ossGetDownload({ key: id, bucket: ossBucket, return_url: false });
+  if (res.success) {
+    console.log(1112, res);
+    console.log(1112, typeof res.data.file);
+    // const file1 = await fetchFileAsBlob(res.data.presigned_url);
+    const file = base64ToBlob(res.data.file);
+    show_protein(file, "pdb");
+  }
 };
 
 const get_pdb_by_id_select = () => {
@@ -442,9 +451,9 @@ onMounted(async () => {
         { validator: checkurl, trigger: 'change' }
       ]"
     >
-      <el-input v-model="form.pdbid_input" placeholder="输入PDBID" class="w-full" @input="get_pdb_by_id_input">
+      <el-input v-model="form.pdbid_input" placeholder="输入PDBID" class="w-full" @input="pdbidInput">
         <template #append>
-          <el-select v-model="form.pdbid_select" placeholder="选择示例" class="w-[100px]!" @change="getPdbById">
+          <el-select v-model="form.pdbid_select" placeholder="选择示例" class="w-[100px]!" @change="exampleChoose">
             <el-option v-for="item in exampleList" :key="item.value" :label="item.name" :value="item.value" />
           </el-select>
         </template>

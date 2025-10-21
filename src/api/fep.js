@@ -16,3 +16,8 @@ export function ossGetDownload(params) {
 export function ossList(params) {
   return request.get(`${apiV1}/oss/list`, { params });
 }
+
+export async function fetchFileAsBlob(url) {
+  const res = await request.get(url, { params: { responseType: "blob" } });
+  return res;
+}
