@@ -25,35 +25,35 @@ function setRootFontSize(fontSize: number): void {
 function calculateFontSize(): number {
   const devicePixelRatio = window.devicePixelRatio || 1;
 
-  // 获取实际屏幕尺寸
-  const actualWidth = screen.width;
-  const actualHeight = screen.height;
+  // window.innerWidth 是 CSS 像素（逻辑像素）
+  // 对于不同 DPI 和系统缩放，可能需要调整
+  const cssWidth = window.innerWidth;
+  const cssHeight = window.innerHeight;
 
-  // 计算逻辑分辨率（考虑系统缩放）
-  const logicalWidth = actualWidth / devicePixelRatio;
-  const logicalHeight = actualHeight / devicePixelRatio;
-
-  // 使用逻辑分辨率计算缩放比例
-  const scaleX = logicalWidth / BASE_WIDTH;
-  const scaleY = logicalHeight / BASE_HEIGHT;
+  // 方案A：直接使用 CSS 像素（推荐，适合大多数情况）
+  const scaleX = cssWidth / BASE_WIDTH;
+  const scaleY = cssHeight / BASE_HEIGHT;
   const scale = Math.min(scaleX, scaleY);
 
-  const finalScale = scale; // 直接使用 scale
 
-  let fontSize = BASE_FONT_SIZE * finalScale;
+  let fontSize = BASE_FONT_SIZE * scale;
 
-  // 限制字体大小范围
-  fontSize = Math.max(12, Math.min(24, fontSize));
+  // 根据 devicePixelRatio 调整字体范围
+  const minFontSize = devicePixelRatio >= 2 ? 8 : 6; // 高 DPI 屏幕可以更小
+  const maxFontSize = 24;
 
-  // 添加调试信息
+  fontSize = Math.max(minFontSize, Math.min(maxFontSize, fontSize));
+
   if (process.env.NODE_ENV === "development") {
     console.log("[REM调试]", {
-      screenSize: `${actualWidth}x${actualHeight}`,
-      logicalSize: `${logicalWidth.toFixed(0)}x${logicalHeight.toFixed(0)}`,
-      devicePixelRatio,
-      scale: scale.toFixed(3),
-      finalScale: finalScale.toFixed(3),
-      fontSize: fontSize.toFixed(2)
+      windowSize: `${cssWidth}x${cssHeight}`,
+      devicePixelRatio: devicePixelRatio.toFixed(2),
+      scaleX: scaleX.toFixed(3),
+      scaleY: scaleY.toFixed(3),
+      finalScale: scale.toFixed(3),
+      fontSize: fontSize.toFixed(2),
+      minFontSize,
+      physicalSize: `${(cssWidth * devicePixelRatio).toFixed(0)}x${(cssHeight * devicePixelRatio).toFixed(0)}`
     });
   }
 

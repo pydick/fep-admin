@@ -19,7 +19,7 @@ export default {
         return false;
       },
       // 保留小数位数
-      unitPrecision: 5,
+      unitPrecision: 8,
       // 媒体查询中是否转换 px
       mediaQuery: false,
       // 最小转换值，小于此值不转换
