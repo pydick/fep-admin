@@ -433,7 +433,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-form ref="el_form_first" :model="form" class="flex-1 py-[10px]">
+  <el-form ref="el_form_first" :model="form" class="flex-1 pl-[10px] pr-[20px]">
     <!-- <ProteinInput>
       <template #Tab>
         <Proteintab />
@@ -468,7 +468,7 @@ onMounted(() => {
     >
       <el-input v-model="form.pdbid_input" placeholder="输入PDBID" class="w-full" @input="get_pdb_by_id_input">
         <template #append>
-          <el-select v-model="form.pdbid_select" placeholder="选择示例" class="w-28" @change="get_pdb_by_id_select">
+          <el-select v-model="form.pdbid_select" placeholder="选择示例" class="w-[100px]!" @change="get_pdb_by_id_select">
             <el-option v-for="item in sample_pdb_list" :key="item.value" :label="item.name" :value="item.value" />
           </el-select>
         </template>

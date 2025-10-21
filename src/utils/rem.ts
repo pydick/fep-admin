@@ -35,11 +35,10 @@ function calculateFontSize(): number {
   const scaleY = cssHeight / BASE_HEIGHT;
   const scale = Math.min(scaleX, scaleY);
 
-
   let fontSize = BASE_FONT_SIZE * scale;
 
   // 根据 devicePixelRatio 调整字体范围
-  const minFontSize = devicePixelRatio >= 2 ? 8 : 6; // 高 DPI 屏幕可以更小
+  const minFontSize = 8; // 高 DPI 屏幕可以更小
   const maxFontSize = 24;
 
   fontSize = Math.max(minFontSize, Math.min(maxFontSize, fontSize));

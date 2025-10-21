@@ -193,39 +193,9 @@
 }
 
 
-// 覆盖 Element Plus 固定 px 的 CSS 变量
-:root {
-  --el-card-padding: 1.25rem !important;           // 20px
-  --el-tabs-header-height: 2.5rem !important;      // 40px
-  --el-component-size-large: 2.5rem !important;    // 40px
-  --el-component-size: 2rem !important;            // 32px
-  --el-component-size-small: 1.5rem !important;    // 24px
-}
 
 // 覆盖 tabs header margin
 .el-tabs__header {
   margin-bottom: 0.9375rem !important;  // 15px
-}
-
-// 确保 tabs 和 card 的 flex 布局
-.el-tabs {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.el-tabs__content {
-  flex: 1;
-  overflow: hidden;
-}
-
-.el-card {
-  display: flex;
-  flex-direction: column;
-}
-
-.el-card__body {
-  flex: 1;
-  overflow: hidden;
 }
 
