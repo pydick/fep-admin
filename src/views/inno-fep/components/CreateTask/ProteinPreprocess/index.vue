@@ -488,7 +488,7 @@ onMounted(() => {
       <el-switch v-model="form.need_prot_process" class="ml-[10px]" />
     </p>
     <p class="label_3">如果您的蛋白已经做过蛋白预处理，您可以直接点击下一步。如果没有，建议您打开开关进行预处理相关的操作</p>
-    <el-card v-show="form.need_prot_process" shadow="never" class="mt-[15px]" body-class="pr-[4px] pl-[12px]">
+    <el-card v-show="form.need_prot_process" shadow="never" class="mt-[15px]" body-class=" l-[12px]">
       <p slot="label" class="label_1_1">选择需要保留的蛋白链</p>
       <el-form-item prop="box_ligand" :rules="[{ validator: check_box_ligand, trigger: 'change' }]">
         <p v-if="form.protein_chain.length == 0" class="no_data">暂无数据</p>
@@ -567,8 +567,8 @@ onMounted(() => {
   color: #606266;
 }
 :deep(.el-input-number.is-without-controls .el-input__wrapper) {
-  padding-left: 4px;
-  padding-right: 4px;
+  // padding-left: 4px;
+  // padding-right: 4px;
 }
 :deep(.el-form-item__content > .w_100 > span) {
   width: 100%;
