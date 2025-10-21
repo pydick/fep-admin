@@ -7,6 +7,8 @@ import CSupload from "@/components/CSupload/index.vue";
 import CSspinner from "@/components/CSspinner/index.vue";
 import { check_pdb_api, datalists, basic_info, ds_duplicate, examples, get_space, pdb_ctx, pdb_datalists, upload } from "@/api/data";
 import { pxToRem } from "@/utils/rem";
+import { ossList, ossGetDownload } from "@/api/fep";
+import { ossBucket } from "@/config/api";
 defineOptions({
   name: "ProteinPreprocess"
 });
@@ -15,6 +17,9 @@ const testprotein = () => {
   console.log("show_protein");
   protein3dRef.value.loadStructure(data, "pdb");
 };
+
+let exampleList = ref([]);
+
 //------------------
 const form = reactive({
   input_tab: "数据库导入",
@@ -266,6 +271,14 @@ const quick_delete_click = async () => {
   protein3dRef.value.select_none();
 };
 
+const getPdbById = async id => {
+  console.log(id);
+  const res = await ossGetDownload({ key: id, bucket: ossBucket });
+  console.log(1112, res);
+  const file = new Blob([data.data], { type: "text/plain" });
+  show_protein(res, "pdb");
+};
+
 const get_pdb_by_id_select = () => {
   form.pdb_dataset_id = form.pdbid_select;
   if (form.pdbid_select) {
@@ -397,57 +410,20 @@ const pdbCustomEvent = ({ id, name, pdb_string }) => {
   });
 };
 
-onMounted(() => {
-  get_space()
-    .then(res => {
-      for (let i = 0; i < res.results.length; i++) {
-        if (res.results[i].status === 1) {
-          space.value = res.results[i];
-          get_datalists();
-          return;
-        }
-      }
-    })
-    .catch(err => {
-      console.log(err);
-    });
-  examples("docking").then(res => {
-    // console.log(res)
-    form.size = true;
-    for (let i = 0; i < res.result.pdb.length; i++) {
-      sample_pdb_list.value.push({
-        name: res.result.pdb[i].name,
-        value: res.result.pdb[i].dataset_id,
-        smiles_col: res.result.pdb[i].smiles_col
-      });
-    }
-    for (let i = 0; i < res.result.mols.length; i++) {
-      sample_mol_list.value.push({
-        name: res.result.mols[i].name,
-        value: res.result.mols[i].dataset_id,
-        smiles_col: res.result.mols[i].smiles_col
-      });
-    }
-  });
+onMounted(async () => {
+  const res = await ossList({ proteins: "proteins", bucket: ossBucket });
+  if (res.success) {
+    exampleList.value = res.objects.map(item => ({
+      name: item.Key,
+      value: item.Key
+    }));
+    console.log(1113, exampleList);
+  }
 });
 </script>
 
 <template>
   <el-form ref="el_form_first" :model="form" class="flex-1 pl-[10px] pr-[20px]">
-    <!-- <ProteinInput>
-      <template #Tab>
-        <Proteintab />
-      </template>
-      <template #DatabaseInput>
-        <Databaseinput />
-      </template>
-      <template #FileUpload>
-        <fileupload />
-      </template>
-      <template #DataCenter>
-        <datacenter />
-      </template>
-    </ProteinInput> -->
     <p class="label_1">输入蛋白</p>
     <el-form-item prop="input_tab" :rules="[{ required: true, message: 'This is required' }]">
       <el-radio-group v-model="form.input_tab">
@@ -468,8 +444,8 @@ onMounted(() => {
     >
       <el-input v-model="form.pdbid_input" placeholder="输入PDBID" class="w-full" @input="get_pdb_by_id_input">
         <template #append>
-          <el-select v-model="form.pdbid_select" placeholder="选择示例" class="w-[100px]!" @change="get_pdb_by_id_select">
-            <el-option v-for="item in sample_pdb_list" :key="item.value" :label="item.name" :value="item.value" />
+          <el-select v-model="form.pdbid_select" placeholder="选择示例" class="w-[100px]!" @change="getPdbById">
+            <el-option v-for="item in exampleList" :key="item.value" :label="item.name" :value="item.value" />
           </el-select>
         </template>
       </el-input>

@@ -10,9 +10,9 @@ export function ossUpload(data) {
 }
 
 export function ossGetDownload(params) {
-  return request.get(`${apiV1}/oss/download`, params);
+  return request.get(`${apiV1}/oss/download`, { params });
 }
 
 export function ossList(params) {
-  return request.get(`${apiV1}/oss/list`, params);
+  return request.get(`${apiV1}/oss/list`, { params });
 }
