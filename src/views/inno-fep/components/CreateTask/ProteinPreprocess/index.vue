@@ -10,6 +10,7 @@ import { pxToRem } from "@/utils/rem";
 import { ossList, ossGetDownload, fetchFileAsBlob } from "@/api/fep";
 import { ossBucket } from "@/config/api";
 import { base64ToBlob } from "@/utils/common";
+import { debounce } from "@pureadmin/utils";
 defineOptions({
   name: "ProteinPreprocess"
 });
@@ -272,16 +273,17 @@ const quick_delete_click = async () => {
   protein3dRef.value.select_none();
 };
 
-const pdbidInput = () => {
-  console.log(form.pdbid_input);
-};
+const pdbidInput = debounce(value => {
+  const id = `proteins/${value}.pdb`;
+  getPdbById(id);
+}, 2000);
 
 const exampleChoose = async id => {
-  console.log(id);
+  getPdbById(id);
+};
+const getPdbById = async id => {
   const res = await ossGetDownload({ key: id, bucket: ossBucket, return_url: false });
   if (res.success) {
-    console.log(1112, res);
-    console.log(1112, typeof res.data.file);
     // const file1 = await fetchFileAsBlob(res.data.presigned_url);
     const file = base64ToBlob(res.data.file);
     show_protein(file, "pdb");
