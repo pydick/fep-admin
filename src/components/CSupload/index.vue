@@ -93,8 +93,6 @@ export default {
         } else {
           ElMessage.error("检查未通过");
         }
-
-        console.log(111, res);
       }
     },
     file_on_change1(file, fileList) {

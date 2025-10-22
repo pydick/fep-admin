@@ -305,7 +305,7 @@ const exampleChoose = async id => {
 const getPdbById = async id => {
   const res = await ossGetDownload({ key: id, bucket: ossBucket, return_url: false });
   if (res.success) {
-    console.log(111, res);
+    console.log("ossGetDownload", res);
     // const file1 = await fetchFileAsBlob(res.data.presigned_url);
     const file = base64ToBlob(res.data.file);
     const file2 = base64ToUploadFile(res.data.file, res.data.filename);
