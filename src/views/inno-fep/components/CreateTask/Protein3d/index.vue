@@ -12,7 +12,14 @@ defineExpose({
   loadStructure: (...args) => protein3dRef.value?.loadStructure(...args),
   add_shape: (...args) => protein3dRef.value?.add_shape(...args),
   get_pdb_info: (...args) => protein3dRef.value?.get_pdb_info(...args),
-  remove_shape: (...args) => protein3dRef.value?.remove_shape(...args)
+  remove_shape: (...args) => protein3dRef.value?.remove_shape(...args),
+  change_chain: (...args) => protein3dRef.value?.change_chain(...args),
+  select_none: (...args) => protein3dRef.value?.select_none(...args),
+  quick_select: (...args) => protein3dRef.value?.quick_select(...args),
+  hide_selection: (...args) => protein3dRef.value?.hide_selection(...args),
+  show_selection: (...args) => protein3dRef.value?.show_selection(...args),
+  reset_camera: (...args) => protein3dRef.value?.reset_camera(...args),
+  select_and_focus: (...args) => protein3dRef.value?.select_and_focus(...args)
   // ... 可以暴露更多需要的方法
 });
 </script>

@@ -108,6 +108,11 @@ const charge_option = reactive([
     if_selected: false
   }
 ]);
+const chain_select_fn = data => {
+  data.struct_asym_id = data.chain_id;
+  protein3dRef.value.select_and_focus(data);
+};
+
 const checkurl = (rule, value, callback) => {
   const tmp = value.split("//")[1];
   const reg = /^[A-Za-z0-9]+$/;
@@ -156,7 +161,7 @@ const show_dialog1 = type => {
   }
 };
 const check_box_ligand = (rule, value, callback) => {
-  if (this.form.need_prot_process) {
+  if (form.need_prot_process) {
     let check_chain = 0;
     form.protein_chain.map(item => {
       if (item.if_checked == true) {
@@ -251,6 +256,31 @@ const draw_ligand_box_select = (chain_name = "blank", flag = true) => {
     box_ligand.value = box_option.value[max_ligand].value;
   }
 };
+
+const chain_change = async (data, value) => {
+  await protein3dRef.value.change_chain(data.chain_id, value);
+  draw_ligand_box_select(data.chain_id, value);
+
+  protein3dRef.value.select_none();
+  const hets = [];
+  for (let i = 0; i < form.het_group.length; i++) {
+    if (form.het_group[i].chain_id === data.chain_id) {
+      form.het_group[i].if_checked = value;
+      hets.push({ auth_asym_id: form.het_group[i].chain_id, residue_number: form.het_group[i].residue_number });
+    }
+  }
+  if (hets.length > 0) {
+    await protein3dRef.value.quick_select(hets);
+    if (value) {
+      await protein3dRef.value.show_selection("ligand");
+    } else {
+      await protein3dRef.value.hide_selection();
+    }
+  }
+  protein3dRef.value.reset_camera();
+  protein3dRef.value.select_none();
+};
+
 const get_pdb_info = () => {
   return protein3dRef.value.get_pdb_info();
 };
