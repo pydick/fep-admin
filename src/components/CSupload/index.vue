@@ -14,8 +14,8 @@
 import { useI18n } from "vue-i18n";
 import { check_file_size } from "@/utils/common";
 import { check_pdb_api, dataset_content, ds_duplicate, presign_url, save_file, upload, create_oss } from "@/api/data";
-import { ossUpload } from "@/api/fep";
-// import { ElMessage, ElMessageBox } from 'element-plus'
+import { ossUpload, checkProtein } from "@/api/fep";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { ref } from "vue";
 
 export default {
@@ -82,12 +82,18 @@ export default {
         const formData = new FormData();
         formData.append("file", file.raw);
         console.log(file);
-        const res = await ossUpload(formData);
-        if (res.success) {
-          this.$emit("uploadSuc", res.key);
+        const checkRes = await checkProtein(formData);
+        if (checkRes.success) {
+          const res = await ossUpload(formData);
+          if (res.success) {
+            this.$emit("uploadSuc", res.key);
+          } else {
+            ElMessage.error("上传失败");
+          }
         } else {
-          alert("上传失败");
+          ElMessage.error("检查未通过");
         }
+
         console.log(111, res);
       }
     },

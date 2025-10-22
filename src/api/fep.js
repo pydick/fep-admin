@@ -24,9 +24,17 @@ export function ossList(params) {
 }
 
 export function proteinInfo(data) {
-  console.log("ggg", data);
   return request.post(
     `${apiV1}/protein/info/upload`,
+    { data },
+    {
+      headers: { "content-type": "multipart/form-data" }
+    }
+  );
+}
+export function checkProtein(data) {
+  return request.post(
+    `${apiV1}/protein/check/upload?verbose=true`,
     { data },
     {
       headers: { "content-type": "multipart/form-data" }
