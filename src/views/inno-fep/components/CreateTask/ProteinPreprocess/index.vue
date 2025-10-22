@@ -8,9 +8,10 @@ import CSupload from "@/components/CSupload/index.vue";
 import CSspinner from "@/components/CSspinner/index.vue";
 import { check_pdb_api, datalists, basic_info, ds_duplicate, examples, get_space, pdb_ctx, pdb_datalists, upload } from "@/api/data";
 import { pxToRem } from "@/utils/rem";
-import { ossList, ossGetDownload, fetchFileAsBlob } from "@/api/fep";
+import { ossList, ossGetDownload, proteinInfo, fetchFileAsBlob } from "@/api/fep";
 import { ossBucket } from "@/config/api";
-import { base64ToBlob } from "@/utils/common";
+import { base64ToBlob, base64ToUploadFile } from "@/utils/common";
+
 import { debounce } from "@pureadmin/utils";
 defineOptions({
   name: "ProteinPreprocess"
@@ -304,8 +305,18 @@ const exampleChoose = async id => {
 const getPdbById = async id => {
   const res = await ossGetDownload({ key: id, bucket: ossBucket, return_url: false });
   if (res.success) {
+    console.log(111, res);
     // const file1 = await fetchFileAsBlob(res.data.presigned_url);
     const file = base64ToBlob(res.data.file);
+    const file2 = base64ToUploadFile(res.data.file, res.data.filename);
+    const formData = new FormData();
+    formData.append("file", file2.raw);
+    const proteinRes = await proteinInfo(formData);
+    if (proteinRes.success) {
+      form.protein_chain = proteinRes.data.chains.map(item => ({ if_checked: true, ...item }));
+      form.het_group = proteinRes.data.hets.map(item => ({ if_checked: true, ...item }));
+    }
+    console.log("proteinRes", proteinRes);
     show_protein(file, "pdb");
   }
 };

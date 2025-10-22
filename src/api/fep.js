@@ -23,6 +23,17 @@ export function ossList(params) {
   return request.get(`${apiV1}/oss/list`, { params });
 }
 
+export function proteinInfo(data) {
+  console.log("ggg", data);
+  return request.post(
+    `${apiV1}/protein/info/upload`,
+    { data },
+    {
+      headers: { "content-type": "multipart/form-data" }
+    }
+  );
+}
+
 export async function fetchFileAsBlob(url) {
   const res = await request.get(url, { params: { responseType: "blob" } });
   return res;
