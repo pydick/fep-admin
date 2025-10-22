@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ProteinInput from "./components/ProteinInput/index.vue";
+import Data_select from "../components/data_select.vue";
 import { data } from "./data.js";
 import { inject, ref, reactive, onMounted } from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
@@ -128,7 +129,23 @@ const check_pdb = file => {
   formData.append("pdb_file", file);
   return check_pdb_api(formData);
 };
-const show_dialog = type => {
+
+const show_dialog = async () => {
+  const res = await ossList({ proteins: "proteins", bucket: ossBucket });
+  console.log(111, res);
+  if (res.success) {
+    data_list.value = res.objects.map(item => ({
+      dataset_id: item.Key,
+      name: item.Key
+    }));
+    show_data_list.value = true;
+  }
+};
+const handleCustomEvent = ({ id }) => {
+  getPdbById(id);
+};
+
+const show_dialog1 = type => {
   get_datalists();
   show_data_list.value = true;
   if (type === "protein") {
@@ -468,8 +485,8 @@ onMounted(async () => {
       <CSupload inp_placeholder="上传" file_accept=".pdb" :is_slot="false" @uploadSuc="uploadSuc" />
     </el-form-item>
     <el-form-item v-if="form.input_tab === '数据中心'" :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="protein_data">
-      <el-button class="w-full" @click="show_dialog('protein')">
-        <el-input v-model="form.protein_data" class="text-center w-full" placeholder="数据中心导入pdb" readonly />
+      <el-button class="w-full w_100" @click="show_dialog('protein')">
+        <el-input v-model="form.protein_data" :input-style="{ textAlign: 'center' }" class="w-full" style="width: 100%" placeholder="数据中心导入pdb" readonly />
       </el-button>
     </el-form-item>
 
@@ -540,6 +557,7 @@ onMounted(async () => {
     </el-card>
     <CSspinner ref="spinner_ref" />
     <el-button @click="testprotein">testprotein</el-button>
+    <Data_select v-model:if_show="show_data_list" :data_list="data_list" name="蛋白数据中心" @custom-event="handleCustomEvent" />
   </el-form>
 </template>
 

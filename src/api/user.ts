@@ -48,9 +48,9 @@ interface ILoginParams {
 }
 
 /** 登录 */
-// 改写mock
 export const getLogin = (data?: ILoginParams) => {
   return http.request<UserResult>("post", `${apiV1}/auth/login`, { data });
+  // return http.request<UserResult>("post", "/login", { data });
 };
 
 /** 刷新`token` */
