@@ -473,25 +473,12 @@ export const base64ToBlob = base64 => {
   return byteCharacters;
 };
 
-/**
- * 将base64字符串转换为Element Plus上传组件所需的文件对象格式
- * @param {string} base64String - base64编码的文件内容
- * @param {string} fileName - 文件名（包含扩展名）
- * @param {string} mimeType - MIME类型（可选，如 'application/octet-stream'）
- * @returns {Object} Element Plus上传组件格式的文件对象
- */
-export function base64ToUploadFile(base64String, fileName, mimeType = "application/octet-stream") {
-  // 移除base64前缀（如果存在）
-  const base64Data = base64String.replace(/^data:[^;]+;base64,/, "");
-
-  // 将base64转换为字节数组
-  const byteCharacters = atob(base64Data);
-  const byteNumbers = new Array(byteCharacters.length);
-
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i);
+export function binaryToUploadFile(binaryDataString, fileName, mimeType = "application/octet-stream") {
+  // 将二进制字符串转换为字节数组
+  const byteNumbers = new Array(binaryDataString.length);
+  for (let i = 0; i < binaryDataString.length; i++) {
+    byteNumbers[i] = binaryDataString.charCodeAt(i);
   }
-
   const byteArray = new Uint8Array(byteNumbers);
 
   // 创建Blob对象
@@ -507,12 +494,6 @@ export function base64ToUploadFile(base64String, fileName, mimeType = "applicati
     status: "ready",
     size: file.size,
     raw: file,
-    uid: Date.now() + Math.random(), // 添加唯一ID
-    url: "" // 文件URL（如果需要）
+    uid: Date.now() + Math.random() // 添加唯一ID
   };
 }
-
-// 使用示例
-// const base64String = "data:application/octet-stream;base64,UEsDBBQAAAAIAA..."; // 你的base64字符串
-// const fileName = "thrombin.pdb";
-// const uploadFile = base64ToUploadFile(base64String, fileName, "application/octet-stream");

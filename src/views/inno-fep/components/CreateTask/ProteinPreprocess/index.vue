@@ -10,7 +10,7 @@ import { check_pdb_api, datalists, basic_info, ds_duplicate, examples, get_space
 import { pxToRem } from "@/utils/rem";
 import { ossList, ossGetDownload, proteinInfo, fetchFileAsBlob } from "@/api/fep";
 import { ossBucket } from "@/config/api";
-import { base64ToBlob, base64ToUploadFile } from "@/utils/common";
+import { binaryToUploadFile } from "@/utils/common";
 
 import { debounce } from "@pureadmin/utils";
 defineOptions({
@@ -304,20 +304,18 @@ const exampleChoose = async id => {
 };
 const getPdbById = async id => {
   const res = await ossGetDownload({ key: id, bucket: ossBucket, return_url: false });
-  if (res.success) {
-    console.log("ossGetDownload", res);
-    // const file1 = await fetchFileAsBlob(res.data.presigned_url);
-    const file = base64ToBlob(res.data.file);
-    const file2 = base64ToUploadFile(res.data.file, res.data.filename);
+  console.log(111, res);
+  if (res.status === 200) {
+    const filename = res.headers["content-disposition"].split("filename=")[1].replace(/"/g, "");
+    show_protein(res.data, "pdb");
+    const file = binaryToUploadFile(res.data, filename);
     const formData = new FormData();
-    formData.append("file", file2.raw);
+    formData.append("file", file.raw);
     const proteinRes = await proteinInfo(formData);
     if (proteinRes.success) {
       form.protein_chain = proteinRes.data.chains.map(item => ({ if_checked: true, ...item }));
       form.het_group = proteinRes.data.hets.map(item => ({ if_checked: true, ...item }));
     }
-    console.log("proteinRes", proteinRes);
-    show_protein(file, "pdb");
   }
 };
 

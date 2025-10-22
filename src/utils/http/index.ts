@@ -129,16 +129,27 @@ class PureHttp {
         const $config = response.config;
         // 关闭进度条动画
         NProgress.done();
+        let responseData = null;
+        if (response.headers["content-type"] === "application/octet-stream") {
+          responseData = {
+            data: response.data,
+            headers: response.headers,
+            status: response.status,
+            config: response.config
+          };
+        } else {
+          responseData = response.data;
+        }
         // 优先判断post/get等方法是否传入回调，否则执行初始化设置等回调
         if (typeof $config.beforeResponseCallback === "function") {
           $config.beforeResponseCallback(response);
-          return response.data;
+          return responseData;
         }
         if (PureHttp.initConfig.beforeResponseCallback) {
           PureHttp.initConfig.beforeResponseCallback(response);
-          return response.data;
+          return responseData;
         }
-        return response.data;
+        return responseData;
       },
       (error: PureHttpError) => {
         const $error = error;

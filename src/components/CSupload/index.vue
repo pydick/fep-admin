@@ -15,7 +15,7 @@ import { useI18n } from "vue-i18n";
 import { check_file_size } from "@/utils/common";
 import { check_pdb_api, dataset_content, ds_duplicate, presign_url, save_file, upload, create_oss } from "@/api/data";
 import { ossUpload, checkProtein } from "@/api/fep";
-import { ElMessage, ElMessageBox } from "element-plus";
+// import { ElMessage, ElMessageBox } from "element-plus";
 import { ref } from "vue";
 
 export default {
