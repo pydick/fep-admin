@@ -551,6 +551,9 @@ const changeInputTab = value => {
     el_form_first.value.clearValidate("pdbid_input");
   }
 };
+const handlePreprocess = () => {
+  console.log("预处理");
+};
 </script>
 
 <template>
@@ -637,11 +640,12 @@ const changeInputTab = value => {
 
         <el-checkbox v-model="form.opt_hydrogen" class="w-full">Optimize Hydrogen Bonding Network</el-checkbox>
         <el-checkbox v-model="form.energy_min" class="w-full">Energy Minimization</el-checkbox>
-        <div v-if="form.energy_min" class="w-4/5">
+        <div v-if="form.energy_min" class="w-full">
           <span class="text-[#606266] mr-2">Forcefield:</span>
-          <el-select v-model="form.force_field">
+          <el-select v-model="form.force_field" class="w-[200px]! inline-block mr-[10px]">
             <el-option v-for="item in charge_option" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
+          <el-button class="ml-[10px]" type="primary" @click="handlePreprocess">预处理</el-button>
         </div>
       </el-form-item>
     </el-card>
