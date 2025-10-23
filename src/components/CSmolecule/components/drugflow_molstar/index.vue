@@ -319,7 +319,8 @@ const load_structure = async (input_params: LoadStructureParams): Promise<void> 
   // 异步获得后端的prolif数据
   const form = new FormData();
   const pdb_file = new File([input_params.input], "pdb.pdb");
-  form.append("pdb", pdb_file);
+  form.append("file", pdb_file);
+  let args = null;
   let j = 0;
   if (input_params.render_type !== "default") {
     let chain_id = "A";
@@ -331,48 +332,60 @@ const load_structure = async (input_params: LoadStructureParams): Promise<void> 
         break;
       }
     }
-    form.append(
-      "args",
-      JSON.stringify({
-        chain_id: chain_id,
-        ligand_name: "UNL",
-        ligand_residue_number: ligand_residue_number,
-        info_calculated: input_params.residue_full_info
-      })
-    );
+    args = JSON.stringify({
+      chain_id: chain_id,
+      ligand_name: "UNL",
+      ligand_residue_number: ligand_residue_number,
+      info_calculated: input_params.residue_full_info
+    });
   } else {
-    form.append("args", JSON.stringify({}));
+    args = "{}";
   }
-  // const res = await get_interaction_iframe_api(form);
-  // if (input_params.render_type !== "default") {
-  //   pdb_ligand_inter_list.value.push({
-  //     pdb_string: input_params.input,
-  //     pdb_name: input_params.pdb_name,
-  //     ligand_list: [pdb_info.value.ligand[j]],
-  //     prolif_data: res.iframe_string,
-  //     render_id: input_params.render_id,
-  //     residue_full_info: input_params.residue_full_info,
-  //     prolif_id_list: []
-  //   });
-  // } else {
-  //   pdb_ligand_inter_list.value.push({
-  //     pdb_string: input_params.input,
-  //     pdb_name: input_params.pdb_name,
-  //     ligand_list: pdb_info.value.ligand,
-  //     prolif_data: res.iframe_string,
-  //     render_id: input_params.render_id,
-  //     residue_full_info: input_params.residue_full_info,
-  //     prolif_id_list: []
-  //   });
-  // }
+  const params = {
+    args,
+    file: form
+  };
+  const iframeRes = await get_interaction_iframe_api(params);
+  if (iframeRes.success) {
+    let res = {
+      iframe_string: iframeRes.data.map(item => {
+        return {
+          interaction_dict: item.interactions,
+          iframe: item.visualization_html
+        };
+      })
+    };
 
-  // // prolif_data.value = res.data.iframe_string
-  // wait_proif.value = false;
-  // if (input_params.render_type != "default") {
-  //   const UNL_dict = find_UNL_dict(res.data.iframe_string);
-  //   console.log("UNL_dict", UNL_dict);
-  //   await find_and_add_prolif_data(UNL_dict, render_id);
-  // }
+    if (input_params.render_type !== "default") {
+      pdb_ligand_inter_list.value.push({
+        pdb_string: input_params.input,
+        pdb_name: input_params.pdb_name,
+        ligand_list: [pdb_info.value.ligand[j]],
+        prolif_data: res.iframe_string,
+        render_id: input_params.render_id,
+        residue_full_info: input_params.residue_full_info,
+        prolif_id_list: []
+      });
+    } else {
+      pdb_ligand_inter_list.value.push({
+        pdb_string: input_params.input,
+        pdb_name: input_params.pdb_name,
+        ligand_list: pdb_info.value.ligand,
+        prolif_data: res.iframe_string,
+        render_id: input_params.render_id,
+        residue_full_info: input_params.residue_full_info,
+        prolif_id_list: []
+      });
+    }
+
+    // prolif_data.value = res.data.iframe_string
+    wait_proif.value = false;
+    if (input_params.render_type != "default") {
+      const UNL_dict = find_UNL_dict(res.iframe_string);
+      console.log("UNL_dict", UNL_dict);
+      await find_and_add_prolif_data(UNL_dict, render_id);
+    }
+  }
 };
 
 const set_occlusion = (): void => {

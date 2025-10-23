@@ -1,4 +1,5 @@
 import { http as request } from "@/utils/http";
+import { apiV1 } from "@/config/api";
 
 export function get_molfact_ref_lig(smiles_id) {
   return request.get("/api/jobs/simple_job/molfact_ref_lig?smiles_id=" + smiles_id);
@@ -40,9 +41,10 @@ export function download_data(job_id, params) {
 }
 
 export function get_interaction_iframe_api(data) {
+  const { args, file } = data;
   return request.post(
-    "api/toolkits/protein/draw_interaction",
-    { data },
+    `${apiV1}/protein/interaction/upload?args=${args}`,
+    { data: file },
     {
       headers: { "content-type": "multipart/form-data" }
     }

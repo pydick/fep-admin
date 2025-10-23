@@ -138,8 +138,8 @@ const show_dialog = async () => {
   console.log(111, res);
   if (res.success) {
     data_list.value = res.objects.map(item => ({
-      dataset_id: item.Key,
-      name: item.filename || item.Key
+      dataset_id: item.key,
+      name: item.filename || item.key
     }));
     show_data_list.value = true;
   }
@@ -536,8 +536,8 @@ onMounted(async () => {
   const res = await ossList({ proteins: "proteins", bucket: ossBucket, max_keys: 1 });
   if (res.success) {
     exampleList.value = res.objects.map(item => ({
-      name: item.filename || item.Key.replace(/^.*\//, ""),
-      value: item.Key
+      name: item.filename || item.key.replace(/^.*\//, ""),
+      value: item.key
     }));
     console.log(1113, exampleList);
   }
