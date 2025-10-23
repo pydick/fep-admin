@@ -57,7 +57,8 @@ const form = reactive({
   box_ligand: "default",
   pdb_dataset_id: "",
   pdb_name: "",
-  irrelevant_waters: false
+  irrelevant_waters: false,
+  delete_water: []
 });
 const space = ref(null);
 const protein_name = ref("");
@@ -257,6 +258,10 @@ const draw_ligand_box_select = (chain_name = "blank", flag = true) => {
   }
 };
 
+const het_select_fn = data => {
+  protein3dRef.value.select_and_focus(data);
+};
+
 const chain_change = async (data, value) => {
   await protein3dRef.value.change_chain(data.chain_id, value);
   draw_ligand_box_select(data.chain_id, value);
@@ -328,6 +333,44 @@ const pdbidInput = debounce(value => {
   const id = `proteins/${value}.pdb`;
   getPdbById(id);
 }, 2000);
+
+const het_change = async (data, value) => {
+  protein3dRef.value.select_none();
+
+  await protein3dRef.value.quick_select({ auth_asym_id: data.chain_id, residue_number: data.residue_number }, "single", true);
+
+  if (value) {
+    protein3dRef.value.show_selection("ligand");
+    const hetIndex = form.het_group.findIndex(item => item.chain_id === data.chain_id && item.residue_number === data.residue_number);
+    if (hetIndex !== -1) {
+      form.het_group[hetIndex].water_within_dist.forEach(water => {
+        water.disabled_by_ligand = false;
+        // 从删除列表中移除这些水分子
+        const waterIndex = form.delete_water.findIndex(w => w.residue_number === water.residue_number && w.chain_id === water.chain_id);
+        if (waterIndex !== -1) {
+          form.delete_water.splice(waterIndex, 1);
+        }
+      });
+    }
+  } else {
+    protein3dRef.value.hide_selection();
+    // 当配体被取消选择时，将其周围的水分子标记为不可用
+    const hetIndex = form.het_group.findIndex(item => item.chain_id === data.chain_id && item.residue_number === data.residue_number);
+    if (hetIndex !== -1) {
+      form.het_group[hetIndex].water_within_dist.forEach(water => {
+        water.disabled_by_ligand = true;
+        // 自动将这些水分子添加到删除列表中
+        const waterExists = form.delete_water.some(w => w.residue_number === water.residue_number && w.chain_id === water.chain_id);
+        if (!waterExists) {
+          form.delete_water.push({
+            residue_number: water.residue_number,
+            chain_id: water.chain_id
+          });
+        }
+      });
+    }
+  }
+};
 
 const exampleChoose = async id => {
   getPdbById(id);
