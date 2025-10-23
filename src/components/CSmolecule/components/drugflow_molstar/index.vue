@@ -343,36 +343,36 @@ const load_structure = async (input_params: LoadStructureParams): Promise<void> 
   } else {
     form.append("args", JSON.stringify({}));
   }
-  const res = await get_interaction_iframe_api(form);
-  if (input_params.render_type !== "default") {
-    pdb_ligand_inter_list.value.push({
-      pdb_string: input_params.input,
-      pdb_name: input_params.pdb_name,
-      ligand_list: [pdb_info.value.ligand[j]],
-      prolif_data: res.iframe_string,
-      render_id: input_params.render_id,
-      residue_full_info: input_params.residue_full_info,
-      prolif_id_list: []
-    });
-  } else {
-    pdb_ligand_inter_list.value.push({
-      pdb_string: input_params.input,
-      pdb_name: input_params.pdb_name,
-      ligand_list: pdb_info.value.ligand,
-      prolif_data: res.iframe_string,
-      render_id: input_params.render_id,
-      residue_full_info: input_params.residue_full_info,
-      prolif_id_list: []
-    });
-  }
+  // const res = await get_interaction_iframe_api(form);
+  // if (input_params.render_type !== "default") {
+  //   pdb_ligand_inter_list.value.push({
+  //     pdb_string: input_params.input,
+  //     pdb_name: input_params.pdb_name,
+  //     ligand_list: [pdb_info.value.ligand[j]],
+  //     prolif_data: res.iframe_string,
+  //     render_id: input_params.render_id,
+  //     residue_full_info: input_params.residue_full_info,
+  //     prolif_id_list: []
+  //   });
+  // } else {
+  //   pdb_ligand_inter_list.value.push({
+  //     pdb_string: input_params.input,
+  //     pdb_name: input_params.pdb_name,
+  //     ligand_list: pdb_info.value.ligand,
+  //     prolif_data: res.iframe_string,
+  //     render_id: input_params.render_id,
+  //     residue_full_info: input_params.residue_full_info,
+  //     prolif_id_list: []
+  //   });
+  // }
 
-  // prolif_data.value = res.data.iframe_string
-  wait_proif.value = false;
-  if (input_params.render_type != "default") {
-    const UNL_dict = find_UNL_dict(res.data.iframe_string);
-    console.log("UNL_dict", UNL_dict);
-    await find_and_add_prolif_data(UNL_dict, render_id);
-  }
+  // // prolif_data.value = res.data.iframe_string
+  // wait_proif.value = false;
+  // if (input_params.render_type != "default") {
+  //   const UNL_dict = find_UNL_dict(res.data.iframe_string);
+  //   console.log("UNL_dict", UNL_dict);
+  //   await find_and_add_prolif_data(UNL_dict, render_id);
+  // }
 };
 
 const set_occlusion = (): void => {
