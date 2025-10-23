@@ -19,7 +19,8 @@ defineExpose({
   hide_selection: (...args) => protein3dRef.value?.hide_selection(...args),
   show_selection: (...args) => protein3dRef.value?.show_selection(...args),
   reset_camera: (...args) => protein3dRef.value?.reset_camera(...args),
-  select_and_focus: (...args) => protein3dRef.value?.select_and_focus(...args)
+  select_and_focus: (...args) => protein3dRef.value?.select_and_focus(...args),
+  select_show_hide: (...args) => protein3dRef.value?.select_show_hide(...args)
   // ... 可以暴露更多需要的方法
 });
 </script>

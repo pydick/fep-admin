@@ -326,6 +326,20 @@ const quick_delete_click = async () => {
   protein3dRef.value.select_none();
 };
 
+const delete_single_het = (ind, val, index) => {
+  // 如果水分子被配体禁用，则不允许删除
+  if (val.disabled_by_ligand) {
+    return;
+  }
+  form.delete_water.push({ residue_number: val.residue_number, chain_id: val.chain_id });
+  form.het_group[ind].water_within_dist.splice(index, 1);
+  protein3dRef.value.select_show_hide(val, false);
+};
+
+const single_het_click = data => {
+  protein3dRef.value.select_and_focus(data);
+};
+
 const uploadSuc = id => {
   getPdbById(id);
 };
