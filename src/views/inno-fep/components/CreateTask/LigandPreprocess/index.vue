@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BlcokTitle from "../BlcokTitle.vue";
+import BlcokTitle from "../BlcokTitle/index.vue";
 defineOptions({
   name: "LigandPreprocess"
 });
