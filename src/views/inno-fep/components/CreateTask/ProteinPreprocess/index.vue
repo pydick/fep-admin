@@ -17,10 +17,6 @@ defineOptions({
   name: "ProteinPreprocess"
 });
 const protein3dRef = inject("protein3dRef");
-const testprotein = () => {
-  console.log("show_protein");
-  protein3dRef.value.loadStructure(data, "pdb");
-};
 
 let exampleList = ref([]);
 
@@ -651,7 +647,6 @@ onMounted(async () => {
       </el-form-item>
     </el-card>
     <CSspinner ref="spinner_ref" />
-    <el-button @click="testprotein">testprotein</el-button>
     <Data_select v-model:if_show="show_data_list" :data_list="data_list" name="蛋白数据中心" @custom-event="handleCustomEvent" />
   </el-form>
 </template>
