@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import ProteinInput from "./components/ProteinInput/index.vue";
-import Data_select from "../components/data_select.vue";
-import { data } from "./data.js";
+import Data_select from "../data_select.vue";
 import { inject, ref, reactive, onMounted, nextTick } from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import CSupload from "@/components/CSupload/index.vue";

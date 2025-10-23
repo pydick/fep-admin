@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import Protein3d from "./Protein3d/index.vue";
+import Protein3d from "./components/Protein3d/index.vue";
 import { ref, provide } from "vue";
-import ProteinPreprocess from "./ProteinPreprocess/index.vue";
-import LigandPreprocess from "./LigandPreprocess/index.vue";
-import CalculationParameters from "./CalculationParameters/index.vue";
+import ProteinPreprocess from "./components/ProteinPreprocess/index.vue";
+import LigandPreprocess from "./components/LigandPreprocess/index.vue";
+import CalculationParameters from "./components/CalculationParameters/index.vue";
 import CSstep from "@/components/CSstep/index.vue";
 
 defineOptions({
   name: "CreateTask"
 });
 const stepList = ref<string[]>(["蛋白预处理", "配体预处理", "计算参数"]);
-const activeStep = ref(1);
+const activeStep = ref(2);
 const protein3dRef = ref();
 
 const stepRef = ref();
