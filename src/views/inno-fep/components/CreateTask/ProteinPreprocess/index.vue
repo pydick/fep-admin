@@ -143,7 +143,7 @@ const show_dialog = async () => {
   if (res.success) {
     data_list.value = res.objects.map(item => ({
       dataset_id: item.Key,
-      name: item.Key
+      name: item.filename || item.Key
     }));
     show_data_list.value = true;
   }
@@ -391,7 +391,6 @@ const exampleChoose = async id => {
 };
 const getPdbById = async id => {
   const res = await ossGetDownload({ key: id, bucket: ossBucket, return_url: false });
-  console.log(111, res);
   if (res.status === 200) {
     const filename = res.headers["content-disposition"].split("filename=")[1].replace(/"/g, "");
     show_protein(res.data, "pdb");
@@ -538,10 +537,10 @@ const pdbCustomEvent = ({ id, name, pdb_string }) => {
 };
 
 onMounted(async () => {
-  const res = await ossList({ proteins: "proteins", bucket: ossBucket });
+  const res = await ossList({ proteins: "proteins", bucket: ossBucket, max_keys: 1 });
   if (res.success) {
     exampleList.value = res.objects.map(item => ({
-      name: item.Key,
+      name: item.filename || item.Key,
       value: item.Key
     }));
     console.log(1113, exampleList);

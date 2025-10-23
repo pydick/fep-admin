@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :modelValue="if_show" :title="name" width="70%" :before-close="handleConfirm" append-to-body>
+  <el-dialog :modelValue="if_show" :title="name" width="70%" :before-close="handleConfirm" append-to-body class="min-h-[400px]">
     <div style="min-height: 40vh; max-height: 60vh; padding: 0 5rem; overflow-y: auto">
       <el-row v-if="data_list.length" :gutter="20">
         <el-col v-for="item in change_list(data_list)" :key="item.dataset_id" :span="8" style="margin-bottom: 1rem">

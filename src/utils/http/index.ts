@@ -130,7 +130,7 @@ class PureHttp {
         // 关闭进度条动画
         NProgress.done();
         let responseData = null;
-        if (response.headers["content-type"] === "application/octet-stream") {
+        if (["application/octet-stream", "application/vnd.palm"].includes(response.headers["content-type"])) {
           responseData = {
             data: response.data,
             headers: response.headers,
