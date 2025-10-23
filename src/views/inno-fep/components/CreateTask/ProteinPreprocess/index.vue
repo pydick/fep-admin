@@ -2,7 +2,7 @@
 import ProteinInput from "./components/ProteinInput/index.vue";
 import Data_select from "../components/data_select.vue";
 import { data } from "./data.js";
-import { inject, ref, reactive, onMounted } from "vue";
+import { inject, ref, reactive, onMounted, nextTick } from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import CSupload from "@/components/CSupload/index.vue";
 import CSspinner from "@/components/CSspinner/index.vue";
@@ -62,6 +62,7 @@ const if_have_protein = ref(false);
 const if_chain = ref(false);
 const spinner_ref = ref();
 const pdbid_url_ref = ref();
+const el_form_first = ref();
 const if_show_box = ref(false);
 const protein_content = ref([]);
 const protein_ligand_content = ref([]);
@@ -342,7 +343,7 @@ const uploadSuc = id => {
 const pdbidInput = debounce(value => {
   const id = `proteins/${value}.pdb`;
   getPdbById(id);
-}, 2000);
+}, 1000);
 
 const het_change = async (data, value) => {
   protein3dRef.value.select_none();
@@ -383,7 +384,7 @@ const het_change = async (data, value) => {
 };
 
 const exampleChoose = async id => {
-  getPdbById(id);
+  await getPdbById(id);
 };
 const getPdbById = async id => {
   const res = await ossGetDownload({ key: id, bucket: ossBucket, return_url: false });
@@ -536,46 +537,44 @@ onMounted(async () => {
   const res = await ossList({ proteins: "proteins", bucket: ossBucket, max_keys: 1 });
   if (res.success) {
     exampleList.value = res.objects.map(item => ({
-      name: item.filename || item.Key,
+      name: item.filename || item.Key.replace(/^.*\//, ""),
       value: item.Key
     }));
     console.log(1113, exampleList);
   }
 });
+const tab_list = reactive(["数据库导入", "上传文件", "数据中心"]);
+const changeInputTab = value => {
+  if (value !== tab_list[0]) {
+    form.pdbid_input = "";
+    form.pdbid_select = "";
+    el_form_first.value.clearValidate("pdbid_input");
+  }
+};
 </script>
 
 <template>
   <el-form ref="el_form_first" :model="form" class="flex-1 pl-[10px] pr-[20px]">
     <p class="label_1">输入蛋白</p>
     <el-form-item prop="input_tab" :rules="[{ required: true, message: 'This is required' }]">
-      <el-radio-group v-model="form.input_tab">
-        <el-radio-button label="数据库导入">数据库导入</el-radio-button>
-        <el-radio-button label="上传文件">上传文件</el-radio-button>
-        <el-radio-button label="数据中心">数据中心</el-radio-button>
+      <el-radio-group v-model="form.input_tab" @change="changeInputTab">
+        <el-radio-button v-for="item in tab_list" :key="item" :label="item">{{ item }}</el-radio-button>
       </el-radio-group>
     </el-form-item>
-    <el-form-item
-      v-if="form.input_tab === '数据库导入'"
-      ref="pdbid_url_ref"
-      prop="pdbid_url"
-      :validate-status="form.pdbfile_validate_status"
-      :rules="[
-        { required: true, message: '请输入PDBID或者选择示例' },
-        { validator: checkurl, trigger: 'change' }
-      ]"
-    >
-      <el-input v-model="form.pdbid_input" placeholder="输入PDBID" class="w-full" @input="pdbidInput">
-        <template #append>
-          <el-select v-model="form.pdbid_select" placeholder="选择示例" class="w-[100px]!" @change="exampleChoose">
-            <el-option v-for="item in exampleList" :key="item.value" :label="item.name" :value="item.value" />
-          </el-select>
-        </template>
-      </el-input>
-    </el-form-item>
-    <el-form-item v-if="form.input_tab === '上传文件'" prop="protein_file" :rules="[{ required: true, message: '请上传蛋白pdb文件', trigger: 'submit' }]">
+    <div v-show="form.input_tab === '数据库导入'" class="dbid_input_box">
+      <el-form-item ref="pdbid_url_ref" prop="pdbid_input" :rules="[{ required: true, message: '请输入PDBID或者选择示例', trigger: 'change' }]">
+        <el-input v-model="form.pdbid_input" placeholder="输入PDBID" class="pdbid_input" @change="pdbidInput" />
+      </el-form-item>
+      <el-form-item prop="pdbid_select" class="w-[120px]!">
+        <el-select v-model="form.pdbid_select" placeholder="选择示例" @change="exampleChoose">
+          <el-option v-for="item in exampleList" :key="item.value" :label="item.name" :value="item.value" />
+        </el-select>
+      </el-form-item>
+    </div>
+    <el-form-item v-show="form.input_tab === '上传文件'" prop="protein_file" :rules="[{ required: true, message: '请上传蛋白pdb文件', trigger: 'submit' }]">
       <CSupload inp_placeholder="上传" file_accept=".pdb" :is_slot="false" @uploadSuc="uploadSuc" />
     </el-form-item>
-    <el-form-item v-if="form.input_tab === '数据中心'" :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="protein_data">
+    <el-form-item v-show="form.input_tab === '数据中心'" :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="protein_data">
       <el-button class="w-full w_100" @click="show_dialog('protein')">
         <el-input v-model="form.protein_data" :input-style="{ textAlign: 'center' }" class="w-full" style="width: 100%" placeholder="数据中心导入pdb" readonly />
       </el-button>
@@ -652,6 +651,13 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
+.dbid_input_box {
+  display: flex;
+  & > .el-form-item:first-child {
+    flex: 1;
+  }
+}
+
 :deep(.el-tabs__item.is-disabled) {
   color: #333;
 }
