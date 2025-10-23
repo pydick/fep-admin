@@ -578,7 +578,7 @@ const handlePreprocess = () => {
     </el-form-item>
     <el-form-item v-show="form.input_tab === '数据中心'" :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="protein_data">
       <el-button class="w-full w_100" @click="show_dialog('protein')">
-        <el-input v-model="form.protein_data" :input-style="{ textAlign: 'center' }" class="w-full" style="width: 100%" placeholder="数据中心导入pdb" readonly />
+        <el-input v-model="form.protein_data" :input-style="{ textAlign: 'center' }" class="w-full!" placeholder="数据中心导入pdb" readonly />
       </el-button>
     </el-form-item>
 
