@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Protein3d from "./Protein3d/index.vue";
-import ligand3dRef from "./Ligand3d/index.vue";
+import Ligand3d from "./Ligand3d/index.vue";
 import { ref, provide } from "vue";
 import ProteinPreprocess from "./ProteinPreprocess/index.vue";
 import LigandPreprocess from "./LigandPreprocess/index.vue";
@@ -27,19 +27,21 @@ const handlePrev = () => {
 const handleSubmit = () => {
   console.log("提交任务");
 };
+const graphType = ref("protein");
 const handleCheckAndNext = () => {
+  graphType.value = "ligand";
   stepRef.value?.next();
   console.log("检测并下一步");
 };
-const graphType = ref("protein");
+
 provide("protein3dRef", protein3dRef);
 </script>
 
 <template>
   <el-row class="h-full">
     <el-col :span="12" class="h-full pr-[10px]">
-      <Protein3d v-if="graphType === 'protein'" ref="protein3dRef" class="h-full" />
-      <Ligand3d v-if="graphType === 'ligand'" ref="ligand3dRef" class="h-full" />
+      <Protein3d v-if="activeStep === 1" ref="protein3dRef" class="h-full" />
+      <Ligand3d v-if="activeStep === 2" ref="ligand3dRef" class="w-full h-full" />
     </el-col>
     <el-col :span="12" class="pl-[10px] h-full">
       <div class="h-full flex flex-col border border-[var(--el-card-border-color)] pt-[15px] pr-[20px] pb-[15px] pl-[20px]">
