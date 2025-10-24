@@ -8,7 +8,6 @@ import CSspinner from "@/components/CSspinner/index.vue";
 import { check_pdb_api, datalists, basic_info, ds_duplicate, examples, get_space, pdb_ctx, pdb_datalists, upload } from "@/api/data";
 import { pxToRem } from "@/utils/rem";
 import { ossList, ossGetDownload, proteinInfo, fetchFileAsBlob } from "@/api/fep";
-import { ossBucket } from "@/config/api";
 import { binaryToUploadFile } from "@/utils/common";
 
 import { debounce } from "@pureadmin/utils";
@@ -134,7 +133,7 @@ const check_pdb = file => {
 };
 
 const show_dialog = async () => {
-  const res = await ossList({ proteins: "proteins", bucket: ossBucket });
+  const res = await ossList({ proteins: "proteins" });
   console.log(111, res);
   if (res.success) {
     data_list.value = res.objects.map(item => ({
@@ -386,7 +385,7 @@ const exampleChoose = async id => {
   await getPdbById(id);
 };
 const getPdbById = async id => {
-  const res = await ossGetDownload({ key: id, bucket: ossBucket, return_url: false });
+  const res = await ossGetDownload({ key: id, return_url: false });
   if (res.status === 200) {
     const filename = res.headers["content-disposition"].split("filename=")[1].replace(/"/g, "");
     show_protein(res.data, "pdb");
@@ -533,7 +532,7 @@ const pdbCustomEvent = ({ id, name, pdb_string }) => {
 };
 
 onMounted(async () => {
-  const res = await ossList({ proteins: "proteins", bucket: ossBucket, max_keys: 1 });
+  const res = await ossList({ proteins: "proteins", max_keys: 1 });
   if (res.success) {
     exampleList.value = res.objects.map(item => ({
       name: item.filename || item.key.replace(/^.*\//, ""),
