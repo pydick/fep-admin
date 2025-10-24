@@ -1,6 +1,6 @@
 <template>
   <div class="prolif_frame" :style="{ width: props.width, height: props.height }">
-    <div ref="prolif" class="prolif_iframe" />
+    <div ref="prolif" class="prolif_iframe min-h-[600px]" />
     <div class="prolif_btn">
       <el-radio-group v-model="ligand" @change="set_ligand">
         <div v-for="item in props.pdb_ligand_inter_list" :key="item">
