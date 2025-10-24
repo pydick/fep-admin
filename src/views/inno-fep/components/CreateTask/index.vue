@@ -38,7 +38,7 @@ provide("protein3dRef", protein3dRef);
 </script>
 
 <template>
-  <el-row class="h-full">
+  <el-row id="createTaskContainer" class="h-full">
     <el-col :span="12" class="h-full pr-[10px]">
       <Protein3d v-if="activeStep === 1" ref="protein3dRef" class="h-full" />
       <Ligand3d v-if="activeStep === 2" ref="ligand3dRef" class="w-full h-full" />
