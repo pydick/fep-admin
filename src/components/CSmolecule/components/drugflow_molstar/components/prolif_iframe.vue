@@ -1,6 +1,6 @@
 <template>
   <div class="prolif_frame" :style="{ width: props.width, height: props.height }">
-    <div ref="prolif" class="prolif_iframe" />
+    <div ref="prolif" class="prolif_iframe min-h-[600px]" />
     <div class="prolif_btn">
       <el-radio-group v-model="ligand" @change="set_ligand">
         <div v-for="item in props.pdb_ligand_inter_list" :key="item">
@@ -90,22 +90,24 @@ const set_ligand = async () => {
   const form = new FormData();
   // console.log(pdb_string)
   const pdb_file = new File([pdb_string], "pdb.pdb");
-  form.append("pdb", pdb_file);
-  form.append(
-    "args",
-    JSON.stringify({
-      chain_id: ligand.value.split(":")[1],
-      ligand_name: ligand.value.split(":")[2],
-      ligand_residue_number: ligand.value.split(":")[3],
-      info_calculated: residue_full_info
-    })
-  );
-  const res = await get_interaction_iframe_api(form);
-  if (res.status === false || !res.iframe_string[0].iframe) {
+  form.append("file", pdb_file);
+  const args = JSON.stringify({
+    chain_id: ligand.value.split(":")[1],
+    ligand_name: ligand.value.split(":")[2],
+    ligand_residue_number: ligand.value.split(":")[3],
+    info_calculated: residue_full_info
+  });
+  const iframeRes = await get_interaction_iframe_api({ file: form, args });
+  if (!iframeRes.success || !iframeRes.data[0].visualization_html) {
     prolif.value.innerHTML = '<p style="font-size: 1.5rem; padding: 6rem 0; margin: 0 auto; width: 10rem;">No Interaction</p>';
   } else {
-    prolif.value.innerHTML = res.iframe_string[0].iframe;
+    prolif.value.innerHTML = iframeRes.data[0].visualization_html;
   }
+  // if (res.status === false || !res.iframe_string[0].iframe) {
+  //   prolif.value.innerHTML = '<p style="font-size: 1.5rem; padding: 6rem 0; margin: 0 auto; width: 10rem;">No Interaction</p>';
+  // } else {
+  //   prolif.value.innerHTML = res.iframe_string[0].iframe;
+  // }
   // res.data.iframe_string = res.data.iframe_string.replace('height="590px"', 'height=' + props.height)
 
   close_loading();

@@ -35,3 +35,5 @@ const handleTabClick = (name: string) => {
     </template>
   </CScard>
 </template>
+
+<style lang="scss" scoped></style>

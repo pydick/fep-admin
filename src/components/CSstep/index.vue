@@ -36,7 +36,7 @@ defineExpose({
 </script>
 
 <template>
-  <el-steps style="max-width: 600px" :active="active" finish-status="success" align-center>
+  <el-steps class="max-w-[600px]!" :active="active" finish-status="success" align-center>
     <el-step v-for="(title, index) in titleList" :key="index" :title="title" />
   </el-steps>
 </template>

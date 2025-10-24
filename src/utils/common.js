@@ -467,3 +467,33 @@ export function change_pocket_to_xyz(coords_info, expand = 10) {
     l3: coords_info.max_z - coords_info.min_z + expand
   };
 }
+
+export const base64ToBlob = base64 => {
+  const byteCharacters = atob(base64);
+  return byteCharacters;
+};
+
+export function binaryToUploadFile(binaryDataString, fileName, mimeType = "application/octet-stream") {
+  // 将二进制字符串转换为字节数组
+  const byteNumbers = new Array(binaryDataString.length);
+  for (let i = 0; i < binaryDataString.length; i++) {
+    byteNumbers[i] = binaryDataString.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+
+  // 创建Blob对象
+  const blob = new Blob([byteArray], { type: mimeType });
+
+  // 创建File对象
+  const file = new File([blob], fileName, { type: mimeType });
+
+  // 返回Element Plus上传组件格式的对象
+  return {
+    name: fileName,
+    percentage: 0,
+    status: "ready",
+    size: file.size,
+    raw: file,
+    uid: Date.now() + Math.random() // 添加唯一ID
+  };
+}

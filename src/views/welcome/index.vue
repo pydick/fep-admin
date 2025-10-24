@@ -23,9 +23,7 @@ const testGetMe = async () => {
 };
 const expires = ref("");
 onMounted(() => {
-  if (getToken()) {
-    expires.value = dayjs(getToken().expires).format("YYYY-MM-DD HH:mm:ss");
-  }
+  expires.value = getToken() ? dayjs(getToken().expires).format("YYYY-MM-DD HH:mm:ss") : "-";
 });
 </script>
 

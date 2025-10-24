@@ -12,7 +12,7 @@ import type { Action } from "element-plus";
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
   // 请求超时时间
-  timeout: 10000,
+  timeout: 60000,
   headers: {
     Accept: "application/json, text/plain, */*",
     "Content-Type": "application/json",
@@ -89,15 +89,12 @@ class PureHttp {
                           PureHttp.requests.forEach(cb => cb(token));
                           PureHttp.requests = [];
                         } else {
-                          ElMessageBox.alert(res.message, "错误信息:", {
-                            confirmButtonText: "返回登录",
-                            showClose: false,
-                            callback: (action: Action) => {
-                              PureHttp.requests = []; // 清空待重试的请求队列
-                              removeToken(); // 清除本地存储的token
-                              router.push("/signin"); // 跳转到登录页面
-                            }
-                          });
+                          ElMessage.error(res.message);
+                          setTimeout(() => {
+                            PureHttp.requests = []; // 清空待重试的请求队列
+                            removeToken(); // 清除本地存储的token
+                            router.push("/signin"); // 跳转到登录页面
+                          }, 1000);
                         }
                       })
                       .finally(() => {
@@ -111,14 +108,12 @@ class PureHttp {
                   resolve(config);
                 }
               } else {
-                ElMessageBox.alert("token过期/不存在，请重新登录", "错误信息:", {
-                  confirmButtonText: "返回登录",
-                  showClose: false,
-                  callback: (action: Action) => {
-                    removeToken(); // 清除本地存储的token
-                    router.push("/signin"); // 跳转到登录页面
-                  }
-                });
+                ElMessage.error("token失效，请重新登录");
+                setTimeout(() => {
+                  removeToken(); // 清除本地存储的token
+                  router.push("/signin"); // 跳转到登录页面
+                }, 1000);
+
                 resolve(config);
               }
             });
@@ -137,16 +132,27 @@ class PureHttp {
         const $config = response.config;
         // 关闭进度条动画
         NProgress.done();
+        let responseData = null;
+        if (["application/octet-stream", "application/vnd.palm"].includes(response.headers["content-type"])) {
+          responseData = {
+            data: response.data,
+            headers: response.headers,
+            status: response.status,
+            config: response.config
+          };
+        } else {
+          responseData = response.data;
+        }
         // 优先判断post/get等方法是否传入回调，否则执行初始化设置等回调
         if (typeof $config.beforeResponseCallback === "function") {
           $config.beforeResponseCallback(response);
-          return response.data;
+          return responseData;
         }
         if (PureHttp.initConfig.beforeResponseCallback) {
           PureHttp.initConfig.beforeResponseCallback(response);
-          return response.data;
+          return responseData;
         }
-        return response.data;
+        return responseData;
       },
       (error: PureHttpError) => {
         const $error = error;
