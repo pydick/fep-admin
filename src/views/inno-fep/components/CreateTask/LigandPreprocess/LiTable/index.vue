@@ -76,7 +76,7 @@ const columns: TableColumnList = [
 
 <template>
   <div class="li-table-wrapper">
-    <pure-table ref="tableRef" :data="tableData" :columns="columns" @selection-change="handleSelectionChange">
+    <pure-table ref="tableRef" :data="tableData" :columns="columns" border @selection-change="handleSelectionChange">
       <template #operation="{ row }">
         <el-button link type="primary" size="small" @click="handleDelete(row)">删除</el-button>
       </template>

@@ -92,7 +92,7 @@ const uploadSuc = value => {
 </script>
 
 <template>
-  <el-form ref="el_form_second" :model="form" label-position="left" label-width="100px" class="flex-1 pl-[10px] pr-[20px]">
+  <el-form ref="el_form_second" :model="form" label-position="right" label-width="100px" class="flex-1 pl-[10px] pr-[20px]">
     <BlcokTitle title="上传分子" />
     <el-radio-group v-model="tab" class="mt-[15px]" @change="changeInputTab">
       <el-radio-button v-for="item in tab_list" :key="item" :label="item">{{ item }}</el-radio-button>
@@ -146,12 +146,12 @@ const uploadSuc = value => {
 
     <BlcokTitle title="创建映射图" class="mt-[20px]" />
     <div class="map-section flex">
-      <el-form-item label="映射图方式" prop="mapType" label-position="left">
+      <el-form-item label="映射图方式" prop="mapType" label-position="right">
         <el-select v-model="form.mapType" placeholder="选择映射图方式" class="w-[200px]! mr-[20px]">
           <el-option v-for="item in mapTypes" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="中心分子" prop="centerMolecule" label-position="left" label-width="70px">
+      <el-form-item label="中心分子" prop="centerMolecule" label-position="right" label-width="70px">
         <el-select v-model="form.centerMolecule" placeholder="选择中心分子" class="w-[200px]! mr-[10px]">
           <el-option v-for="item in referenceLigand" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>

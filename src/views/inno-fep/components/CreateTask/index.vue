@@ -43,15 +43,15 @@ provide("protein3dRef", protein3dRef);
     </el-col>
     <el-col :span="12" class="pl-[10px] h-full">
       <div class="h-full flex flex-col border border-[var(--el-card-border-color)] pt-[15px] pr-[20px] pb-[15px] pl-[20px]">
-        <div class="pt-[15px] pb-[10px] bg-[var(--el-fill-color-light)]">
-          <CSstep ref="stepRef" v-model:active="activeStep" class="max-w-full!" :titleList="stepList" />
+        <div>
+          <CSstep ref="stepRef" v-model:active="activeStep" class="max-w-full! pt-[15px] pb-[10px] bg-[var(--el-fill-color-light)]" :titleList="stepList" />
         </div>
-        <div class="flex-1 overflow-y-auto basis-0">
+        <div class="overflow-y-auto pb-[15px]">
           <ProteinPreprocess v-show="activeStep === 1" />
           <LigandPreprocess v-show="activeStep === 2" />
           <CalculationParameters v-show="activeStep === 3" />
         </div>
-        <div>
+        <div class="pt-[15px]">
           <el-button v-show="activeStep !== 1" @click="handlePrev">上一步</el-button>
           <el-button v-show="activeStep === 1" @click="handleCheckAndNext">检测并下一步</el-button>
           <el-button v-show="activeStep == 2" @click="handleNext">下一步</el-button>
