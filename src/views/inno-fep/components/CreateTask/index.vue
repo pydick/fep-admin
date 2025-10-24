@@ -48,7 +48,7 @@ provide("protein3dRef", protein3dRef);
         <div>
           <CSstep ref="stepRef" v-model:active="activeStep" class="max-w-full! pt-[15px] pb-[10px] bg-[var(--el-fill-color-light)]" :titleList="stepList" />
         </div>
-        <div class="overflow-y-auto pb-[15px]">
+        <div class="flex-1 basis-0 overflow-y-auto pb-[15px]">
           <ProteinPreprocess v-show="activeStep === 1" />
           <LigandPreprocess v-show="activeStep === 2" />
           <CalculationParameters v-show="activeStep === 3" />

@@ -11,7 +11,9 @@ const frame_data = data2;
 </script>
 
 <template>
-  <multi_ligand_dock_frame ref="ngl_ref" :job_id="task_id" :smiles_id_list_str="JSON.stringify(frame_data)" />
+  <div class="relative w-full h-full">
+    <multi_ligand_dock_frame ref="ngl_ref" :job_id="task_id" :smiles_id_list_str="JSON.stringify(frame_data)" />
+  </div>
 </template>
 
 <style lang="scss" scoped></style>
