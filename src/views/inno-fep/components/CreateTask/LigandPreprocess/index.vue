@@ -90,11 +90,11 @@ let exampleList = reactive<{ name: string; value: string }[]>([]);
 onMounted(async () => {
   const res = await ossList({ proteins: "proteins", max_keys: 1 });
   if (res.success) {
-    exampleList = res.data.objects.map(item => ({
+    const exampleData = res.data.objects.map(item => ({
       name: item.filename || item.key.replace(/^.*\//, ""),
       value: item.key
     }));
-    // console.log(111, exampleList);
+    Object.assign(exampleList, exampleData);
   }
 });
 </script>

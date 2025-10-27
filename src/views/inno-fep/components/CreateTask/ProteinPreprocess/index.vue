@@ -17,7 +17,7 @@ defineOptions({
 });
 const protein3dRef = inject("protein3dRef");
 
-let exampleList = ref([]);
+let exampleList = reactive<{ name: string; value: string }[]>([]);
 
 //------------------
 const form = reactive({
@@ -544,10 +544,11 @@ const pdbCustomEvent = ({ id, name, pdb_string }) => {
 onMounted(async () => {
   const res = await ossList({ proteins: "proteins", max_keys: 1 });
   if (res.success) {
-    exampleList.value = res.data.objects.map(item => ({
+    const exampleData = res.data.objects.map(item => ({
       name: item.filename || item.key.replace(/^.*\//, ""),
       value: item.key
     }));
+    Object.assign(exampleList, exampleData);
   }
 });
 const tab_list = reactive(["数据库导入", "上传文件", "数据中心"]);
