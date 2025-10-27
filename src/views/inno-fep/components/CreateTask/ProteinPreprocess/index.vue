@@ -137,7 +137,7 @@ const show_dialog = async () => {
   const res = await ossList({ proteins: "proteins" });
   console.log(111, res);
   if (res.success) {
-    data_list.value = res.objects.map(item => ({
+    data_list.value = res.data.objects.map(item => ({
       dataset_id: item.key,
       name: item.filename || item.key
     }));
@@ -544,11 +544,10 @@ const pdbCustomEvent = ({ id, name, pdb_string }) => {
 onMounted(async () => {
   const res = await ossList({ proteins: "proteins", max_keys: 1 });
   if (res.success) {
-    exampleList.value = res.objects.map(item => ({
+    exampleList.value = res.data.objects.map(item => ({
       name: item.filename || item.key.replace(/^.*\//, ""),
       value: item.key
     }));
-    console.log(1113, exampleList);
   }
 });
 const tab_list = reactive(["数据库导入", "上传文件", "数据中心"]);

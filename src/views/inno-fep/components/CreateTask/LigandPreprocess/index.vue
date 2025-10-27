@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import BlcokTitle from "../BlcokTitle/index.vue";
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import LiTable from "./LiTable/index.vue";
 import CSupload from "@/components/CSupload/index.vue";
+import { ossList } from "@/api/fep";
 defineOptions({
   name: "LigandPreprocess"
 });
@@ -20,12 +21,6 @@ const form = reactive({
   centerMolecule: "cpd1"
 });
 
-const exampleList = ref([
-  {
-    name: "1",
-    value: "1"
-  }
-]);
 const referenceLigand = reactive([
   {
     label: "cpd1",
@@ -89,6 +84,19 @@ const handlePreview = () => {
 const uploadSuc = value => {
   console.log(value);
 };
+
+let exampleList = reactive<{ name: string; value: string }[]>([]);
+
+onMounted(async () => {
+  const res = await ossList({ proteins: "proteins", max_keys: 1 });
+  if (res.success) {
+    exampleList = res.data.objects.map(item => ({
+      name: item.filename || item.key.replace(/^.*\//, ""),
+      value: item.key
+    }));
+    // console.log(111, exampleList);
+  }
+});
 </script>
 
 <template>

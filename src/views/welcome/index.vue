@@ -30,7 +30,7 @@ onMounted(() => {
   <div>
     <h1>FEP Welcome</h1>
     <el-button @click="handleClick">过期时间-3小时</el-button>
-    <el-button @click="testGetMe">在过期后,刷新token后获取当前用户</el-button>
+    <el-button @click="testGetMe">在过期后,无感刷新token</el-button>
     过期时间:{{ expires }}
     <!-- <el-button type="success">拥有code：'btn_add' 权限可见</el-button> -->
   </div>

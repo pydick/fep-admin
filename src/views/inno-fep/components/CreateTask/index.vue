@@ -50,7 +50,7 @@ provide("protein3dRef", protein3dRef);
         </div>
         <div class="flex-1 basis-0 overflow-y-auto pb-[15px]">
           <ProteinPreprocess v-show="activeStep === 1" />
-          <LigandPreprocess v-show="activeStep === 2" />
+          <LigandPreprocess v-if="activeStep === 2" />
           <CalculationParameters v-show="activeStep === 3" />
         </div>
         <div class="pt-[15px]">
