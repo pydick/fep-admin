@@ -817,7 +817,7 @@
     width: 100%;
     border-left: #0160ee solid 5px;
     padding-left: 10px;
-    margin: 15px 0 0 0;
+    margin: 0 0 0;
     font-size: 18px;
     display: flex;
     align-items: flex-start;
@@ -825,11 +825,13 @@
   }
   .label_1_1 {
     width: 100%;
-    padding: 10px 0 10px 0;
+    line-height: 15px;
     font-size: 14px;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     font-weight: bold;
+    margin: 0;
+    padding-top: 15px;
   }
 
   .label_1_1::before {
@@ -837,15 +839,15 @@
     display: inline-block;
     width: 14px;
     height: 14px;
+    line-height: 40px;
     border-radius: 50%;
     background-color: #0160ee;
     margin-right: 10px;
-    margin-top: 3px
   }
   .label_3 {
     font-size: 14px;
     color: #999999;
     line-height: 20px;
-    margin-top: 15px;
-    margin-bottom: 0px;
+    padding-top: 15px;
+    margin: 0px;
   }

@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import ReDialog from "@/components/ReDialog/index.vue";
 import { ref, watch } from "vue";
+import PerturbationGraph from "@/views/inno-fep/components/PerturbationGraph/index.vue";
+import MappingGraph from "./MappingGraph/index.vue";
+import BlcokTitle from "@/views/inno-fep/components/BlcokTitle/index.vue";
 defineOptions({
   name: "PerturbationGraphDialog"
 });
@@ -32,17 +34,31 @@ watch(
 </script>
 
 <template>
-  <ReDialog :visible="props.visible" title="微扰图dialog">
-    <template #content>
-      <div>微扰图dialog</div>
-    </template>
+  <el-dialog v-model="props.visible" width="60%" title="配体微扰图" header-class="pb-[0px]!">
+    <el-row :gutter="7.5">
+      <el-col :span="12">
+        <BlcokTitle title="微扰图" />
+        <div class="perturbation-container">
+          <PerturbationGraph class="pt-[15px]" />
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <BlcokTitle title="映射图" />
+        <MappingGraph class="pt-[15px]" />
+      </el-col>
+    </el-row>
     <template #footer>
       <div>
         <el-button @click="handleCancel">取消</el-button>
         <el-button type="primary" @click="handleSure">确定</el-button>
       </div>
     </template>
-  </ReDialog>
+  </el-dialog>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.perturbation-container {
+  // width: 600px;
+  // height: 600px;
+}
+</style>

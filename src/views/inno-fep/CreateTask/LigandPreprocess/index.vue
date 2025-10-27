@@ -79,7 +79,7 @@ const handleGenerateMap = () => {
   console.log("生成映射图");
 };
 
-const perturbationGraphVisible = ref(false);
+const perturbationGraphVisible = ref(true);
 const perturbationGraphShow = () => {
   perturbationGraphVisible.value = true;
   console.log(111, perturbationGraphVisible.value);
@@ -103,7 +103,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <el-form ref="el_form_second" :model="form" label-position="right" label-width="100px" class="flex-1 pl-[10px] pr-[20px]">
+  <el-form ref="el_form_second" :model="form" label-position="right" label-width="100px" class="flex-1">
     <BlcokTitle title="上传分子" />
     <el-radio-group v-model="tab" class="mt-[15px]" @change="changeInputTab">
       <el-radio-button v-for="item in tab_list" :key="item" :label="item">{{ item }}</el-radio-button>
@@ -139,12 +139,12 @@ onMounted(async () => {
       </el-form-item>
     </div>
 
-    <BlcokTitle title="实验数据" class="mt-[20px]">
+    <BlcokTitle title="实验数据" class="mt-[15px]">
       <el-switch v-model="form.showExperimentData" class="ml-[10px]" />
     </BlcokTitle>
     <div v-show="form.showExperimentData" class="flex">
       <el-form-item label="实验数据方式" prop="experimentMethod">
-        <el-select v-model="form.experimentMethod" placeholder="选择实验数据方式" class="w-[200px]! mr-[20px]">
+        <el-select v-model="form.experimentMethod" placeholder="选择实验数据方式" class="w-[200px]! mr-[15px]">
           <el-option v-for="item in experimentMethods" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
@@ -155,10 +155,10 @@ onMounted(async () => {
       </el-form-item>
     </div>
 
-    <BlcokTitle title="创建映射图" class="mt-[20px]" />
+    <BlcokTitle title="创建映射图" class="mt-[15px]" />
     <div class="map-section flex">
       <el-form-item label="映射图方式" prop="mapType" label-position="right">
-        <el-select v-model="form.mapType" placeholder="选择映射图方式" class="w-[200px]! mr-[20px]">
+        <el-select v-model="form.mapType" placeholder="选择映射图方式" class="w-[200px]! mr-[15px]">
           <el-option v-for="item in mapTypes" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>

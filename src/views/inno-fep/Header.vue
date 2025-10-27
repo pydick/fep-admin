@@ -10,7 +10,7 @@ const cardHeader = {
 </script>
 
 <template>
-  <div class="border border-[var(--el-card-border-color)] py-[15px] px-[20px]">
+  <div class="border border-[var(--el-card-border-color)] py-[15px] px-[15px]">
     <h2 class="h-[24px] font-black leading-[24px]">{{ cardHeader.title }}</h2>
     <p class="pb-0">
       <span class="height-[21px] leading-[21px] align-middle">{{ cardHeader.description }}</span>

@@ -10,6 +10,7 @@ import { pxToRem } from "@/utils/rem";
 import { ossList, ossGetDownload, proteinInfo, fetchFileAsBlob } from "@/api/fep";
 import { binaryToUploadFile } from "@/utils/common";
 import { ElLoading } from "element-plus";
+import BlockTitle from "../../components/BlcokTitle/index.vue";
 
 import { debounce } from "@pureadmin/utils";
 defineOptions({
@@ -565,8 +566,8 @@ const handlePreprocess = () => {
 </script>
 
 <template>
-  <el-form ref="el_form_first" :model="form" class="flex-1 pl-[10px] pr-[20px]">
-    <p class="label_1">输入蛋白</p>
+  <el-form ref="el_form_first" :model="form" class="flex-1">
+    <blockTitle title="输入蛋白" />
     <el-form-item prop="input_tab" :rules="[{ required: true, message: 'This is required' }]">
       <el-radio-group v-model="form.input_tab" @change="changeInputTab">
         <el-radio-button v-for="item in tab_list" :key="item" :label="item">{{ item }}</el-radio-button>
@@ -591,14 +592,13 @@ const handlePreprocess = () => {
       </el-button>
     </el-form-item>
 
-    <p class="label_1">
-      蛋白预处理
+    <blockTitle title="蛋白预处理">
       <el-switch v-model="form.need_prot_process" class="ml-[10px]" />
-    </p>
+    </blockTitle>
     <p class="label_3">如果您的蛋白已经做过蛋白预处理，您可以直接点击下一步。如果没有，建议您打开开关进行预处理相关的操作</p>
     <el-card v-show="form.need_prot_process" shadow="never" class="mt-[15px]" body-class=" l-[12px]">
       <p slot="label" class="label_1_1">选择需要保留的蛋白链</p>
-      <el-form-item prop="box_ligand" :rules="[{ validator: check_box_ligand, trigger: 'change' }]">
+      <el-form-item prop="box_ligand" class="mt-0!" :rules="[{ validator: check_box_ligand, trigger: 'change' }]">
         <p v-if="form.protein_chain.length == 0" class="no_data">暂无数据</p>
         <el-scrollbar v-else>
           <div v-for="item in form.protein_chain" :key="item.chain_id" class="flex">
@@ -719,6 +719,9 @@ const handlePreprocess = () => {
   width: 100%;
   text-align: center;
   color: #909399;
+  margin: 0;
+  height: 40px;
+  line-height: 40px;
 }
 .table_head {
   display: flex;
@@ -772,6 +775,8 @@ const handlePreprocess = () => {
   text-align: center;
   border: 1px solid #ebeef5;
   border-top: 0;
+  height: 40px;
+  line-height: 40px;
 }
 </style>
 
