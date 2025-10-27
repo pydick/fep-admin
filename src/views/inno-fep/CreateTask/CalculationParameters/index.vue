@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BlcokTitle from "../BlcokTitle/index.vue";
+import BlcokTitle from "../../components/BlcokTitle/index.vue";
 import { ref, reactive, h } from "vue";
 import { ElTag } from "element-plus";
 

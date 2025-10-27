@@ -40,11 +40,11 @@ const onLogin = async (formEl: FormInstance | undefined) => {
     if (valid) {
       loading.value = true;
       /*----------暂存测试使用--------------------------------*/
-      // const formData = new FormData();
-      // formData.append("phone", "1234567890");
-      // formData.append("email", "yewenling@carbonsilicon.ai");
-      // formData.append("password", "ywl1005123");
-      // await signin_api(formData);
+      const formData = new FormData();
+      formData.append("phone", "1234567890");
+      formData.append("email", "yewenling@carbonsilicon.ai");
+      formData.append("password", "ywl1005123");
+      await signin_api(formData);
       /*----------暂存测试使用--------------------------------*/
       useUserStoreHook()
         .loginByUsername({
