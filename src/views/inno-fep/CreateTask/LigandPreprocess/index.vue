@@ -3,6 +3,7 @@ import BlcokTitle from "../../components/BlcokTitle/index.vue";
 import { ref, reactive, onMounted } from "vue";
 import LiTable from "./LiTable/index.vue";
 import CSupload from "@/components/CSupload/index.vue";
+import PerturbationGraphDialog from "./PerGraphDialog/index.vue";
 import { ossList } from "@/api/fep";
 defineOptions({
   name: "LigandPreprocess"
@@ -78,8 +79,10 @@ const handleGenerateMap = () => {
   console.log("生成映射图");
 };
 
-const handlePreview = () => {
-  console.log("预览映射图");
+const perturbationGraphVisible = ref(false);
+const perturbationGraphShow = () => {
+  perturbationGraphVisible.value = true;
+  console.log(111, perturbationGraphVisible.value);
 };
 const uploadSuc = value => {
   console.log(value);
@@ -164,9 +167,10 @@ onMounted(async () => {
           <el-option v-for="item in referenceLigand" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
         <el-button type="primary" @click="handleGenerateMap">生成</el-button>
-        <el-button @click="handlePreview">预览</el-button>
+        <el-button @click="perturbationGraphShow">配体微扰图</el-button>
       </el-form-item>
     </div>
+    <PerturbationGraphDialog v-model:visible="perturbationGraphVisible" />
   </el-form>
 </template>
 
