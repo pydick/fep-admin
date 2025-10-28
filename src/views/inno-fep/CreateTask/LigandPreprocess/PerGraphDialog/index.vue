@@ -34,16 +34,16 @@ watch(
 </script>
 
 <template>
-  <el-dialog v-model="props.visible" width="60%" title="配体微扰图" header-class="pb-[0px]!">
-    <el-row :gutter="15">
-      <el-col :span="12">
-        <BlcokTitle title="微扰图" />
-        <div class="perturbation-container">
-          <PerturbationGraph class="pt-[15px]" />
+  <el-dialog v-model="props.visible" width="60%" :close-on-click-modal="false" :show-close="false" title="配体微扰图" body-class="per-graph-dialog" header-class="pb-[0px]!">
+    <el-row :gutter="15" class="h-full">
+      <el-col :span="12" class="h-full">
+        <BlcokTitle title="微扰图" class="pb-[15px]" />
+        <div class="perturbation-container h-full">
+          <PerturbationGraph class="pt-[15px]" :isDialogEnter="true" />
         </div>
       </el-col>
-      <el-col :span="12">
-        <BlcokTitle title="映射图" />
+      <el-col :span="12" class="h-full">
+        <BlcokTitle title="映射图" class="pb-[15px]" />
         <MappingGraph class="pt-[15px]" />
       </el-col>
     </el-row>
@@ -56,9 +56,9 @@ watch(
   </el-dialog>
 </template>
 
-<style lang="scss" scoped>
-.perturbation-container {
-  // width: 600px;
-  // height: 600px;
+<style lang="scss" scoped></style>
+<style lang="scss">
+.per-graph-dialog {
+  height: 700px;
 }
 </style>

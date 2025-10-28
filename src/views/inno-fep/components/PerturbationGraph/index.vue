@@ -2,13 +2,20 @@
 import { onMounted, ref, onUnmounted } from "vue";
 import { Graph } from "@antv/g6";
 import GraphNode from "./GraphNode/index.vue";
-import { h } from "vue";
+import { h, nextTick } from "vue";
 defineOptions({
   name: "PerturbationGraph"
 });
+let graph: Graph | null = null;
 
 const containerRef = ref<HTMLElement>();
-let graph: Graph | null = null;
+
+interface IP {
+  isDialogEnter?: boolean;
+}
+const props = withDefaults(defineProps<IP>(), {
+  isDialogEnter: false
+});
 
 const nodes = [
   {
@@ -93,10 +100,18 @@ const data = {
 
 const initGraph = () => {
   if (!containerRef.value) return;
-
+  const width = containerRef.value.clientWidth;
+  const height = containerRef.value.clientHeight;
+  const radius = Math.min(width, height) / 2 - 100;
+  console.log(width, height, radius);
   graph = new Graph({
     container: containerRef.value,
+    width: containerRef.value.clientWidth,
+    height: containerRef.value.clientHeight,
     behaviors: ["drag-canvas", "zoom-canvas", "drag-element"],
+    autoFit: {
+      type: "center"
+    },
     plugins: [
       {
         type: "toolbar",
@@ -117,7 +132,6 @@ const initGraph = () => {
       }
     ],
     node: {
-      // type: "rect",
       style: {
         size: [70, 70],
         radius: 8,
@@ -144,8 +158,7 @@ const initGraph = () => {
     },
     layout: {
       type: "radial",
-      center: [370, 300],
-      unitRadius: 250,
+      unitRadius: radius,
       linkDistance: 250
     }
   });
@@ -163,12 +176,26 @@ const initGraph = () => {
     console.log("点击边:", evt);
   });
 };
+const handleResize = () => {
+  if (graph && containerRef.value) {
+    graph.resize(containerRef.value.clientWidth, containerRef.value.clientHeight);
+    graph.fitView();
+  }
+};
 
-onMounted(() => {
-  initGraph();
+onMounted(async () => {
+  if (props.isDialogEnter) {
+    await nextTick();
+  }
+  if (containerRef.value) {
+    initGraph();
+    window.addEventListener("resize", handleResize);
+  }
 });
 
-onUnmounted(() => {});
+onUnmounted(() => {
+  window.removeEventListener("resize", handleResize);
+});
 </script>
 
 <template>
@@ -177,9 +204,7 @@ onUnmounted(() => {});
 
 <style lang="scss" scoped>
 #g6-container {
-  min-width: 600px;
-  min-height: 600px;
-  width: 740px;
-  height: 650px;
+  width: 100%;
+  height: 100%;
 }
 </style>

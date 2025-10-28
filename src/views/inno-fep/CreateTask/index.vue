@@ -6,12 +6,13 @@ import ProteinPreprocess from "./ProteinPreprocess/index.vue";
 import LigandPreprocess from "./LigandPreprocess/index.vue";
 import CalculationParameters from "./CalculationParameters/index.vue";
 import CSstep from "@/components/CSstep/index.vue";
+import PerturbationGraph from "@/views/inno-fep/components/PerturbationGraph/index.vue";
 
 defineOptions({
   name: "CreateTask"
 });
 const stepList = ref<string[]>(["蛋白预处理", "配体预处理", "计算参数"]);
-const activeStep = ref(2);
+const activeStep = ref(1);
 const protein3dRef = ref();
 
 const stepRef = ref();
@@ -41,7 +42,8 @@ provide("protein3dRef", protein3dRef);
   <el-row id="createTaskContainer" :gutter="15" class="h-full flex-nowrap! overflow-auto">
     <el-col :span="12" :gutter="15" class="h-full min-width">
       <Protein3d v-if="activeStep === 1" ref="protein3dRef" class="h-full" />
-      <Ligand3d v-if="activeStep === 2" ref="ligand3dRef" class="w-full h-full" />
+      <Ligand3d v-if="activeStep === 2" ref="ligand3dRef" class="h-full" />
+      <PerturbationGraph v-if="activeStep === 3" ref="PerturbationGraphRef" class="h-full" />
     </el-col>
     <el-col :span="12" class="h-full min-width">
       <div class="h-full flex flex-col border border-[var(--el-card-border-color)] pt-[15px] pr-[15px] pb-[15px] pl-[15px]">
