@@ -79,7 +79,7 @@ const handleGenerateMap = () => {
   console.log("生成映射图");
 };
 
-const perturbationGraphVisible = ref(true);
+const perturbationGraphVisible = ref(false);
 const perturbationGraphShow = () => {
   perturbationGraphVisible.value = true;
   console.log(111, perturbationGraphVisible.value);
@@ -104,27 +104,30 @@ onMounted(async () => {
 
 <template>
   <el-form ref="el_form_second" :model="form" label-position="right" label-width="100px" class="flex-1">
-    <BlcokTitle title="上传分子" />
-    <el-radio-group v-model="tab" class="pt-[15px]" @change="changeInputTab">
-      <el-radio-button v-for="item in tab_list" :key="item" :label="item">{{ item }}</el-radio-button>
-    </el-radio-group>
-    <div v-show="tab === tab_list[0]" class="dbid_input_box">
-      <el-form-item ref="pdbid_url_ref" label-width="0px" prop="ligandId">
-        <CSupload inp_placeholder="上传" file_accept=".csv/sdf" :is_slot="false" @uploadSuc="uploadSuc" />
-      </el-form-item>
-      <el-form-item prop="pdbid_select" label-width="0px" class="w-[120px]!">
-        <el-select v-model="form.example" placeholder="选择示例" @change="exampleChoose">
-          <el-option v-for="item in exampleList" :key="item.value" :label="item.name" :value="item.value" />
-        </el-select>
-      </el-form-item>
-    </div>
-    <div v-show="tab === tab_list[1]" class="w-full">
-      <el-form-item label-width="0px" :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="ligandData">
-        <el-button class="w-full w_100" @click="show_dialog('protein')">
-          <el-input v-model="form.ligandData" :input-style="{ textAlign: 'center' }" class="w-full" placeholder="数据中心导入pdb" readonly />
-        </el-button>
-      </el-form-item>
-    </div>
+    <BlcokTitle title="上传分子" class="pb-[15px]" />
+    <el-card shadow="never">
+      <el-radio-group v-model="tab" class="" @change="changeInputTab">
+        <el-radio-button v-for="item in tab_list" :key="item" :label="item">{{ item }}</el-radio-button>
+      </el-radio-group>
+      <div v-show="tab === tab_list[0]" class="dbid_input_box">
+        <el-form-item ref="pdbid_url_ref" label-width="0px" prop="ligandId">
+          <CSupload inp_placeholder="上传" file_accept=".csv/sdf" :is_slot="false" @uploadSuc="uploadSuc" />
+        </el-form-item>
+        <el-form-item prop="pdbid_select" label-width="0px" class="w-[120px]!">
+          <el-select v-model="form.example" placeholder="选择示例" @change="exampleChoose">
+            <el-option v-for="item in exampleList" :key="item.value" :label="item.name" :value="item.value" />
+          </el-select>
+        </el-form-item>
+      </div>
+      <div v-show="tab === tab_list[1]" class="w-full">
+        <el-form-item label-width="0px" :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="ligandData">
+          <el-button class="w-full w_100" @click="show_dialog('protein')">
+            <el-input v-model="form.ligandData" :input-style="{ textAlign: 'center' }" class="w-full" placeholder="数据中心导入pdb" readonly />
+          </el-button>
+        </el-form-item>
+      </div>
+    </el-card>
+    <BlcokTitle title="配体列表" />
     <LiTable class="mt-[15px]" />
 
     <BlcokTitle title="分子叠合">

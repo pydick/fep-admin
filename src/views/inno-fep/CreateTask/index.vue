@@ -11,7 +11,7 @@ defineOptions({
   name: "CreateTask"
 });
 const stepList = ref<string[]>(["蛋白预处理", "配体预处理", "计算参数"]);
-const activeStep = ref(1);
+const activeStep = ref(2);
 const protein3dRef = ref();
 
 const stepRef = ref();
@@ -38,7 +38,7 @@ provide("protein3dRef", protein3dRef);
 </script>
 
 <template>
-  <el-row id="createTaskContainer" class="h-full flex-nowrap! overflow-auto">
+  <el-row id="createTaskContainer" :gutter="15" class="h-full flex-nowrap! overflow-auto">
     <el-col :span="12" :gutter="15" class="h-full min-width">
       <Protein3d v-if="activeStep === 1" ref="protein3dRef" class="h-full" />
       <Ligand3d v-if="activeStep === 2" ref="ligand3dRef" class="w-full h-full" />
@@ -46,7 +46,7 @@ provide("protein3dRef", protein3dRef);
     <el-col :span="12" class="h-full min-width">
       <div class="h-full flex flex-col border border-[var(--el-card-border-color)] pt-[15px] pr-[15px] pb-[15px] pl-[15px]">
         <CSstep ref="stepRef" v-model:active="activeStep" class="max-w-full! pt-[15px] pb-[15px] bg-[var(--el-fill-color-light)]" :titleList="stepList" />
-        <div class="flex-1 basis-0 overflow-y-auto pb-[15px]">
+        <div class="flex-1 basis-0 overflow-y-auto">
           <ProteinPreprocess v-show="activeStep === 1" />
           <LigandPreprocess v-show="activeStep === 2" />
           <CalculationParameters v-show="activeStep === 3" />

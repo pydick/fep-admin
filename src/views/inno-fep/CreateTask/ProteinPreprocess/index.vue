@@ -567,96 +567,106 @@ const handlePreprocess = () => {
 
 <template>
   <el-form ref="el_form_first" :model="form" class="flex-1">
-    <blockTitle title="输入蛋白" />
-    <el-form-item prop="input_tab" :rules="[{ required: true, message: 'This is required' }]">
-      <el-radio-group v-model="form.input_tab" @change="changeInputTab">
-        <el-radio-button v-for="item in tab_list" :key="item" :label="item">{{ item }}</el-radio-button>
-      </el-radio-group>
-    </el-form-item>
-    <div v-show="form.input_tab === '数据库导入'" class="dbid_input_box">
-      <el-form-item ref="pdbid_url_ref" prop="pdbid_input" :rules="[{ required: true, message: '请输入PDBID或者选择示例', trigger: 'change' }]">
-        <el-input v-model="form.pdbid_input" placeholder="输入PDBID" class="pdbid_input" @change="pdbidInput" />
-      </el-form-item>
-      <el-form-item prop="pdbid_select" class="w-[120px]!">
-        <el-select v-model="form.pdbid_select" placeholder="选择示例" @change="exampleChoose">
-          <el-option v-for="item in exampleList" :key="item.value" :label="item.name" :value="item.value" />
-        </el-select>
-      </el-form-item>
+    <div class="">
+      <blockTitle title="输入蛋白" class="pb-[15px]" />
+      <el-card shadow="never">
+        <el-form-item prop="input_tab" class="pt-0!" :rules="[{ required: true, message: 'This is required' }]">
+          <el-radio-group v-model="form.input_tab" @change="changeInputTab">
+            <el-radio-button v-for="item in tab_list" :key="item" :label="item">{{ item }}</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <div v-show="form.input_tab === '数据库导入'" class="dbid_input_box">
+          <el-form-item ref="pdbid_url_ref" prop="pdbid_input" :rules="[{ required: true, message: '请输入PDBID或者选择示例', trigger: 'change' }]">
+            <el-input v-model="form.pdbid_input" placeholder="输入PDBID" class="pdbid_input" @change="pdbidInput" />
+          </el-form-item>
+          <el-form-item prop="pdbid_select" class="w-[120px]!">
+            <el-select v-model="form.pdbid_select" placeholder="选择示例" @change="exampleChoose">
+              <el-option v-for="item in exampleList" :key="item.value" :label="item.name" :value="item.value" />
+            </el-select>
+          </el-form-item>
+        </div>
+        <div v-show="form.input_tab === '上传文件'" class="">
+          <el-form-item prop="protein_file" :rules="[{ required: true, message: '请上传蛋白pdb文件', trigger: 'submit' }]">
+            <CSupload inp_placeholder="上传" file_accept=".pdb" :is_slot="false" @uploadSuc="uploadSuc" />
+          </el-form-item>
+        </div>
+        <div v-show="form.input_tab === '数据中心'" class="">
+          <el-form-item :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="protein_data">
+            <el-button class="w-full w_100" @click="show_dialog('protein')">
+              <el-input v-model="form.protein_data" :input-style="{ textAlign: 'center' }" class="w-full!" placeholder="数据中心导入pdb" readonly />
+            </el-button>
+          </el-form-item>
+        </div>
+      </el-card>
     </div>
-    <el-form-item v-show="form.input_tab === '上传文件'" prop="protein_file" :rules="[{ required: true, message: '请上传蛋白pdb文件', trigger: 'submit' }]">
-      <CSupload inp_placeholder="上传" file_accept=".pdb" :is_slot="false" @uploadSuc="uploadSuc" />
-    </el-form-item>
-    <el-form-item v-show="form.input_tab === '数据中心'" :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="protein_data">
-      <el-button class="w-full w_100" @click="show_dialog('protein')">
-        <el-input v-model="form.protein_data" :input-style="{ textAlign: 'center' }" class="w-full!" placeholder="数据中心导入pdb" readonly />
-      </el-button>
-    </el-form-item>
 
-    <blockTitle title="蛋白预处理">
-      <el-switch v-model="form.need_prot_process" class="ml-[10px]" />
-    </blockTitle>
-    <p class="label_3 pb-[15px]">如果您的蛋白已经做过蛋白预处理，您可以直接点击下一步。如果没有，建议您打开开关进行预处理相关的操作</p>
-    <el-card v-show="form.need_prot_process" shadow="never" body-class="py-0!">
-      <p slot="label" class="label_1_1">选择需要保留的蛋白链</p>
-      <el-form-item prop="box_ligand" class="mt-0!" :rules="[{ validator: check_box_ligand, trigger: 'change' }]">
-        <p v-if="form.protein_chain.length == 0" class="no_data">暂无数据</p>
-        <el-scrollbar v-else>
-          <div v-for="item in form.protein_chain" :key="item.chain_id" class="flex">
-            <el-checkbox v-model="item.if_checked" class="w-[25px] mr-0" @change="chain_change(item, item.if_checked)" />
-            <span class="cursor-pointer" @click="chain_select_fn(item)">Chain {{ item.chain_id }}</span>
-          </div>
-        </el-scrollbar>
-      </el-form-item>
-      <p slot="label" class="label_1_1">选择需要保留的小分子及水分子</p>
-      <p class="label_3 -mt-[5px]">此处默认展示pdb文件中所有的小分子及其5Å范围内的水分子，系统会默认删除5Å范围外的水，而5Å范围内的水由用户自行决定是否删除。其中具有水桥作用的水分子做了特殊标记，您可以通过【快速删除】按钮一步删除没有水桥作用的水分子</p>
-      <el-form-item>
-        <div class="flex items-start w-full">
-          <el-scrollbar class="w-4/5">
-            <div class="table_head">
-              <span class="table_head_td w-[120px]">Het Name</span>
-              <span class="table_head_td">Water(Within 5 Å)</span>
+    <div class="">
+      <blockTitle title="蛋白预处理">
+        <el-switch v-model="form.need_prot_process" class="ml-[10px]" />
+      </blockTitle>
+      <p class="label_3 pb-[15px]">如果您的蛋白已经做过蛋白预处理，您可以直接点击下一步。如果没有，建议您打开开关进行预处理相关的操作</p>
+      <el-card v-show="form.need_prot_process" shadow="never" body-class="py-0!">
+        <p slot="label" class="label_1_1">选择需要保留的蛋白链</p>
+        <el-form-item prop="box_ligand" class="mt-0!" :rules="[{ validator: check_box_ligand, trigger: 'change' }]">
+          <p v-if="form.protein_chain.length == 0" class="no_data">暂无数据</p>
+          <el-scrollbar v-else>
+            <div v-for="item in form.protein_chain" :key="item.chain_id" class="flex">
+              <el-checkbox v-model="item.if_checked" class="w-[25px] mr-0" @change="chain_change(item, item.if_checked)" />
+              <span class="cursor-pointer" @click="chain_select_fn(item)">Chain {{ item.chain_id }}</span>
             </div>
-            <div v-for="(item, ind) in form.het_group" v-if="form.het_group.length > 0" :key="item.name" class="table_body">
-              <div class="table_body_td w-[120px]">
-                <el-checkbox v-model="item.if_checked" class="w-[25px]" @change="het_change(item, item.if_checked)" />
-                <span class="het_title" @click="het_select_fn(item)">{{ item.chain_id }}:{{ item.name }}</span>
+          </el-scrollbar>
+        </el-form-item>
+        <p slot="label" class="label_1_1">选择需要保留的小分子及水分子</p>
+        <p class="label_3 -mt-[5px]">此处默认展示pdb文件中所有的小分子及其5Å范围内的水分子，系统会默认删除5Å范围外的水，而5Å范围内的水由用户自行决定是否删除。其中具有水桥作用的水分子做了特殊标记，您可以通过【快速删除】按钮一步删除没有水桥作用的水分子</p>
+        <el-form-item>
+          <div class="flex items-start w-full">
+            <el-scrollbar class="w-4/5">
+              <div class="table_head">
+                <span class="table_head_td w-[120px]">Het Name</span>
+                <span class="table_head_td">Water(Within 5 Å)</span>
               </div>
-              <div class="table_body_td flex-1 overflow-auto whitespace-nowrap">
-                <div v-for="(val, index) in item.water_within_dist" :key="index" class="inline-block">
-                  <el-popover popper-class="water_popover" placement="bottom" trigger="hover">
-                    <span @click="delete_single_het(ind, val, index)">删除</span>
-                    <template #reference>
-                      <span class="water_item" :class="{ red_str: val.if_water_bridge }" @click="single_het_click(val)">W</span>
-                    </template>
-                  </el-popover>
+              <div v-for="(item, ind) in form.het_group" v-if="form.het_group.length > 0" :key="item.name" class="table_body">
+                <div class="table_body_td w-[120px]">
+                  <el-checkbox v-model="item.if_checked" class="w-[25px]" @change="het_change(item, item.if_checked)" />
+                  <span class="het_title" @click="het_select_fn(item)">{{ item.chain_id }}:{{ item.name }}</span>
+                </div>
+                <div class="table_body_td flex-1 overflow-auto whitespace-nowrap">
+                  <div v-for="(val, index) in item.water_within_dist" :key="index" class="inline-block">
+                    <el-popover popper-class="water_popover" placement="bottom" trigger="hover">
+                      <span @click="delete_single_het(ind, val, index)">删除</span>
+                      <template #reference>
+                        <span class="water_item" :class="{ red_str: val.if_water_bridge }" @click="single_het_click(val)">W</span>
+                      </template>
+                    </el-popover>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div v-else class="empty_data">暂无数据</div>
-          </el-scrollbar>
-          <el-button class="ml-[10px]" type="primary" @click="quick_delete_click">快速删除</el-button>
-        </div>
-      </el-form-item>
-      <p slot="label" class="label_1_1">优化蛋白</p>
-      <el-form-item>
-        <el-checkbox v-model="form.add_missing_residue" class="w-full">Add Missing Residue/Repair Faulty Structure</el-checkbox>
-        <el-checkbox v-model="form.addh" class="w-full">Add Hydrogens</el-checkbox>
-        <el-checkbox v-model="form.modify_protonation" class="w-full">
-          Modify Protonation at pH:
-          <el-input-number v-model="form.ph" :min="0" :max="14" :controls="false" :step="0.1" :step-strictly="true" class="w-16" />
-        </el-checkbox>
+              <div v-else class="empty_data">暂无数据</div>
+            </el-scrollbar>
+            <el-button class="ml-[10px]" type="primary" @click="quick_delete_click">快速删除</el-button>
+          </div>
+        </el-form-item>
+        <p slot="label" class="label_1_1">优化蛋白</p>
+        <el-form-item>
+          <el-checkbox v-model="form.add_missing_residue" class="w-full">Add Missing Residue/Repair Faulty Structure</el-checkbox>
+          <el-checkbox v-model="form.addh" class="w-full">Add Hydrogens</el-checkbox>
+          <el-checkbox v-model="form.modify_protonation" class="w-full">
+            Modify Protonation at pH:
+            <el-input-number v-model="form.ph" :min="0" :max="14" :controls="false" :step="0.1" :step-strictly="true" class="w-16" />
+          </el-checkbox>
 
-        <el-checkbox v-model="form.opt_hydrogen" class="w-full">Optimize Hydrogen Bonding Network</el-checkbox>
-        <el-checkbox v-model="form.energy_min" class="w-full">Energy Minimization</el-checkbox>
-        <div v-if="form.energy_min" class="w-full">
-          <span class="text-[#606266] mr-2">Forcefield:</span>
-          <el-select v-model="form.force_field" class="w-[200px]! inline-block mr-[10px]">
-            <el-option v-for="item in charge_option" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-          <el-button class="ml-[10px]" type="primary" @click="handlePreprocess">预处理</el-button>
-        </div>
-      </el-form-item>
-    </el-card>
+          <el-checkbox v-model="form.opt_hydrogen" class="w-full">Optimize Hydrogen Bonding Network</el-checkbox>
+          <el-checkbox v-model="form.energy_min" class="w-full">Energy Minimization</el-checkbox>
+          <div v-if="form.energy_min" class="w-full pb-[15px]">
+            <span class="text-[#606266] mr-2">Forcefield:</span>
+            <el-select v-model="form.force_field" class="w-[200px]! inline-block mr-[10px]">
+              <el-option v-for="item in charge_option" :key="item.value" :label="item.label" :value="item.value" />
+            </el-select>
+            <el-button class="ml-[10px]" type="primary" @click="handlePreprocess">预处理</el-button>
+          </div>
+        </el-form-item>
+      </el-card>
+    </div>
     <CSspinner ref="spinner_ref" />
     <Data_select v-model:if_show="show_data_list" :data_list="data_list" name="蛋白数据中心" @custom-event="handleCustomEvent" />
   </el-form>
