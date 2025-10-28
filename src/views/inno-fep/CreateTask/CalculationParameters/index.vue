@@ -81,12 +81,14 @@ const proteinColumns = [
   {
     label: "名称",
     prop: "name",
-    minWidth: 150
+    minWidth: 150,
+    align: "center"
   },
   {
     label: "创建时间",
     prop: "createTime",
-    minWidth: 120
+    minWidth: 120,
+    align: "center"
   }
 ];
 
@@ -100,7 +102,8 @@ const ligandPairColumns = [
   {
     label: "配体对",
     prop: "ligandPair",
-    minWidth: 150
+    minWidth: 150,
+    align: "center"
   },
   {
     label: "相似性",
@@ -108,7 +111,8 @@ const ligandPairColumns = [
     minWidth: 100,
     cellRenderer: ({ row }) => {
       return h("span", { class: "similarity-value" }, row.similarity.toFixed(3));
-    }
+    },
+    align: "center"
   }
 ];
 
