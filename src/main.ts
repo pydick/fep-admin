@@ -15,6 +15,11 @@ import VXETable from "vxe-table";
 import websocket from "@drugflow/utils/websocket";
 import VueTippy from "vue-tippy";
 import { qiankunWindow, renderWithQiankun } from "vite-plugin-qiankun/dist/helper";
+
+// g6-vue扩展
+import { ExtensionCategory, register } from "@antv/g6";
+import { VueNode } from "g6-extension-vue";
+
 // 自定义指令
 import * as directives from "@/directives";
 // 全局注册@iconify/vue图标库
@@ -44,6 +49,8 @@ import "./assets/iconfont/iconfont.css";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/themes/light.css";
 import "vxe-table/lib/style.css";
+
+register(ExtensionCategory.NODE, "vue-node", VueNode);
 
 let app = null;
 

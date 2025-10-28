@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, onUnmounted } from "vue";
 import { Graph } from "@antv/g6";
+import GraphNode from "./GraphNode/index.vue";
+import { h } from "vue";
 defineOptions({
   name: "PerturbationGraph"
 });
@@ -24,85 +26,58 @@ const moleculeIcon = `<svg width="40" height="40" viewBox="0 0 40 40" xmlns="htt
   </g>
 </svg>`;
 
-// 图数据 - 以c5为中心的辐向布局
-const data = {
-  nodes: [
-    {
-      id: "c5",
-      data: {
-        label: "c5"
-      },
-      style: {
-        fill: "#ffffff",
-        stroke: "#666666",
-        lineWidth: 2
-      }
-    },
-    {
-      id: "1029-5",
-      data: {
-        label: "1029-5"
-      },
-      style: {
-        fill: "#ffffff",
-        stroke: "#666666",
-        lineWidth: 2
-      }
-    },
-    {
-      id: "1029-13",
-      data: {
-        label: "1029-13"
-      },
-      style: {
-        fill: "#ffffff",
-        stroke: "#666666",
-        lineWidth: 2
-      }
-    },
-    {
-      id: "1029-23",
-      data: {
-        label: "1029-23"
-      },
-      style: {
-        fill: "#ffffff",
-        stroke: "#666666",
-        lineWidth: 2
-      }
-    },
-    {
-      id: "1029-24",
-      data: {
-        label: "1029-24"
-      },
-      style: {
-        fill: "#ffff99",
-        stroke: "#666666",
-        lineWidth: 2
-      }
-    },
-    {
-      id: "1029-4",
-      data: {
-        label: "1029-4"
-      },
-      style: {
-        fill: "#ffffff",
-        stroke: "#666666",
-        lineWidth: 2,
-        size: 50,
-        iconSrc: `data:image/svg+xml;base64,${btoa(moleculeIcon)}`,
-        iconWidth: 30,
-        iconHeight: 30
-      }
+const nodes = [
+  {
+    id: "c",
+    type: "vue-node",
+    style: {
+      component: () => h(GraphNode)
     }
-  ],
+  },
+  {
+    id: "c1",
+    type: "vue-node",
+    style: {
+      component: () => h(GraphNode)
+    }
+  },
+  {
+    id: "c2",
+    type: "vue-node",
+    style: {
+      component: () => h(GraphNode)
+    }
+  },
+  {
+    id: "c3",
+    type: "vue-node",
+    style: {
+      component: () => h(GraphNode)
+    }
+  },
+  {
+    id: "c4",
+    type: "vue-node",
+    style: {
+      component: () => h(GraphNode)
+    }
+  },
+  {
+    id: "c5",
+    type: "vue-node",
+    style: {
+      component: () => h(GraphNode)
+    }
+  }
+];
+
+const data = {
+  nodes: nodes,
   edges: [
     {
       id: "edge1",
-      source: "c5",
-      target: "1029-5",
+      source: "c",
+      target: "c1",
       label: "0.008",
       style: {
         stroke: "#000000",
@@ -111,8 +86,8 @@ const data = {
     },
     {
       id: "edge2",
-      source: "c5",
-      target: "1029-13",
+      source: "c",
+      target: "c2",
       label: "0.01",
       style: {
         stroke: "#00cccc",
@@ -121,8 +96,8 @@ const data = {
     },
     {
       id: "edge3",
-      source: "c5",
-      target: "1029-23",
+      source: "c",
+      target: "c3",
       label: "0.01",
       style: {
         stroke: "#cccccc",
@@ -131,8 +106,8 @@ const data = {
     },
     {
       id: "edge4",
-      source: "c5",
-      target: "1029-24",
+      source: "c",
+      target: "c4",
       label: "0.01",
       style: {
         stroke: "#cccccc",
@@ -141,8 +116,8 @@ const data = {
     },
     {
       id: "edge5",
-      source: "c5",
-      target: "1029-4",
+      source: "c",
+      target: "c5",
       label: "0.008",
       style: {
         stroke: "#000000",
@@ -157,19 +132,19 @@ const initGraph = () => {
 
   graph = new Graph({
     container: containerRef.value,
-    // autoFit: {
-    //   type: "center"
-    // },
-    plugins: [
-      {
-        type: "grid-line",
-        follow: false
+    plugins: [],
+    autoFit: {
+      type: "center", // 按容器中心居中，不缩放
+      animation: {
+        duration: 500,
+        easing: "ease-in-out"
       }
-    ],
+    },
     behaviors: ["drag-canvas", "zoom-canvas", "drag-element"],
     node: {
+      // type: "rect",
       style: {
-        size: 30,
+        size: [70, 70],
         radius: 8,
         labelText: (d: any) => d.data?.label || d.label,
         labelFontSize: 12,
@@ -194,17 +169,12 @@ const initGraph = () => {
     },
     layout: {
       type: "radial",
-      center: [300, 300],
-      radius: 150,
-      focusNode: "c5", // 以c5为中心
-      unitRadius: 100,
-      nodeSpacing: 10,
-      preventOverlap: true,
-      strictRadial: false
+      center: [370, 300],
+      unitRadius: 250,
+      linkDistance: 250
     }
   });
 
-  // 渲染数据
   graph.setData(data);
   graph.render();
 
@@ -223,12 +193,7 @@ onMounted(() => {
   initGraph();
 });
 
-onUnmounted(() => {
-  if (graph) {
-    graph.destroy();
-    graph = null;
-  }
-});
+onUnmounted(() => {});
 </script>
 
 <template>
@@ -239,5 +204,7 @@ onUnmounted(() => {
 #g6-container {
   min-width: 600px;
   min-height: 600px;
+  width: 740px;
+  height: 600px;
 }
 </style>

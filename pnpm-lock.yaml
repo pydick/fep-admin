@@ -53,6 +53,9 @@ importers:
       element-plus:
         specifier: ^2.10.4
         version: 2.11.4(vue@3.5.22(typescript@5.9.2))
+      g6-extension-vue:
+        specifier: ^0.1.0
+        version: 0.1.0(@antv/g6@5.0.49(workerize-loader@2.0.2(webpack@5.102.0)))(vue@3.5.22(typescript@5.9.2))
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5
@@ -3032,6 +3035,12 @@ packages:
 
   functions-have-names@1.2.3:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
+
+  g6-extension-vue@0.1.0:
+    resolution: {integrity: sha512-2RtL2CdcIdnrCFJYETxsI7TNtsE2m3y1oNyXQwM3EUciPMdxjet5okLk6dzY8ohLRUz8sMk4dM4cAE3ljtQXfA==}
+    peerDependencies:
+      '@antv/g6': '>=5.0.0'
+      vue: ^2.0.0 || >=3.0.0
 
   generator-function@2.0.0:
     resolution: {integrity: sha512-xPypGGincdfyl/AiSGa7GjXLkvld9V7GjZlowup9SHIJnQnHLFiLODCd/DqKOp0PBagbHJ68r1KJI9Mut7m4sA==}
@@ -8647,6 +8656,15 @@ snapshots:
       is-callable: 1.2.7
 
   functions-have-names@1.2.3: {}
+
+  g6-extension-vue@0.1.0(@antv/g6@5.0.49(workerize-loader@2.0.2(webpack@5.102.0)))(vue@3.5.22(typescript@5.9.2)):
+    dependencies:
+      '@antv/g': 6.1.28
+      '@antv/g6': 5.0.49(workerize-loader@2.0.2(webpack@5.102.0))
+      vue: 3.5.22(typescript@5.9.2)
+      vue-demi: 0.14.10(vue@3.5.22(typescript@5.9.2))
+    transitivePeerDependencies:
+      - '@vue/composition-api'
 
   generator-function@2.0.0: {}
 

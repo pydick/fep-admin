@@ -79,7 +79,7 @@ const handleGenerateMap = () => {
   console.log("生成映射图");
 };
 
-const perturbationGraphVisible = ref(false);
+const perturbationGraphVisible = ref(true);
 const perturbationGraphShow = () => {
   perturbationGraphVisible.value = true;
   console.log(111, perturbationGraphVisible.value);
