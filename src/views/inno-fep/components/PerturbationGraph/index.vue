@@ -10,22 +10,6 @@ defineOptions({
 const containerRef = ref<HTMLElement>();
 let graph: Graph | null = null;
 
-// 分子结构SVG图标
-const moleculeIcon = `<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-  <g>
-    <circle cx="8" cy="12" r="3" fill="#666"/>
-    <circle cx="20" cy="8" r="3" fill="#666"/>
-    <circle cx="32" cy="12" r="3" fill="#666"/>
-    <circle cx="12" cy="28" r="3" fill="#666"/>
-    <circle cx="28" cy="28" r="3" fill="#666"/>
-    <line x1="8" y1="12" x2="20" y2="8" stroke="#666" stroke-width="1.5"/>
-    <line x1="20" y1="8" x2="32" y2="12" stroke="#666" stroke-width="1.5"/>
-    <line x1="8" y1="12" x2="12" y2="28" stroke="#666" stroke-width="1.5"/>
-    <line x1="32" y1="12" x2="28" y2="28" stroke="#666" stroke-width="1.5"/>
-    <line x1="12" y1="28" x2="28" y2="28" stroke="#666" stroke-width="1.5"/>
-  </g>
-</svg>`;
-
 const nodes = [
   {
     id: "c",
@@ -78,51 +62,31 @@ const data = {
       id: "edge1",
       source: "c",
       target: "c1",
-      label: "0.008",
-      style: {
-        stroke: "#000000",
-        lineWidth: 3
-      }
+      label: "0.008"
     },
     {
       id: "edge2",
       source: "c",
       target: "c2",
-      label: "0.01",
-      style: {
-        stroke: "#00cccc",
-        lineWidth: 3
-      }
+      label: "0.01"
     },
     {
       id: "edge3",
       source: "c",
       target: "c3",
-      label: "0.01",
-      style: {
-        stroke: "#cccccc",
-        lineWidth: 2
-      }
+      label: "0.01"
     },
     {
       id: "edge4",
       source: "c",
       target: "c4",
-      label: "0.01",
-      style: {
-        stroke: "#cccccc",
-        lineWidth: 2
-      }
+      label: "0.01"
     },
     {
       id: "edge5",
       source: "c",
       target: "c5",
-      label: "0.008",
-      style: {
-        stroke: "#000000",
-        lineWidth: 3
-      }
+      label: "0.008"
     }
   ]
 };
@@ -132,15 +96,26 @@ const initGraph = () => {
 
   graph = new Graph({
     container: containerRef.value,
-    plugins: [],
-    autoFit: {
-      type: "center", // 按容器中心居中，不缩放
-      animation: {
-        duration: 500,
-        easing: "ease-in-out"
-      }
-    },
     behaviors: ["drag-canvas", "zoom-canvas", "drag-element"],
+    plugins: [
+      {
+        type: "toolbar",
+        getItems: () => [
+          { id: "zoom-in", value: "zoom-in" },
+          { id: "zoom-out", value: "zoom-out" },
+          { id: "auto-fit", value: "auto-fit" }
+        ],
+        onClick: value => {
+          if (value === "zoom-in") {
+            graph.zoomTo(1.1);
+          } else if (value === "zoom-out") {
+            graph.zoomTo(0.9);
+          } else if (value === "auto-fit") {
+            graph.fitView();
+          }
+        }
+      }
+    ],
     node: {
       // type: "rect",
       style: {
@@ -164,7 +139,7 @@ const initGraph = () => {
         labelPadding: [2, 4],
         stroke: (d: any) => d.style?.stroke || "#cccccc",
         lineWidth: (d: any) => d.style?.lineWidth || 2,
-        endArrow: false
+        endArrow: true
       }
     },
     layout: {
@@ -205,6 +180,6 @@ onUnmounted(() => {});
   min-width: 600px;
   min-height: 600px;
   width: 740px;
-  height: 600px;
+  height: 650px;
 }
 </style>
