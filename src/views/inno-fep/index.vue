@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FepHeader from "./Header.vue";
+import FepHeader from "./Header/index.vue";
 import CScard from "@/components/CScard/index.vue";
 import CStab from "@/components/CStab/index.vue";
 import CreateTask from "./CreateTask/index.vue";
