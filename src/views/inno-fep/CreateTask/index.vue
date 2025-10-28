@@ -57,7 +57,7 @@ provide("protein3dRef", protein3dRef);
           <el-button v-show="activeStep !== 1" @click="handlePrev">上一步</el-button>
           <el-button v-show="activeStep === 1" @click="handleCheckAndNext">检测并下一步</el-button>
           <el-button v-show="activeStep == 2" @click="handleNext">下一步</el-button>
-          <el-button v-show="activeStep === 3" @click="handleSubmit">提交任务</el-button>
+          <el-button v-show="activeStep === 3" type="primary" @click="handleSubmit">提交任务</el-button>
         </div>
       </div>
     </el-col>
