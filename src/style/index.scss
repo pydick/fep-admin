@@ -66,3 +66,34 @@
     background-color: hsl(var(--background));
   }
 }
+
+/* Element UI 风格的滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(144, 147, 153, 0.3);
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(144, 147, 153, 0.5);
+}
+
+/* Firefox 风格的滚动条 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(144, 147, 153, 0.3) transparent;
+}
+
+*:hover {
+  scrollbar-color: rgba(144, 147, 153, 0.5) transparent;
+}
