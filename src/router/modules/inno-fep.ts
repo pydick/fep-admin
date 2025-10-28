@@ -12,6 +12,15 @@ export default {
       meta: {
         title: "inno-fep"
       }
+    },
+    {
+      path: "/inno-fep/detail",
+      name: "Inno-Fep-Detail",
+      component: () => import("@/views/inno-fep/detail.vue"),
+      meta: {
+        title: "inno-fep-detail",
+        showLink: false
+      }
     }
   ]
 } satisfies RouteConfigsTable;

@@ -6,9 +6,9 @@ import CreateTask from "./CreateTask/index.vue";
 import RecentResult from "./RecentResult/index.vue";
 import { ref, reactive } from "vue";
 defineOptions({
-  // name 作为一种规范最好必须写上并且和路由的name保持一致
   name: "Inno-Fep"
 });
+
 const tabList = reactive<{ label: string; name: string }[]>([
   { label: "创建任务", name: "createTask" },
   { label: "最近结果", name: "recentResult" }

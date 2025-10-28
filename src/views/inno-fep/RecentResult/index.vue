@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import DetailIcon from "@/assets/svg/detail.svg?component";
+import { useRouter } from "vue-router";
 defineOptions({
   name: "RecentResult"
 });
 
+const router = useRouter();
 // 蛋白数据
 const taskData = ref([
   {
@@ -58,6 +60,7 @@ const handleCurrentChange = (page: number) => {
 };
 const gotoDetail = (type: string, id: string) => {
   console.log(type, id);
+  router.push("/inno-fep/detail");
 };
 </script>
 
