@@ -35,7 +35,7 @@ watch(
 
 <template>
   <el-dialog v-model="props.visible" width="60%" title="配体微扰图" header-class="pb-[0px]!">
-    <el-row :gutter="7.5">
+    <el-row :gutter="15">
       <el-col :span="12">
         <BlcokTitle title="微扰图" />
         <div class="perturbation-container">

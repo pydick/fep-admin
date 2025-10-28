@@ -595,8 +595,8 @@ const handlePreprocess = () => {
     <blockTitle title="蛋白预处理">
       <el-switch v-model="form.need_prot_process" class="ml-[10px]" />
     </blockTitle>
-    <p class="label_3">如果您的蛋白已经做过蛋白预处理，您可以直接点击下一步。如果没有，建议您打开开关进行预处理相关的操作</p>
-    <el-card v-show="form.need_prot_process" shadow="never" class="mt-[15px]" body-class=" l-[12px]">
+    <p class="label_3 pb-[15px]">如果您的蛋白已经做过蛋白预处理，您可以直接点击下一步。如果没有，建议您打开开关进行预处理相关的操作</p>
+    <el-card v-show="form.need_prot_process" shadow="never" body-class="py-0!">
       <p slot="label" class="label_1_1">选择需要保留的蛋白链</p>
       <el-form-item prop="box_ligand" class="mt-0!" :rules="[{ validator: check_box_ligand, trigger: 'change' }]">
         <p v-if="form.protein_chain.length == 0" class="no_data">暂无数据</p>
@@ -707,7 +707,8 @@ const handlePreprocess = () => {
   display: flex;
   flex-direction: column;
   margin-bottom: 0px;
-  margin-top: 15px;
+  padding-top: 15px;
+  // margin-top: 15px;
 }
 :deep(.el-form-item__label) {
   justify-content: flex-start;

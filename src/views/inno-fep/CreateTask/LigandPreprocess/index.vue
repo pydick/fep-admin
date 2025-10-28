@@ -105,7 +105,7 @@ onMounted(async () => {
 <template>
   <el-form ref="el_form_second" :model="form" label-position="right" label-width="100px" class="flex-1">
     <BlcokTitle title="上传分子" />
-    <el-radio-group v-model="tab" class="mt-[15px]" @change="changeInputTab">
+    <el-radio-group v-model="tab" class="pt-[15px]" @change="changeInputTab">
       <el-radio-button v-for="item in tab_list" :key="item" :label="item">{{ item }}</el-radio-button>
     </el-radio-group>
     <div v-show="tab === tab_list[0]" class="dbid_input_box">

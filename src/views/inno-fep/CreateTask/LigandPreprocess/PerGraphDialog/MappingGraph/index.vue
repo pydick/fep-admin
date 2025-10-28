@@ -6,19 +6,19 @@ defineOptions({
 </script>
 
 <template>
-  <el-row :gutter="7.5">
+  <el-row>
     <el-col :span="12">
       <div class="mapping-item">
-        <span>c5</span>
-        <SvgBox />
-        <span>c5</span>
+        <el-text class="mx-1" size="large">c5</el-text>
+        <SvgBox width="200px" height="auto" />
+        <el-text class="mx-1" size="large">c5</el-text>
       </div>
     </el-col>
     <el-col :span="12">
       <div class="mapping-item">
-        <span>c6</span>
-        <SvgBox />
-        <span>c6</span>
+        <el-text class="mx-1" size="large">c5</el-text>
+        <SvgBox width="200px" height="auto" />
+        <el-text class="mx-1" size="large">c5</el-text>
       </div>
     </el-col>
   </el-row>
@@ -26,8 +26,6 @@ defineOptions({
 
 <style lang="scss" scoped>
 .mapping-item {
-  width: 200px;
-  height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
