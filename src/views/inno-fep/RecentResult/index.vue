@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import DetailIcon from "@/assets/svg/detail.svg?component";
 defineOptions({
   name: "RecentResult"
 });
@@ -55,6 +56,9 @@ const handleCurrentChange = (page: number) => {
   current_page.value = page;
   console.log(page);
 };
+const gotoDetail = (type: string, id: string) => {
+  console.log(type, id);
+};
 </script>
 
 <template>
@@ -79,10 +83,8 @@ const handleCurrentChange = (page: number) => {
           <el-icon :size="20"><VideoPause /></el-icon>
         </el-button>
 
-        <el-button link size="small">
-          <el-icon :size="20">
-            <WarningFilled />
-          </el-icon>
+        <el-button circle size="small" @click="gotoDetail(row.type, row.id)">
+          <DetailIcon />
         </el-button>
       </template>
     </pure-table>
