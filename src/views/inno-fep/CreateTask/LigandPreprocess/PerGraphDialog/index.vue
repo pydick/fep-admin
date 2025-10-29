@@ -34,7 +34,7 @@ watch(
 </script>
 
 <template>
-  <el-dialog v-model="props.visible" width="60%" :close-on-click-modal="false" :show-close="false" title="配体微扰图" body-class="per-graph-dialog" header-class="pb-[0px]!">
+  <el-dialog v-model="props.visible" :close-on-click-modal="false" :show-close="false" title="配体微扰图" class="per-graph-dialog" header-class="pb-[0px]!">
     <el-row :gutter="15" class="h-full">
       <el-col :span="12" class="h-full">
         <BlcokTitle title="微扰图" class="pb-[15px]" />
@@ -57,3 +57,11 @@ watch(
 </template>
 
 <style lang="scss" scoped></style>
+<style lang="scss">
+.per-graph-dialog {
+  width: 70%;
+  @media (min-width: 1520px) {
+    width: 60%;
+  }
+}
+</style>
