@@ -9,7 +9,7 @@ defineOptions({
   name: "LigandPreprocess"
 });
 const el_form_second = ref();
-const form = reactive({
+const step2Form = reactive({
   ligandId: "",
   example: "",
   ligandData: "",
@@ -102,7 +102,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <el-form ref="el_form_second" :model="form" label-position="right" label-width="100px" class="flex-1">
+  <el-form ref="el_form_second" :model="step2Form" label-position="right" label-width="100px" class="flex-1">
     <BlcokTitle title="上传分子" class="pb-[15px]" />
     <el-card shadow="never">
       <el-radio-group v-model="tab" class="" @change="changeInputTab">
@@ -113,7 +113,7 @@ onMounted(async () => {
           <CSupload inp_placeholder="上传" file_accept=".csv/sdf" :is_slot="false" @uploadSuc="uploadSuc" />
         </el-form-item>
         <el-form-item prop="pdbid_select" label-width="0px" class="w-[120px]!">
-          <el-select v-model="form.example" placeholder="选择示例" @change="exampleChoose">
+          <el-select v-model="step2Form.example" placeholder="选择示例" @change="exampleChoose">
             <el-option v-for="item in exampleList" :key="item.value" :label="item.name" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -121,7 +121,7 @@ onMounted(async () => {
       <div v-show="tab === tab_list[1]" class="w-full">
         <el-form-item label-width="0px" :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="ligandData">
           <el-button class="w-full w_100" @click="show_dialog('protein')">
-            <el-input v-model="form.ligandData" :input-style="{ textAlign: 'center' }" class="w-full" placeholder="数据中心导入pdb" readonly />
+            <el-input v-model="step2Form.ligandData" :input-style="{ textAlign: 'center' }" class="w-full" placeholder="数据中心导入pdb" readonly />
           </el-button>
         </el-form-item>
       </div>
@@ -130,11 +130,11 @@ onMounted(async () => {
     <LiTable class="mt-[15px]" />
 
     <BlcokTitle title="分子叠合">
-      <el-switch v-model="form.showLigandOverlay" class="ml-[10px]" />
+      <el-switch v-model="step2Form.showLigandOverlay" class="ml-[10px]" />
     </BlcokTitle>
-    <div v-show="form.showLigandOverlay" class="overlay-section">
+    <div v-show="step2Form.showLigandOverlay" class="overlay-section">
       <el-form-item label="参考配体" prop="referenceLigand">
-        <el-select v-model="form.referenceLigand" placeholder="选择参考配体" class="w-[200px]! inline-block mr-[10px]">
+        <el-select v-model="step2Form.referenceLigand" placeholder="选择参考配体" class="w-[200px]! inline-block mr-[10px]">
           <el-option v-for="item in referenceLigand" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
         <el-button type="primary" @click="handleAlign">Align</el-button>
@@ -142,16 +142,16 @@ onMounted(async () => {
     </div>
 
     <BlcokTitle title="实验数据" class="mt-[15px]">
-      <el-switch v-model="form.showExperimentData" class="ml-[10px]" />
+      <el-switch v-model="step2Form.showExperimentData" class="ml-[10px]" />
     </BlcokTitle>
-    <div v-show="form.showExperimentData" class="flex">
+    <div v-show="step2Form.showExperimentData" class="flex">
       <el-form-item label="实验数据方式" prop="experimentMethod">
-        <el-select v-model="form.experimentMethod" placeholder="选择实验数据方式" class="w-[200px]! mr-[15px]">
+        <el-select v-model="step2Form.experimentMethod" placeholder="选择实验数据方式" class="w-[200px]! mr-[15px]">
           <el-option v-for="item in experimentMethods" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="实验能力" prop="experimentUnit" label-width="70px">
-        <el-select v-model="form.experimentUnit" placeholder="选择实验能力单位" class="w-[200px]!">
+        <el-select v-model="step2Form.experimentUnit" placeholder="选择实验能力单位" class="w-[200px]!">
           <el-option v-for="item in experimentUnits" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
@@ -160,12 +160,12 @@ onMounted(async () => {
     <BlcokTitle title="创建映射图" class="mt-[15px]" />
     <div class="map-section flex">
       <el-form-item label="映射图方式" prop="mapType" label-position="right">
-        <el-select v-model="form.mapType" placeholder="选择映射图方式" class="w-[200px]! mr-[15px]">
+        <el-select v-model="step2Form.mapType" placeholder="选择映射图方式" class="w-[200px]! mr-[15px]">
           <el-option v-for="item in mapTypes" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="中心分子" prop="centerMolecule" label-position="right" label-width="70px">
-        <el-select v-model="form.centerMolecule" placeholder="选择中心分子" class="w-[200px]! mr-[10px]">
+        <el-select v-model="step2Form.centerMolecule" placeholder="选择中心分子" class="w-[200px]! mr-[10px]">
           <el-option v-for="item in referenceLigand" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
         <el-button type="primary" @click="handleGenerateMap">生成</el-button>

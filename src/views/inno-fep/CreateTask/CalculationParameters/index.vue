@@ -52,7 +52,7 @@ const ligandPairData = ref([
 ]);
 
 // 模拟参数表单
-const simulationForm = reactive({
+const step3Form = reactive({
   proteinForceField: "力场3",
   ligandForceField: "力场2",
   simulationTime: 2
@@ -133,7 +133,7 @@ const handleSubmit = () => {
   console.log("提交计算任务", {
     proteins: proteinSelection.value,
     ligandPairs: ligandPairSelection.value,
-    simulationParams: simulationForm
+    simulationParams: step3Form
   });
 };
 </script>
@@ -159,20 +159,20 @@ const handleSubmit = () => {
 
       <div class="pb-[15px] flex">
         <el-form-item label="蛋白力场" label-width="100px">
-          <el-select v-model="simulationForm.proteinForceField" placeholder="选择蛋白力场" class="w-[200px]!">
+          <el-select v-model="step3Form.proteinForceField" placeholder="选择蛋白力场" class="w-[200px]!">
             <el-option v-for="item in proteinForceFields" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="配体力场" label-width="100px" class="">
-          <el-select v-model="simulationForm.ligandForceField" placeholder="选择配体力场" class="w-[200px]!">
+          <el-select v-model="step3Form.ligandForceField" placeholder="选择配体力场" class="w-[200px]!">
             <el-option v-for="item in ligandForceFields" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="模拟时间" label-width="100px" class="">
           <div class="flex items-center">
-            <el-input-number v-model="simulationForm.simulationTime" :min="0.1" :max="10" :step="0.1" :precision="1" class="w-[120px] mr-[10px]" />
+            <el-input-number v-model="step3Form.simulationTime" :min="0.1" :max="10" :step="0.1" :precision="1" class="w-[120px] mr-[10px]" />
             <span class="text-gray-600">ns</span>
           </div>
         </el-form-item>
