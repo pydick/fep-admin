@@ -125,10 +125,7 @@ const ligandPairColumns = [
 const proteinSelection = ref([]);
 const ligandPairSelection = ref([]);
 
-// 将表单数据注入到父组件
-if (taskFormData) {
-  taskFormData.step3Form = step3Form;
-}
+taskFormData.step3Form = step3Form;
 
 const handleProteinSelectionChange = val => {
   proteinSelection.value = val;

@@ -63,11 +63,8 @@ const step1Form = reactive({
   irrelevant_waters: false,
   delete_water: []
 });
+taskFormData.step1Form = step1Form;
 
-// 将表单数据注入到父组件
-if (taskFormData) {
-  taskFormData.step1Form = step1Form;
-}
 const if_show_box = ref(false);
 const protein_content = ref([]);
 const protein_ligand_content = ref([]);

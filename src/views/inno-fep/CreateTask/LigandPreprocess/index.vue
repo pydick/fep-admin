@@ -26,10 +26,7 @@ const step2Form = reactive({
   centerMolecule: "cpd1"
 });
 
-// 将表单数据注入到父组件
-if (taskFormData) {
-  taskFormData.step2Form = step2Form;
-}
+taskFormData.step2Form = step2Form;
 
 const referenceLigand = reactive([
   {
