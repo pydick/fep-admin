@@ -8,7 +8,7 @@ defineOptions({
 <template>
   <div class="node-container">
     <div class="text-center">
-      <svgBox width="40px" height="40px" class="svgBox" />
+      <svgBox class="svgBox w-[40px]! h-[40px]!" />
     </div>
     <span class="label-text">c5</span>
   </div>

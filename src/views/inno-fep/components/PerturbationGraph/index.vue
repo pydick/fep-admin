@@ -106,7 +106,7 @@ const initGraph = () => {
   if (!containerRef.value) return;
   const width = containerRef.value.clientWidth;
   const height = containerRef.value.clientHeight;
-  const radius = Math.min(width, height) / 2 - 100;
+  const radius = (Math.min(width, height) / 2) * 0.75;
   console.log(width, height, radius);
   graph = new Graph({
     container: containerRef.value,
@@ -182,8 +182,25 @@ const initGraph = () => {
 };
 const handleResize = () => {
   if (graph && containerRef.value) {
-    graph.resize(containerRef.value.clientWidth, containerRef.value.clientHeight);
-    graph.fitView();
+    const width = containerRef.value.clientWidth;
+    const height = containerRef.value.clientHeight;
+    const radius = Math.min(width, height) / 2 - 100;
+
+    // 更新布局参数
+    graph.setLayout({
+      type: "radial",
+      unitRadius: radius,
+      linkDistance: 200
+    });
+
+    // 调整画布大小
+    graph.resize(width, height);
+
+    // 重新渲染
+    graph.render();
+
+    // 自适应视图
+    // graph.fitView();
   }
 };
 
