@@ -166,15 +166,15 @@ const handleSubmit = () => {
     <div class="pt-[15px]">
       <p class="text-sm text-gray-600 mb-[15px]! mt-0!">模拟时间设置上限为10ns</p>
 
-      <div class="pb-[15px] flex">
+      <div class="pb-[15px] flex flex-wrap">
         <el-form-item label="蛋白力场" label-width="100px">
-          <el-select v-model="step3Form.proteinForceField" placeholder="选择蛋白力场" class="w-[200px]!">
+          <el-select v-model="step3Form.proteinForceField" placeholder="选择蛋白力场" class="select-w-responsive">
             <el-option v-for="item in proteinForceFields" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="配体力场" label-width="100px" class="">
-          <el-select v-model="step3Form.ligandForceField" placeholder="选择配体力场" class="w-[200px]!">
+          <el-select v-model="step3Form.ligandForceField" placeholder="选择配体力场" class="select-w-responsive">
             <el-option v-for="item in ligandForceFields" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>

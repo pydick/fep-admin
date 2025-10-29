@@ -152,31 +152,33 @@ onMounted(async () => {
     </BlcokTitle>
     <div v-show="step2Form.showExperimentData" class="flex">
       <el-form-item label="实验数据方式" prop="experimentMethod">
-        <el-select v-model="step2Form.experimentMethod" placeholder="选择实验数据方式" class="w-[200px]! mr-[15px]">
+        <el-select v-model="step2Form.experimentMethod" placeholder="选择实验数据方式" class="select-w-responsive mr-[15px]">
           <el-option v-for="item in experimentMethods" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="实验能力" prop="experimentUnit" label-width="70px">
-        <el-select v-model="step2Form.experimentUnit" placeholder="选择实验能力单位" class="w-[200px]!">
+        <el-select v-model="step2Form.experimentUnit" placeholder="选择实验能力单位" class="select-w-responsive">
           <el-option v-for="item in experimentUnits" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
     </div>
 
     <BlcokTitle title="创建映射图" class="mt-[15px]" />
-    <div class="map-section flex">
+    <div class="map-section flex flex-wrap">
       <el-form-item label="映射图方式" prop="mapType" label-position="right">
-        <el-select v-model="step2Form.mapType" placeholder="选择映射图方式" class="w-[200px]! mr-[15px]">
+        <el-select v-model="step2Form.mapType" placeholder="选择映射图方式" class="select-w-responsive mr-[15px]">
           <el-option v-for="item in mapTypes" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="中心分子" prop="centerMolecule" label-position="right" label-width="70px">
-        <el-select v-model="step2Form.centerMolecule" placeholder="选择中心分子" class="w-[200px]! mr-[10px]">
+        <el-select v-model="step2Form.centerMolecule" placeholder="选择中心分子" class="select-w-responsive mr-[10px]">
           <el-option v-for="item in referenceLigand" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
+      </el-form-item>
+      <div class="pt-[15px] xl:pl-[100px] 2xl:pl-0">
         <el-button type="primary" @click="handleGenerateMap">生成</el-button>
         <el-button @click="perturbationGraphShow">配体微扰图</el-button>
-      </el-form-item>
+      </div>
     </div>
     <PerturbationGraphDialog v-model:visible="perturbationGraphVisible" />
   </el-form>
