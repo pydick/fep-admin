@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { ElMessage } from "element-plus";
+import { ref, provide, reactive } from "vue";
 import Protein3d from "./Protein3d/index.vue";
 import Ligand3d from "./Ligand3d/index.vue";
-import { ref, provide } from "vue";
 import ProteinPreprocess from "./ProteinPreprocess/index.vue";
 import LigandPreprocess from "./LigandPreprocess/index.vue";
 import CalculationParameters from "./CalculationParameters/index.vue";
@@ -17,6 +18,19 @@ const protein3dRef = ref();
 
 const stepRef = ref();
 
+// 创建一个响应式对象来存储所有步骤的表单数据
+interface TaskFormData {
+  step1Form: any;
+  step2Form: any;
+  step3Form: any;
+}
+
+const taskFormData = reactive<TaskFormData>({
+  step1Form: null,
+  step2Form: null,
+  step3Form: null
+});
+
 const handleNext = () => {
   stepRef.value?.next();
 };
@@ -26,8 +40,23 @@ const handlePrev = () => {
 };
 
 const handleSubmit = () => {
-  console.log("提交任务");
+  // 获取所有表单数据
+  const step1Data = taskFormData.step1Form;
+  const step2Data = taskFormData.step2Form;
+  const step3Data = taskFormData.step3Form;
+
+  console.log("提交任务", {
+    step1: step1Data,
+    step2: step2Data,
+    step3: step3Data
+  });
+
+  // TODO: 调用提交 API
+  // await submitTask({ step1: step1Data, step2: step2Data, step3: step3Data });
+
+  ElMessage.success("任务提交成功");
 };
+
 const graphType = ref("protein");
 const handleCheckAndNext = () => {
   graphType.value = "ligand";
@@ -35,7 +64,9 @@ const handleCheckAndNext = () => {
   console.log("检测并下一步");
 };
 
+// 提供任务表单数据和验证器
 provide("protein3dRef", protein3dRef);
+provide("taskFormData", taskFormData);
 </script>
 
 <template>

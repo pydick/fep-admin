@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import BlcokTitle from "../../components/BlcokTitle/index.vue";
-import { ref, reactive, h } from "vue";
+import { ref, reactive, h, inject } from "vue";
 import { ElTag } from "element-plus";
 
 defineOptions({
   name: "CalculationParameters"
 });
+
+// 注入父组件提供的任务表单数据对象
+const taskFormData = inject<any>("taskFormData");
 
 // 蛋白数据
 const proteinData = ref([
@@ -55,7 +58,9 @@ const ligandPairData = ref([
 const step3Form = reactive({
   proteinForceField: "力场3",
   ligandForceField: "力场2",
-  simulationTime: 2
+  simulationTime: 2,
+  selectedProteins: [],
+  selectedLigandPairs: []
 });
 
 // 力场选项
@@ -120,19 +125,26 @@ const ligandPairColumns = [
 const proteinSelection = ref([]);
 const ligandPairSelection = ref([]);
 
+// 将表单数据注入到父组件
+if (taskFormData) {
+  taskFormData.step3Form = step3Form;
+}
+
 const handleProteinSelectionChange = val => {
   proteinSelection.value = val;
+  step3Form.selectedProteins = val;
 };
 
 const handleLigandPairSelectionChange = val => {
   ligandPairSelection.value = val;
+  step3Form.selectedLigandPairs = val;
 };
 
 // 提交任务
 const handleSubmit = () => {
   console.log("提交计算任务", {
-    proteins: proteinSelection.value,
-    ligandPairs: ligandPairSelection.value,
+    proteins: step3Form.selectedProteins,
+    ligandPairs: step3Form.selectedLigandPairs,
     simulationParams: step3Form
   });
 };

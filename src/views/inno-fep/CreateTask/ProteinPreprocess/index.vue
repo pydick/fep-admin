@@ -13,7 +13,17 @@ import { debounce } from "@pureadmin/utils";
 defineOptions({
   name: "ProteinPreprocess"
 });
-const protein3dRef = inject("protein3dRef");
+const protein3dRef = inject<any>("protein3dRef");
+
+// 注入父组件提供的任务表单数据对象
+const taskFormData = inject<any>("taskFormData");
+
+const el_form_first = ref();
+const if_have_protein = ref(false);
+const if_chain = ref(false);
+const spinner_ref = ref();
+const pdbid_url_ref = ref();
+const space = ref(null);
 
 let exampleList = reactive<{ name: string; value: string }[]>([]);
 
@@ -53,12 +63,11 @@ const step1Form = reactive({
   irrelevant_waters: false,
   delete_water: []
 });
-const space = ref(null);
-const if_have_protein = ref(false);
-const if_chain = ref(false);
-const spinner_ref = ref();
-const pdbid_url_ref = ref();
-const el_form_first = ref();
+
+// 将表单数据注入到父组件
+if (taskFormData) {
+  taskFormData.step1Form = step1Form;
+}
 const if_show_box = ref(false);
 const protein_content = ref([]);
 const protein_ligand_content = ref([]);
@@ -128,7 +137,7 @@ const check_pdb = file => {
   return check_pdb_api(formData);
 };
 
-const show_dialog = async () => {
+const show_dialog = async (type?: string) => {
   const res = await ossList({ proteins: "proteins" });
   if (res.success) {
     data_list.value = res.data.objects.map(item => ({

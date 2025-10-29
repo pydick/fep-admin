@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BlcokTitle from "../../components/BlcokTitle/index.vue";
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, inject } from "vue";
 import LiTable from "./LiTable/index.vue";
 import CSupload from "@/components/CSupload/index.vue";
 import PerturbationGraphDialog from "./PerGraphDialog/index.vue";
@@ -8,6 +8,10 @@ import { ossList } from "@/api/fep";
 defineOptions({
   name: "LigandPreprocess"
 });
+
+// 注入父组件提供的任务表单数据对象
+const taskFormData = inject<any>("taskFormData");
+
 const el_form_second = ref();
 const step2Form = reactive({
   ligandId: "",
@@ -21,6 +25,11 @@ const step2Form = reactive({
   mapType: "Star map",
   centerMolecule: "cpd1"
 });
+
+// 将表单数据注入到父组件
+if (taskFormData) {
+  taskFormData.step2Form = step2Form;
+}
 
 const referenceLigand = reactive([
   {
