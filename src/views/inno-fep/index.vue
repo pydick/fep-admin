@@ -13,7 +13,7 @@ const tabList = reactive<{ label: string; name: string }[]>([
   { label: "创建任务", name: "createTask" },
   { label: "最近结果", name: "recentResult" }
 ]);
-const activeName = ref(tabList[1].name);
+const activeName = ref(tabList[0].name);
 const handleTabClick = (name: string) => {
   console.log(name);
 };

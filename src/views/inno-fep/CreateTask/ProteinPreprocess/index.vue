@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import ProteinInput from "./ProteinInput/index.vue";
 import Data_select from "../components/DataSelect/index.vue";
-import { inject, ref, reactive, onMounted, nextTick } from "vue";
-import { ElMessageBox, ElMessage } from "element-plus";
+import { inject, ref, reactive, onMounted } from "vue";
 import CSupload from "@/components/CSupload/index.vue";
 import CSspinner from "@/components/CSspinner/index.vue";
-import { check_pdb_api, datalists, basic_info, ds_duplicate, examples, get_space, pdb_ctx, pdb_datalists, upload } from "@/api/data";
-import { pxToRem } from "@/utils/rem";
-import { ossList, ossGetDownload, proteinInfo, fetchFileAsBlob } from "@/api/fep";
+import { check_pdb_api, datalists, basic_info } from "@/api/data";
+import { ossList, ossGetDownload, proteinInfo } from "@/api/fep";
 import { binaryToUploadFile } from "@/utils/common";
 import { ElLoading } from "element-plus";
 import BlockTitle from "../../components/BlcokTitle/index.vue";
@@ -57,7 +54,6 @@ const form = reactive({
   delete_water: []
 });
 const space = ref(null);
-const protein_name = ref("");
 const if_have_protein = ref(false);
 const if_chain = ref(false);
 const spinner_ref = ref();
@@ -72,8 +68,6 @@ const show_data_list = ref(false);
 const dialog_type = ref("protein");
 const data_list = ref([]);
 const ligand_list = ref([]);
-const sample_pdb_list = ref([]);
-const sample_mol_list = ref([]);
 const charge_option = reactive([
   {
     key: 0,
@@ -136,7 +130,6 @@ const check_pdb = file => {
 
 const show_dialog = async () => {
   const res = await ossList({ proteins: "proteins" });
-  console.log(111, res);
   if (res.success) {
     data_list.value = res.data.objects.map(item => ({
       dataset_id: item.key,
@@ -149,15 +142,6 @@ const handleCustomEvent = ({ id }) => {
   getPdbById(id);
 };
 
-const show_dialog1 = type => {
-  get_datalists();
-  show_data_list.value = true;
-  if (type === "protein") {
-    dialog_type.value = "protein";
-  } else {
-    dialog_type.value = "ligand";
-  }
-};
 const check_box_ligand = (rule, value, callback) => {
   if (form.need_prot_process) {
     let check_chain = 0;
@@ -181,22 +165,6 @@ const get_datalists = () => {
   });
   datalists(space.value.ws_id, "mol").then(res => {
     ligand_list.value = res.data;
-  });
-};
-const get_basic_info = () => {
-  const formData = new FormData();
-  formData.append("pdb", form.protein_file);
-  spinner_ref.value.show();
-  basic_info(formData).then(res => {
-    spinner_ref.value.hide();
-    res.data.chains.map(item => {
-      item.if_checked = true;
-    });
-    form.protein_chain = res.data.chains;
-    res.data.hets.map(item => {
-      item.if_checked = true;
-    });
-    form.het_group = res.data.hets;
   });
 };
 const show_protein = (file_or_pdbid, format = "pdb") => {
@@ -409,137 +377,6 @@ const getPdbById = async id => {
   } finally {
     loading.close();
   }
-};
-
-const get_pdb_by_id_select = () => {
-  form.pdb_dataset_id = form.pdbid_select;
-  if (form.pdbid_select) {
-    form.pdbid_input = "";
-    protein_name.value = "";
-    form.protein_data = "";
-    protein3dRef.value.open_loading("文件下载中");
-    form.pdbid_url = "rcsb://test";
-    pdb_datalists(form.pdbid_select).then(res => {
-      pdb_ctx(res[0].inuse_path)
-        .then(data => {
-          const file = new Blob([data.data], { type: "text/plain" });
-          form.protein_file = file;
-          form.pdb_name = res.data[0].file_name;
-          show_protein(data.data, "pdb");
-          get_basic_info();
-          if_have_protein.value = true;
-          form.pdb_id = form.pdbid_select;
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    });
-  } else {
-    this.if_have_protein = false;
-  }
-};
-
-const get_pdb_by_id_input = () => {
-  return new Promise((resolve, reject) => {
-    if (form.pdbid_input) {
-      form.pdbid_select = "";
-      form.protein_name = "";
-      form.protein_data = "";
-      form.pdb_id = form.pdbid_input;
-      form.pdbfile_validate_status = "";
-
-      pdbid_url_ref.value.validateMessage = "";
-
-      form.pdbid_url = "rcsb://" + form.pdbid_input;
-      const reg = /^[A-Za-z0-9]+$/;
-      if (!reg.test(form.pdbid_input)) {
-        return;
-      }
-
-      if (form.pdbid_input.length === 4) {
-        spinner_ref.value.show();
-        const httpRequest = new XMLHttpRequest();
-        httpRequest.open("GET", "http://files.rcsb.org/download/" + form.pdbid_input + ".pdb", true);
-        httpRequest.send();
-        httpRequest.onreadystatechange = () => {
-          if (httpRequest.readyState === 4 && httpRequest.status === 200) {
-            const data = httpRequest.responseText;
-            const file = new Blob([data], { type: "text/plain" });
-            check_pdb(file).then(check_pdb_res => {
-              spinner_ref.value.hide();
-              if (check_pdb_res.data.status) {
-                if (check_pdb_res.data.pdb_string) {
-                  form.protein_file = new Blob([check_pdb_res.data.pdb_string], {
-                    type: "text/plain"
-                  });
-                  show_protein(check_pdb_res.data.pdb_string, "pdb");
-                } else {
-                  form.protein_file = file;
-                  show_protein(data, "pdb");
-                }
-                if (check_pdb_res.data.msg && check_pdb_res.data.msg !== "[]" && check_pdb_res.data.msg.indexOf("The distances between residues are too close") !== -1) {
-                  ElMessageBox.alert("The distances between residues are too close!", "警告", {
-                    confirmButtonText: "OK",
-                    type: "warning"
-                  });
-                }
-
-                // this.form.protein_data = this.form.pdbid_input + '.pdb'
-                // this.form.pdb_name = this.form.pdbid_input + '.pdb'
-
-                if_have_protein.value = true;
-                get_basic_info();
-              } else {
-                ElMessageBox.alert("There are some issues with the file you uploaded, which has caused the platform to be unable to parse it. Please make the necessary modifications before uploading. <br><br>Error message: " + check_pdb_res.data.msg, "错误信息", {
-                  confirmButtonText: "OK",
-                  type: "error",
-                  dangerouslyUseHTMLString: true
-                });
-              }
-            });
-          } else if (httpRequest.status === 404) {
-            spinner_ref.value.hide();
-            form.pdbfile_validate_status = "error";
-            pdbid_url_ref.value.validateMessage = "请输入正确PDBID";
-          }
-        };
-      }
-    } else {
-      if_have_protein.value = false;
-    }
-  });
-};
-const pdbCustomEvent = ({ id, name, pdb_string }) => {
-  form.pdb_dataset_id = form.pdb_id = id;
-  pdb_datalists(id).then(res => {
-    form.pdb_id = res.data[0].inuse_path;
-    form.pdb_name = res.data[0].file_name;
-    pdb_ctx(res.data[0].inuse_path).then(data => {
-      form.pdbid_select = "";
-      form.pdbid_input = "";
-      form.protein_data = "";
-      const file = new Blob([data.data], { type: "text/plain" });
-      if (pdb_string) {
-        form.protein_file = new Blob([pdb_string], {
-          type: "text/plain"
-        });
-        show_protein(pdb_string, "pdb");
-      } else {
-        form.protein_file = file;
-        show_protein(data.data, "pdb");
-      }
-      if (name) {
-        form.protein_data = name;
-        protein_name.value = name;
-      } else {
-        form.protein_data = res[0].file_name;
-        protein_name.value = res[0].file_name;
-      }
-
-      if_have_protein.value = true;
-      get_basic_info();
-    });
-  });
 };
 
 onMounted(async () => {
