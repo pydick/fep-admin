@@ -39,7 +39,7 @@ watch(
       <el-col :span="12" class="h-full">
         <BlcokTitle title="微扰图" class="pb-[15px]" />
         <div class="perturbation-container h-full">
-          <PerturbationGraph class="pt-[15px] xl:h-[400px] 2xl:h-[600px]" :isDialogEnter="true" />
+          <PerturbationGraph class="pt-[15px] h-[600px]!" :isDialogEnter="true" />
         </div>
       </el-col>
       <el-col :span="12" class="h-full">

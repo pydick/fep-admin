@@ -175,7 +175,7 @@ onMounted(async () => {
           <el-option v-for="item in referenceLigand" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <div class="pt-[15px] xl:pl-[100px] 2xl:pl-0">
+      <div class="pt-[15px] xl:pl-[100PX] 2xl:pl-0">
         <el-button type="primary" @click="handleGenerateMap">生成</el-button>
         <el-button @click="perturbationGraphShow">配体微扰图</el-button>
       </div>

@@ -3,6 +3,8 @@ import { onMounted, ref, onUnmounted } from "vue";
 import { Graph } from "@antv/g6";
 import GraphNode from "./GraphNode/index.vue";
 import { h, nextTick } from "vue";
+import { throttle } from "@pureadmin/utils";
+import { pxToRemPx } from "@/utils/rem";
 defineOptions({
   name: "PerturbationGraph"
 });
@@ -10,64 +12,62 @@ let graph: Graph | null = null;
 
 const containerRef = ref<HTMLElement>();
 
-interface IP {
+interface Iprops {
   isDialogEnter?: boolean;
   width?: string;
   height?: string;
 }
-const props = withDefaults(defineProps<IP>(), {
+const props = withDefaults(defineProps<Iprops>(), {
   isDialogEnter: false,
   width: "500px",
   height: "500px"
 });
 
-const nodes = [
-  {
-    id: "c",
-    type: "vue-node",
-    style: {
-      component: () => h(GraphNode)
-    }
-  },
-  {
-    id: "c1",
-    type: "vue-node",
-    style: {
-      component: () => h(GraphNode)
-    }
-  },
-  {
-    id: "c2",
-    type: "vue-node",
-    style: {
-      component: () => h(GraphNode)
-    }
-  },
-  {
-    id: "c3",
-    type: "vue-node",
-    style: {
-      component: () => h(GraphNode)
-    }
-  },
-  {
-    id: "c4",
-    type: "vue-node",
-    style: {
-      component: () => h(GraphNode)
-    }
-  },
-  {
-    id: "c5",
-    type: "vue-node",
-    style: {
-      component: () => h(GraphNode)
-    }
-  }
-];
-
 const data = {
-  nodes: nodes,
+  nodes: [
+    {
+      id: "c",
+      type: "vue-node",
+      style: {
+        component: () => h(GraphNode)
+      }
+    },
+    {
+      id: "c1",
+      type: "vue-node",
+      style: {
+        component: () => h(GraphNode)
+      }
+    },
+    {
+      id: "c2",
+      type: "vue-node",
+      style: {
+        component: () => h(GraphNode)
+      }
+    },
+    {
+      id: "c3",
+      type: "vue-node",
+      style: {
+        component: () => h(GraphNode)
+      }
+    },
+    {
+      id: "c4",
+      type: "vue-node",
+      style: {
+        component: () => h(GraphNode)
+      }
+    },
+    {
+      id: "c5",
+      type: "vue-node",
+      style: {
+        component: () => h(GraphNode)
+      }
+    }
+  ],
   edges: [
     {
       id: "edge1",
@@ -116,6 +116,7 @@ const initGraph = () => {
     autoFit: {
       type: "center"
     },
+    data,
     plugins: [
       {
         type: "toolbar",
@@ -137,7 +138,7 @@ const initGraph = () => {
     ],
     node: {
       style: {
-        size: [70, 70],
+        size: [pxToRemPx(70), pxToRemPx(70)],
         radius: 8,
         labelText: (d: any) => d.data?.label || d.label,
         labelFontSize: 12,
@@ -166,8 +167,6 @@ const initGraph = () => {
       linkDistance: 250
     }
   });
-
-  graph.setData(data);
   graph.render();
 
   // 添加节点点击事件
@@ -180,29 +179,29 @@ const initGraph = () => {
     console.log("点击边:", evt);
   });
 };
-const handleResize = () => {
+const handleResize = throttle(() => {
   if (graph && containerRef.value) {
     const width = containerRef.value.clientWidth;
     const height = containerRef.value.clientHeight;
-    const radius = Math.min(width, height) / 2 - 100;
-
-    // 更新布局参数
-    graph.setLayout({
-      type: "radial",
-      unitRadius: radius,
-      linkDistance: 200
-    });
+    const radius = (Math.min(width, height) / 2) * 0.75;
 
     // 调整画布大小
     graph.resize(width, height);
 
+    // 更新布局参数（重要：使用更新后的 radius）
+    graph.setLayout({
+      type: "radial",
+      unitRadius: radius,
+      linkDistance: 250
+    });
+
     // 重新渲染
     graph.render();
 
-    // 自适应视图
-    // graph.fitView();
+    // 可选：自适应视图以保持居中
+    graph.fitView();
   }
-};
+}, 200);
 
 onMounted(async () => {
   if (props.isDialogEnter) {
@@ -210,17 +209,21 @@ onMounted(async () => {
   }
   if (containerRef.value) {
     initGraph();
-    window.addEventListener("resize", handleResize);
+    // window.addEventListener("resize", handleResize);
   }
 });
 
 onUnmounted(() => {
+  if (graph) {
+    graph.destroy();
+    graph = null;
+  }
   window.removeEventListener("resize", handleResize);
 });
 </script>
 
 <template>
-  <div id="g6-container" ref="containerRef" />
+  <div id="perturbationGraph" ref="containerRef" class="g6-container" />
 </template>
 
 <style lang="scss" scoped>

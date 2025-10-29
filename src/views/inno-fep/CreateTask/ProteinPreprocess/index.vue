@@ -27,7 +27,6 @@ const space = ref(null);
 
 let exampleList = reactive<{ name: string; value: string }[]>([]);
 
-//------------------
 const step1Form = reactive({
   input_tab: "数据库导入",
   need_prot_process: true,

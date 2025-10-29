@@ -38,7 +38,7 @@ function calculateFontSize(): number {
   let fontSize = BASE_FONT_SIZE * scale;
 
   // 根据 devicePixelRatio 调整字体范围
-  const minFontSize = 16; // 高 DPI 屏幕可以更小
+  const minFontSize = 12; // 高 DPI 屏幕可以更小
   const maxFontSize = 16;
 
   fontSize = Math.max(minFontSize, Math.min(maxFontSize, fontSize));
@@ -100,6 +100,12 @@ function pxToRem(px: number): string {
   // 始终使用基准字体大小计算，让 rem 值固定
   // 这样实际像素值会随根字体大小自动缩放
   return `${px / BASE_FONT_SIZE}rem`;
+}
+
+export function pxToRemPx(px: number): number {
+  const remValue = px / BASE_FONT_SIZE;
+  const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || BASE_FONT_SIZE;
+  return remValue * rootFontSize;
 }
 
 /**
