@@ -57,8 +57,3 @@ watch(
 </template>
 
 <style lang="scss" scoped></style>
-<style lang="scss">
-.per-graph-dialog {
-  height: 700px;
-}
-</style>

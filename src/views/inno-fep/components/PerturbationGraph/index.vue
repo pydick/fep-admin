@@ -199,12 +199,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div id="g6-container" ref="containerRef" />
+  <div id="g6-container" ref="containerRef" class="w-full xl:h-[300px] lg:h-[600px]" />
 </template>
 
-<style lang="scss" scoped>
-#g6-container {
-  width: 100%;
-  height: 100%;
-}
-</style>
+<style lang="scss" scoped></style>

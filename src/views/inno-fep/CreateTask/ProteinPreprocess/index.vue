@@ -486,7 +486,7 @@ const handlePreprocess = () => {
               </div>
               <div v-else class="empty_data">暂无数据</div>
             </el-scrollbar>
-            <el-button class="ml-[10px]" type="primary" @click="quick_delete_click">快速删除</el-button>
+            <el-button class="ml-[10px]!" type="primary" @click="quick_delete_click">快速删除</el-button>
           </div>
         </el-form-item>
         <p slot="label" class="label_1_1">优化蛋白</p>
