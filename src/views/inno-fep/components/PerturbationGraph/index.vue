@@ -12,9 +12,13 @@ const containerRef = ref<HTMLElement>();
 
 interface IP {
   isDialogEnter?: boolean;
+  width?: string;
+  height?: string;
 }
 const props = withDefaults(defineProps<IP>(), {
-  isDialogEnter: false
+  isDialogEnter: false,
+  width: "500px",
+  height: "500px"
 });
 
 const nodes = [
@@ -199,7 +203,14 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div id="g6-container" ref="containerRef" class="w-full xl:h-[300px] lg:h-[600px]" />
+  <div id="g6-container" ref="containerRef" />
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.g6-container {
+  width: 100%;
+  height: 100%;
+  min-width: 300px;
+  min-height: 300px;
+}
+</style>
