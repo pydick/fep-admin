@@ -250,9 +250,6 @@ const het_select_fn = data => {
 const chain_change = async (data, value) => {
   await protein3dRef.value.change_chain(data.chain_id, value);
   draw_ligand_box_select(data.chain_id, value);
-  console.log(111, data);
-  console.log(222, value);
-  console.log(333, protein_ligand_content);
   if (value) {
     step1Form.delete_record.chains.splice(data.chain_id, 1);
     step1Form.delete_record.hets = step1Form.delete_record.hets.filter(item => item.chain_id !== data.chain_id).map(item => item.chain_id);
@@ -260,7 +257,11 @@ const chain_change = async (data, value) => {
     step1Form.delete_record.chains.push(data.chain_id);
     step1Form.delete_record.hets = [...step1Form.delete_record.hets, ...step1Form.het_group.filter(item => item.chain_id === data.chain_id).map(item => ({ chain_id: item.chain_id, residue_number: item.residue_number }))];
   }
-
+  if (step1Form.protein_chain.every(item => item.if_checked === false)) {
+    preprocessingBtns.disabled = true;
+  } else {
+    preprocessingBtns.disabled = false;
+  }
   protein3dRef.value.select_none();
   const hets = [];
   for (let i = 0; i < step1Form.het_group.length; i++) {
