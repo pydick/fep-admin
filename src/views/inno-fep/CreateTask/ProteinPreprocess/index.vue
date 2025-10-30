@@ -74,6 +74,11 @@ const show_data_list = ref(false);
 const dialog_type = ref("protein");
 const data_list = ref([]);
 const ligand_list = ref([]);
+const preprocessingBtns = reactive({
+  loading: false,
+  text: "预处理",
+  disabled: false
+});
 const charge_option = reactive([
   {
     key: 0,
@@ -406,66 +411,88 @@ const changeInputTab = value => {
   }
 };
 const handlePreprocess = async () => {
-  console.log("预处理");
-  const args = {
-    chain_list: step1Form.protein_chain.map(item => item.chain_id),
-    hets: step1Form.het_group.map(item => ({ chain_id: item.chain_id, residue_number: item.residue_number })),
-    waters: step1Form.het_group.reduce((acc, item) => {
-      item.water_within_dist.forEach(water => {
-        acc.push({ chain_id: item.chain_id, residue_number: water.residue_number });
-      });
-      return acc;
-    }, []),
-    irrelevant_waters: false
-  };
-  const formData = new FormData();
-  formData.append("args", JSON.stringify(args));
-  formData.append("pdb", step1Form.disclose_file);
-  const componentsDeleteRes = await componentsDelete(formData);
-  if (componentsDeleteRes.success) {
-    const deleteFile = binaryToUploadFile(componentsDeleteRes.data.pdb_string).raw;
-    const formdata = new FormData();
-    formdata.append("pdb", deleteFile);
-    const residueErrorFindRes = await residueErrorFind(formdata);
-    console.log(residueErrorFindRes);
-    if (residueErrorFindRes.success) {
-      const errorsdata = residueErrorFindRes.data.errors;
+  try {
+    preprocessingBtns.loading = true;
+    preprocessingBtns.text = "预处理中...";
+    const args = {
+      chain_list: step1Form.protein_chain.map(item => item.chain_id),
+      hets: step1Form.het_group.map(item => ({ chain_id: item.chain_id, residue_number: item.residue_number })),
+      waters: step1Form.het_group.reduce((acc, item) => {
+        item.water_within_dist.forEach(water => {
+          acc.push({ chain_id: item.chain_id, residue_number: water.residue_number });
+        });
+        return acc;
+      }, []),
+      irrelevant_waters: false
+    };
+    const formData = new FormData();
+    formData.append("args", JSON.stringify(args));
+    formData.append("pdb", step1Form.disclose_file);
+    const componentsDeleteRes = await componentsDelete(formData);
+    if (componentsDeleteRes.success) {
+      const deleteFile = binaryToUploadFile(componentsDeleteRes.data.pdb_string).raw;
       const formdata = new FormData();
       formdata.append("pdb", deleteFile);
-      formdata.append("args", JSON.stringify(errorsdata));
-      const residueErrorFixRes = await residueErrorFix(formdata);
-      console.log(residueErrorFixRes);
-      if (residueErrorFixRes.success) {
-        const fixFile = binaryToUploadFile(residueErrorFixRes.data.pdb_string).raw;
-        const formData = new FormData();
-        formData.append("pdb", fixFile);
-        const residueMissingFindRes = await residueMissingFind(formData);
-        console.log(11, residueMissingFindRes);
-        if (residueMissingFindRes.success) {
-          const residue_missing = residueMissingFindRes.data.residue_missing;
+      const residueErrorFindRes = await residueErrorFind(formdata);
+      console.log(residueErrorFindRes);
+      if (residueErrorFindRes.success) {
+        const errorsdata = residueErrorFindRes.data.errors;
+        const formdata = new FormData();
+        formdata.append("pdb", deleteFile);
+        formdata.append("args", JSON.stringify(errorsdata));
+        const residueErrorFixRes = await residueErrorFix(formdata);
+        console.log(residueErrorFixRes);
+        if (residueErrorFixRes.success) {
+          const fixFile = binaryToUploadFile(residueErrorFixRes.data.pdb_string).raw;
           const formData = new FormData();
           formData.append("pdb", fixFile);
-          formData.append("args", JSON.stringify({ residue_missing }));
-          const residueMissingFixRes = await residueMissingFix(formData);
-          console.log(22, residueMissingFixRes);
-          if (residueMissingFixRes.success) {
-            const fixFile2 = binaryToUploadFile(residueMissingFixRes.data.pdb_string).raw;
+          const residueMissingFindRes = await residueMissingFind(formData);
+          console.log(11, residueMissingFindRes);
+          if (residueMissingFindRes.success) {
+            const residue_missing = residueMissingFindRes.data.residue_missing;
             const formData = new FormData();
-            formData.append("file", fixFile2);
-            const proteinRes = await proteinInfo(formData);
-            if (proteinRes.success) {
-              step1Form.protein_chain = proteinRes.data.chains.map(item => ({ if_checked: true, ...item }));
-              step1Form.het_group = proteinRes.data.hets.map(item => ({ if_checked: true, ...item }));
-              step1Form.disclose_file = fixFile2;
+            formData.append("pdb", fixFile);
+            formData.append("args", JSON.stringify({ residue_missing }));
+            const residueMissingFixRes = await residueMissingFix(formData);
+            console.log(22, residueMissingFixRes);
+            if (residueMissingFixRes.success) {
+              preprocessingBtns.text = "处理完成";
+              preprocessingBtns.disabled = true;
+              const pdb_string = residueMissingFixRes.data.pdb_string;
+              const loading = ElLoading.service({
+                lock: true,
+                text: "加载中",
+                target: "#createTaskContainer"
+              });
+              try {
+                protein3dRef.value.loadStructure(pdb_string, "pdb");
+                const fixFile2 = binaryToUploadFile(pdb_string).raw;
+                const formData = new FormData();
+                formData.append("file", fixFile2);
+                const proteinRes = await proteinInfo(formData);
+                if (proteinRes.success) {
+                  step1Form.protein_chain = proteinRes.data.chains.map(item => ({ if_checked: true, ...item }));
+                  step1Form.het_group = proteinRes.data.hets.map(item => ({ if_checked: true, ...item }));
+                  step1Form.disclose_file = fixFile2;
+                }
+              } finally {
+                loading.close();
+              }
             }
           }
         }
       }
+      console.log(componentsDeleteRes);
+      // const file = componentsDeleteRes
+      // step1Form.protein_chain = proteinRes.data.chains.map(item => ({ if_checked: true, ...item }));
+      // step1Form.het_group = proteinRes.data.hets.map(item => ({ if_checked: true, ...item }));
     }
-    console.log(componentsDeleteRes);
-    // const file = componentsDeleteRes
-    // step1Form.protein_chain = proteinRes.data.chains.map(item => ({ if_checked: true, ...item }));
-    // step1Form.het_group = proteinRes.data.hets.map(item => ({ if_checked: true, ...item }));
+  } catch (error) {
+    console.log(error);
+    preprocessingBtns.text = "处理失败";
+    preprocessingBtns.disabled = true;
+  } finally {
+    preprocessingBtns.loading = false;
   }
 };
 </script>
@@ -567,7 +594,7 @@ const handlePreprocess = async () => {
             <el-select v-model="step1Form.force_field" class="w-[200px]! inline-block mr-[10px]">
               <el-option v-for="item in charge_option" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <el-button class="ml-[10px]" type="primary" @click="handlePreprocess">预处理</el-button>
+            <el-button class="ml-[10px]" type="primary" :loading="preprocessingBtns.loading" :disabled="preprocessingBtns.disabled" @click="handlePreprocess">{{ preprocessingBtns.text }}</el-button>
           </div>
         </el-form-item>
       </el-card>
