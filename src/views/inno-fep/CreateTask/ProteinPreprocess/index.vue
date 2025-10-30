@@ -4,7 +4,7 @@ import { inject, ref, reactive, onMounted } from "vue";
 import CSupload from "@/components/CSupload/index.vue";
 import CSspinner from "@/components/CSspinner/index.vue";
 import { check_pdb_api, datalists, basic_info } from "@/api/data";
-import { ossList, ossGetDownload, proteinInfo } from "@/api/fep";
+import { ossList, ossGetDownload, proteinInfo, componentsDelete, residueErrorFind, residueErrorFix, residueMissingFind, residueMissingFix } from "@/api/fep";
 import { binaryToUploadFile } from "@/utils/common";
 import { ElLoading } from "element-plus";
 import BlockTitle from "../../components/BlcokTitle/index.vue";
@@ -60,7 +60,8 @@ const step1Form = reactive({
   pdb_dataset_id: "",
   pdb_name: "",
   irrelevant_waters: false,
-  delete_water: []
+  delete_water: [],
+  disclose_file: "" //检测文件
 });
 taskFormData.step1Form = step1Form;
 
@@ -310,7 +311,8 @@ const single_het_click = data => {
   protein3dRef.value.select_and_focus(data);
 };
 
-const uploadSuc = id => {
+const uploadSuc = (id, file) => {
+  step1Form.disclose_file = file;
   getPdbById(id);
 };
 const pdbidInput = debounce(value => {
@@ -377,6 +379,7 @@ const getPdbById = async id => {
       if (proteinRes.success) {
         step1Form.protein_chain = proteinRes.data.chains.map(item => ({ if_checked: true, ...item }));
         step1Form.het_group = proteinRes.data.hets.map(item => ({ if_checked: true, ...item }));
+        step1Form.disclose_file = file.raw;
       }
     }
   } finally {
@@ -402,8 +405,68 @@ const changeInputTab = value => {
     el_form_first.value.clearValidate("pdbid_input");
   }
 };
-const handlePreprocess = () => {
+const handlePreprocess = async () => {
   console.log("预处理");
+  const args = {
+    chain_list: step1Form.protein_chain.map(item => item.chain_id),
+    hets: step1Form.het_group.map(item => ({ chain_id: item.chain_id, residue_number: item.residue_number })),
+    waters: step1Form.het_group.reduce((acc, item) => {
+      item.water_within_dist.forEach(water => {
+        acc.push({ chain_id: item.chain_id, residue_number: water.residue_number });
+      });
+      return acc;
+    }, []),
+    irrelevant_waters: false
+  };
+  const formData = new FormData();
+  formData.append("args", JSON.stringify(args));
+  formData.append("pdb", step1Form.disclose_file);
+  const componentsDeleteRes = await componentsDelete(formData);
+  if (componentsDeleteRes.success) {
+    const deleteFile = binaryToUploadFile(componentsDeleteRes.data.pdb_string).raw;
+    const formdata = new FormData();
+    formdata.append("pdb", deleteFile);
+    const residueErrorFindRes = await residueErrorFind(formdata);
+    console.log(residueErrorFindRes);
+    if (residueErrorFindRes.success) {
+      const errorsdata = residueErrorFindRes.data.errors;
+      const formdata = new FormData();
+      formdata.append("pdb", deleteFile);
+      formdata.append("args", JSON.stringify(errorsdata));
+      const residueErrorFixRes = await residueErrorFix(formdata);
+      console.log(residueErrorFixRes);
+      if (residueErrorFixRes.success) {
+        const fixFile = binaryToUploadFile(residueErrorFixRes.data.pdb_string).raw;
+        const formData = new FormData();
+        formData.append("pdb", fixFile);
+        const residueMissingFindRes = await residueMissingFind(formData);
+        console.log(11, residueMissingFindRes);
+        if (residueMissingFindRes.success) {
+          const residue_missing = residueMissingFindRes.data.residue_missing;
+          const formData = new FormData();
+          formData.append("pdb", fixFile);
+          formData.append("args", JSON.stringify({ residue_missing }));
+          const residueMissingFixRes = await residueMissingFix(formData);
+          console.log(22, residueMissingFixRes);
+          if (residueMissingFixRes.success) {
+            const fixFile2 = binaryToUploadFile(residueMissingFixRes.data.pdb_string).raw;
+            const formData = new FormData();
+            formData.append("file", fixFile2);
+            const proteinRes = await proteinInfo(formData);
+            if (proteinRes.success) {
+              step1Form.protein_chain = proteinRes.data.chains.map(item => ({ if_checked: true, ...item }));
+              step1Form.het_group = proteinRes.data.hets.map(item => ({ if_checked: true, ...item }));
+              step1Form.disclose_file = fixFile2;
+            }
+          }
+        }
+      }
+    }
+    console.log(componentsDeleteRes);
+    // const file = componentsDeleteRes
+    // step1Form.protein_chain = proteinRes.data.chains.map(item => ({ if_checked: true, ...item }));
+    // step1Form.het_group = proteinRes.data.hets.map(item => ({ if_checked: true, ...item }));
+  }
 };
 </script>
 

@@ -33,6 +33,56 @@ export function proteinInfo(data) {
     }
   );
 }
+
+// 预处理,传参是记录删除
+export function componentsDelete(data) {
+  return request.post(
+    `${apiV1}/protein/components/delete`,
+    { data },
+    {
+      headers: { "content-type": "multipart/form-data" }
+    }
+  );
+}
+// 预处理,传参是记录删除
+export function residueErrorFind(data) {
+  return request.post(
+    `${apiV1}/protein/residue-error/find`,
+    { data },
+    {
+      headers: { "content-type": "multipart/form-data" }
+    }
+  );
+}
+export function residueErrorFix(data) {
+  return request.post(
+    `${apiV1}/protein/residue-error/fix`,
+    { data },
+    {
+      headers: { "content-type": "multipart/form-data" }
+    }
+  );
+}
+export function residueMissingFind(data) {
+  return request.post(
+    `${apiV1}/protein/residue-missing/find`,
+    { data },
+    {
+      headers: { "content-type": "multipart/form-data" }
+    }
+  );
+}
+
+export function residueMissingFix(data) {
+  return request.post(
+    `${apiV1}/protein/residue-missing/fix`,
+    { data },
+    {
+      headers: { "content-type": "multipart/form-data" }
+    }
+  );
+}
+
 export function checkProtein(data) {
   return request.post(
     `${apiV1}/protein/check/upload?verbose=true`,

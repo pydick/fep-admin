@@ -79,7 +79,7 @@ export default {
         if (checkRes.success) {
           const res = await ossUpload(formData);
           if (res.success) {
-            this.$emit("uploadSuc", res.data.key);
+            this.$emit("uploadSuc", res.data.key, file);
           } else {
             ElMessage.error("上传失败");
           }
