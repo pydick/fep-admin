@@ -473,7 +473,7 @@ export const base64ToBlob = base64 => {
   return byteCharacters;
 };
 
-export function binaryToUploadFile(binaryDataString, fileName, mimeType = "application/octet-stream") {
+export function binaryToUploadFile(binaryDataString, fileName = "test.pdb", mimeType = "application/octet-stream") {
   // 将二进制字符串转换为字节数组
   const byteNumbers = new Array(binaryDataString.length);
   for (let i = 0; i < binaryDataString.length; i++) {

@@ -102,6 +102,12 @@ function pxToRem(px: number): string {
   return `${px / BASE_FONT_SIZE}rem`;
 }
 
+export function pxToRemPx(px: number): number {
+  const remValue = px / BASE_FONT_SIZE;
+  const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || BASE_FONT_SIZE;
+  return remValue * rootFontSize;
+}
+
 /**
  * rem 转 px
  * @param rem rem 值

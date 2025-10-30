@@ -195,7 +195,32 @@
 
 
 // 覆盖 tabs header margin
-.el-tabs__header {
-  margin-bottom: 0.9375rem !important;  // 15px
+// .el-tabs__header {
+//   margin-bottom: 0.9375rem !important;  // 15px
+// }
+
+.el-card{
+  .el-card__header {
+    padding: 15px;
+  }
+    .el-card__body{
+      padding: 15px;
+    }
 }
+.el-step{
+  // --el-tabs-header-height: 45PX !important;
+  height: 52px !important;
+  .el-step__title {
+    line-height: 1;
+    padding-top: 10px;
+  }
+}
+
+.el-tabs {
+  // --el-tabs-header-height:auto !important;
+
+}
+
+
+
 

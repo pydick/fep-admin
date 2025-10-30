@@ -1,11 +1,11 @@
 <script setup lang="ts">
 defineOptions({
-  name: ""
+  name: "Inno-Fep-Detail"
 });
 </script>
 
 <template>
-  <div>Ligand3d</div>
+  <div>Detail</div>
 </template>
 
 <style lang="scss" scoped></style>

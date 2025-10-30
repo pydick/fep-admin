@@ -38,7 +38,7 @@
   </div>
 
   <!-- Molstar分子可视化容器 -->
-  <div id="ngl_multi_ligand_frame" style="position: relative; width: calc(100% + 1px); min-width: 300px; height: calc(100% + 1px); min-height: 500px">
+  <div id="ngl_multi_ligand_frame" style="position: relative; width: 100%; min-width: 300px; height: 100%; min-height: 500px">
     <drugflow_molstar ref="molstar_ref" :if_sequence_panel="false" :disable_comp_btn="true" :prolif_show_ligname="false" @init-complete="init_draw" />
   </div>
 </template>

@@ -41,6 +41,14 @@
   @apply flex justify-between items-center;
 }
 
+@utility select-w-responsive {
+  width: 200px !important;
+  @media (max-width: 1520px) {
+     width: 150px !important;
+  }
+}
+
+
 @utility navbar-bg-hover {
   @apply dark:text-white dark:hover:bg-[#242424]!;
 }

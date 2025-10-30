@@ -2,6 +2,7 @@
 import { ref, h } from "vue";
 import { tableData } from "./data";
 import { ElTag, ElButton } from "element-plus";
+import SvgBox from "@drugflow/common/svgBox.vue";
 
 const tableRef = ref();
 
@@ -34,15 +35,7 @@ const columns: TableColumnList = [
     label: "2D图形",
     prop: "structure",
     minWidth: 150,
-    cellRenderer: ({ row }) => {
-      return h("div", { class: "molecule-structure" }, [
-        h("img", {
-          src: row.image || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjUwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOTk5Ij7liIblrZDnu5PmnoQ8L3RleHQ+PC9zdmc+",
-          alt: row.name,
-          style: { width: "100px", height: "50px", objectFit: "contain" }
-        })
-      ]);
-    }
+    slot: "2dStructure"
   },
   {
     label: "状态",
@@ -76,7 +69,10 @@ const columns: TableColumnList = [
 
 <template>
   <div class="li-table-wrapper">
-    <pure-table ref="tableRef" :data="tableData" :columns="columns" @selection-change="handleSelectionChange">
+    <pure-table ref="tableRef" :data="tableData" :columns="columns" border @selection-change="handleSelectionChange">
+      <template #2dStructure="{ row }">
+        <SvgBox :smiles="row.structure" width="100" height="50" />
+      </template>
       <template #operation="{ row }">
         <el-button link type="primary" size="small" @click="handleDelete(row)">删除</el-button>
       </template>

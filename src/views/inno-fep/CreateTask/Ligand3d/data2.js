@@ -1,0 +1,150 @@
+export const data2 = [
+  {
+    SMILES: "[H]c1nc(C2(C([H])([H])N([H])C(=O)[C@](N([H])C(=O)N([H])c3c([H])c([H])c([N+](=O)[O-])c([H])c3[H])(C([H])([H])[H])C([H])([H])c3c([H])n([H])c4c([H])c([H])c([H])c([H])c34)C([H])([H])C([H])([H])C([H])([H])C([H])([H])C2([H])[H])c([H])c([H])c1OC([H])([H])[H]",
+    _id: 5854914,
+    row_id: 0,
+    raw_data: {
+      ID: "1",
+      smiles: "COc1ccc(C2(CNC(=O)[C@](C)(Cc3c[nH]c4ccccc34)NC(=O)Nc3ccc([N+](=O)[O-])cc3)CCCCC2)nc1",
+      number: "CR51-101",
+      other_attr: "",
+      trace: "P1"
+    },
+    iso_id: 1,
+    ori_id: 1,
+    show_id: "1-1-1",
+    key: null,
+    values: {
+      RTMScore: 38.611,
+      _iso_id: 1,
+      _ori_id: 1,
+      _res_idx: 1,
+      _show_id: "1-1-1",
+      CarsiScore: -1.741,
+      residues_full_info: [
+        {
+          distance: 3.84,
+          ligand_name: "UNL",
+          prot_atom_id: [1280],
+          ligand_atom_id: [7779],
+          ligand_chain_id: "A",
+          interaction_type: "Hydrophobic",
+          prot_residue_name: "PRO",
+          prot_residue_number: "117",
+          ligand_atom_id_inres: [12],
+          ligand_residue_number: "611",
+          prot_residue_chain_id: "A"
+        },
+        {
+          distance: 3.38,
+          ligand_name: "UNL",
+          prot_atom_id: [2554],
+          ligand_atom_id: [7802],
+          ligand_chain_id: "A",
+          interaction_type: "Hydrophobic",
+          prot_residue_name: "PRO",
+          prot_residue_number: "198",
+          ligand_atom_id_inres: [35],
+          ligand_residue_number: "611",
+          prot_residue_chain_id: "A"
+        },
+        {
+          distance: 3.9,
+          ligand_name: "UNL",
+          prot_atom_id: [2752],
+          ligand_atom_id: [7796],
+          ligand_chain_id: "A",
+          interaction_type: "Hydrophobic",
+          prot_residue_name: "HIS",
+          prot_residue_number: "210",
+          ligand_atom_id_inres: [29],
+          ligand_residue_number: "611",
+          prot_residue_chain_id: "A"
+        },
+        {
+          distance: 3.6,
+          ligand_name: "UNL",
+          prot_atom_id: [2261],
+          ligand_atom_id: [7796],
+          ligand_chain_id: "A",
+          interaction_type: "Hydrophobic",
+          prot_residue_name: "PHE",
+          prot_residue_number: "178",
+          ligand_atom_id_inres: [29],
+          ligand_residue_number: "611",
+          prot_residue_chain_id: "A"
+        },
+        {
+          distance: 3.15,
+          ligand_name: "UNL",
+          prot_atom_id: [6770],
+          ligand_atom_id: [7771],
+          ligand_chain_id: "A",
+          interaction_type: "Hydrophobic",
+          prot_residue_name: "TRP",
+          prot_residue_number: "461",
+          ligand_atom_id_inres: [4],
+          ligand_residue_number: "611",
+          prot_residue_chain_id: "A"
+        },
+        {
+          distance: 3.26,
+          ligand_name: "UNL",
+          prot_atom_id: [6813],
+          ligand_atom_id: [7804],
+          ligand_chain_id: "A",
+          interaction_type: "Hydrophobic",
+          prot_residue_name: "ASN",
+          prot_residue_number: "464",
+          ligand_atom_id_inres: [37],
+          ligand_residue_number: "611",
+          prot_residue_chain_id: "A"
+        },
+        {
+          distance: 3.59,
+          ligand_name: "UNL",
+          prot_atom_id: [6879],
+          ligand_atom_id: [7803],
+          ligand_chain_id: "A",
+          interaction_type: "Hydrophobic",
+          prot_residue_name: "TYR",
+          prot_residue_number: "468",
+          ligand_atom_id_inres: [36],
+          ligand_residue_number: "611",
+          prot_residue_chain_id: "A"
+        },
+        {
+          distance: 5.16,
+          ligand_name: "UNL",
+          prot_atom_id: [2755, 2756, 2758, 2760, 2762],
+          ligand_atom_id: [7794, 7795, 7796, 7797, 7801, 7802],
+          ligand_chain_id: "A",
+          interaction_type: "PiStacking",
+          prot_residue_name: "HIS",
+          prot_residue_number: "210",
+          ligand_atom_id_inres: [27, 28, 29, 30, 34, 35],
+          ligand_residue_number: "611",
+          prot_residue_chain_id: "A"
+        },
+        {
+          distance: 4.78,
+          ligand_name: "UNL",
+          prot_atom_id: [7276, 7279, 7282],
+          ligand_atom_id: [7769, 7770, 7771, 7772, 7808, 7809],
+          ligand_chain_id: "A",
+          interaction_type: "PiCation",
+          prot_residue_name: "ARG",
+          prot_residue_number: "492",
+          ligand_atom_id_inres: [2, 3, 4, 5, 41, 42],
+          ligand_residue_number: "611",
+          prot_residue_chain_id: "A"
+        }
+      ],
+      Residues: ["A.PRO.117", "A.PRO.198", "A.HIS.210", "A.PHE.178", "A.TRP.461", "A.ASN.464", "A.TYR.468", "A.HIS.210", "A.ARG.492"]
+    },
+    weight: 101,
+    finished: true,
+    affinity: -1.741,
+    RTMS: 38.611
+  }
+];

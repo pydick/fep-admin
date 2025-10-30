@@ -2,13 +2,14 @@
 defineOptions({
   name: "CStab"
 });
-import { ref, defineEmits } from "vue";
+import { ref, defineEmits, computed } from "vue";
 
 import type { TabsPaneContext } from "element-plus";
 
 interface Props {
   tabList?: { label: string; name: string }[];
   type?: "border-card" | "card" | "";
+  activeName?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -16,17 +17,29 @@ const props = withDefaults(defineProps<Props>(), {
   tabList: () => [
     { label: "label1", name: "first" },
     { label: "label12", name: "second" }
-  ]
+  ],
+  activeName: ""
 });
-const activeName = ref(props.tabList[0].name);
-const emit = defineEmits(["tabClcik"]);
+const activeName = ref(props.activeName);
+const emit = defineEmits<{
+  (e: "tabClcik", value: string): void;
+  (e: "update:activeName", value: string): void;
+}>();
+
+const innerActiveName = computed({
+  get: () => props.activeName,
+  set: (value: string) => {
+    emit("update:activeName", value);
+  }
+});
+
 const handleClick = (tab: TabsPaneContext, event: Event) => {
-  emit("tabClcik", tab.props.name);
+  emit("tabClcik", tab.props.name as string);
 };
 </script>
 
 <template>
-  <el-tabs v-model="activeName" :type="type" class="h-full cs-tabs" @tab-click="handleClick">
+  <el-tabs v-model="innerActiveName" :type="type" class="h-full cs-tabs" @tab-click="handleClick">
     <el-tab-pane v-for="item in tabList" :key="item.name" :label="item.label" :name="item.name">
       <slot :name="item.name" />
     </el-tab-pane>
