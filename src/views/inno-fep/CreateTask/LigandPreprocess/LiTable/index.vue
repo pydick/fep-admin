@@ -24,17 +24,17 @@ const columns: TableColumnList = [
   {
     label: "配体编号",
     prop: "ligandCode",
-    minWidth: 100
+    minWidth: 80
   },
   {
     label: "分子名称",
     prop: "name",
-    minWidth: 100
+    minWidth: 80
   },
   {
     label: "2D图形",
     prop: "structure",
-    minWidth: 150,
+    minWidth: 100,
     slot: "2dStructure"
   },
   {
@@ -71,7 +71,7 @@ const columns: TableColumnList = [
   <div class="li-table-wrapper">
     <pure-table ref="tableRef" :data="tableData" :columns="columns" border @selection-change="handleSelectionChange">
       <template #2dStructure="{ row }">
-        <SvgBox :smiles="row.structure" width="100" height="50" />
+        <SvgBox :smiles="row.structure" width="70" height="50" />
       </template>
       <template #operation="{ row }">
         <el-button link type="primary" size="small" @click="handleDelete(row)">删除</el-button>
