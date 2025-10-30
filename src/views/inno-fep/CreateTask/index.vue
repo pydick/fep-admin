@@ -80,9 +80,9 @@ provide("taskFormData", taskFormData);
       <div class="h-full flex flex-col border border-[var(--el-card-border-color)] pt-[15px] pr-[15px] pb-[15px] pl-[15px]">
         <CSstep ref="stepRef" v-model:active="activeStep" class="max-w-full! pt-[15px] pb-[15px] bg-[var(--el-fill-color-light)]" :titleList="stepList" />
         <div class="flex-1 basis-0 overflow-y-auto">
-          <ProteinPreprocess v-show="activeStep === 1" />
-          <LigandPreprocess v-show="activeStep === 2" />
-          <CalculationParameters v-show="activeStep === 3" />
+          <ProteinPreprocess v-if="activeStep === 1" />
+          <LigandPreprocess v-if="activeStep === 2" />
+          <CalculationParameters v-if="activeStep === 3" />
         </div>
         <div class="pt-[15px]">
           <el-button v-show="activeStep !== 1" @click="handlePrev">上一步</el-button>

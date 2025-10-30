@@ -12,6 +12,8 @@ defineOptions({
 // 注入父组件提供的任务表单数据对象
 const taskFormData = inject<any>("taskFormData");
 
+const ossListCommomParams = { prefix: "ligands" };
+
 const el_form_second = ref();
 const step2Form = reactive({
   ligandId: "",
@@ -96,7 +98,7 @@ const uploadSuc = value => {
 let exampleList = reactive<{ name: string; value: string }[]>([]);
 
 onMounted(async () => {
-  const res = await ossList({ proteins: "proteins", max_keys: 1 });
+  const res = await ossList({ ...ossListCommomParams, max_keys: 1 });
   if (res.success) {
     const exampleData = res.data.objects.map(item => ({
       name: item.filename || item.key.replace(/^.*\//, ""),
