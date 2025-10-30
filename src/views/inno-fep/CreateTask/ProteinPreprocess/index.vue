@@ -6,8 +6,9 @@ import CSspinner from "@/components/CSspinner/index.vue";
 import { check_pdb_api, datalists, basic_info } from "@/api/data";
 import { ossList, ossGetDownload, proteinInfo, componentsDelete, residueErrorFind, residueErrorFix, residueMissingFind, residueMissingFix } from "@/api/fep";
 import { binaryToUploadFile } from "@/utils/common";
-import { ElLoading } from "element-plus";
+import { ElLoading, ElMessage } from "element-plus";
 import BlockTitle from "../../components/BlcokTitle/index.vue";
+import { clone } from "@pureadmin/utils";
 
 import { debounce } from "@pureadmin/utils";
 defineOptions({
@@ -26,6 +27,7 @@ const pdbid_url_ref = ref();
 const space = ref(null);
 
 let exampleList = reactive<{ name: string; value: string }[]>([]);
+const ossListCommomParams = { prefix: "proteins" };
 
 const step1Form = reactive({
   input_tab: "数据库导入",
@@ -48,7 +50,7 @@ const step1Form = reactive({
   missing_residue_list: [],
   pdb: "pdb_file",
   chain: [],
-  add_missing_residue: true,
+  // add_missing_residue: true,
   addh: true,
   modify_protonation: true,
   ph: 7.4,
@@ -61,7 +63,14 @@ const step1Form = reactive({
   pdb_name: "",
   irrelevant_waters: false,
   delete_water: [],
-  disclose_file: "" //检测文件
+  disclose_file: "", //检测文件
+  // 删除接口记录
+  delete_record: {
+    chains: [],
+    hets: [],
+    waters: [],
+    irrelevant_waters: false
+  }
 });
 taskFormData.step1Form = step1Form;
 
@@ -77,7 +86,7 @@ const ligand_list = ref([]);
 const preprocessingBtns = reactive({
   loading: false,
   text: "预处理",
-  disabled: false
+  disabled: true
 });
 const charge_option = reactive([
   {
@@ -140,7 +149,7 @@ const check_pdb = file => {
 };
 
 const show_dialog = async (type?: string) => {
-  const res = await ossList({ proteins: "proteins" });
+  const res = await ossList({ ...ossListCommomParams });
   if (res.success) {
     data_list.value = res.data.objects.map(item => ({
       dataset_id: item.key,
@@ -241,6 +250,16 @@ const het_select_fn = data => {
 const chain_change = async (data, value) => {
   await protein3dRef.value.change_chain(data.chain_id, value);
   draw_ligand_box_select(data.chain_id, value);
+  console.log(111, data);
+  console.log(222, value);
+  console.log(333, protein_ligand_content);
+  if (value) {
+    step1Form.delete_record.chains.splice(data.chain_id, 1);
+    step1Form.delete_record.hets = step1Form.delete_record.hets.filter(item => item.chain_id !== data.chain_id).map(item => item.chain_id);
+  } else {
+    step1Form.delete_record.chains.push(data.chain_id);
+    step1Form.delete_record.hets = [...step1Form.delete_record.hets, ...step1Form.het_group.filter(item => item.chain_id === data.chain_id).map(item => ({ chain_id: item.chain_id, residue_number: item.residue_number }))];
+  }
 
   protein3dRef.value.select_none();
   const hets = [];
@@ -270,10 +289,17 @@ const quick_delete_click = async () => {
   const water_data = [];
 
   if (step1Form.het_group.length == 0) return;
+  step1Form.delete_record.waters = clone(step1Form.het_group).reduce((acc, item) => {
+    item.water_within_dist.forEach(water => {
+      acc.push({ residue_number: water.residue_number, chain_id: water.chain_id });
+    });
+    return acc;
+  }, []);
   for (let i = 0; i < step1Form.het_group.length; i++) {
     step1Form.het_group[i].water_within_dist = step1Form.het_group[i].water_within_dist.filter(item => item.if_water_bridge == true);
   }
   step1Form.irrelevant_waters = true;
+  step1Form.delete_record.irrelevant_waters = true;
 
   protein3dRef.value.select_none();
 
@@ -295,6 +321,7 @@ const quick_delete_click = async () => {
       water_data.push({ auth_residue_number: water_dict_list[k].auth_residue_number, auth_asym_id: water_dict_list[k].auth_asym_id });
     }
   }
+  console.log(444, water_dict_list);
   // hide_params = water_info.filter(item => item.auth_residue_number !== show_params[i].auth_residue_number)
   if (water_data.length == 0) return;
   protein3dRef.value.quick_select(water_data);
@@ -310,6 +337,7 @@ const delete_single_het = (ind, val, index) => {
   step1Form.delete_water.push({ residue_number: val.residue_number, chain_id: val.chain_id });
   step1Form.het_group[ind].water_within_dist.splice(index, 1);
   protein3dRef.value.select_show_hide(val, false);
+  step1Form.delete_record.waters.push({ residue_number: val.residue_number, chain_id: val.chain_id });
 };
 
 const single_het_click = data => {
@@ -326,6 +354,7 @@ const pdbidInput = debounce(value => {
 }, 1000);
 
 const het_change = async (data, value) => {
+  console.log(555, data, value);
   protein3dRef.value.select_none();
 
   await protein3dRef.value.quick_select({ auth_asym_id: data.chain_id, residue_number: data.residue_number }, "single", true);
@@ -342,6 +371,7 @@ const het_change = async (data, value) => {
           step1Form.delete_water.splice(waterIndex, 1);
         }
       });
+      step1Form.delete_record.hets = step1Form.delete_record.hets.filter(item => item.chain_id !== data.chain_id);
     }
   } else {
     protein3dRef.value.hide_selection();
@@ -359,6 +389,7 @@ const het_change = async (data, value) => {
           });
         }
       });
+      step1Form.delete_record.hets = [...step1Form.delete_record.hets, { residue_number: data.residue_number, chain_id: data.chain_id }];
     }
   }
 };
@@ -385,6 +416,7 @@ const getPdbById = async id => {
         step1Form.protein_chain = proteinRes.data.chains.map(item => ({ if_checked: true, ...item }));
         step1Form.het_group = proteinRes.data.hets.map(item => ({ if_checked: true, ...item }));
         step1Form.disclose_file = file.raw;
+        preprocessingBtns.disabled = false;
       }
     }
   } finally {
@@ -393,7 +425,7 @@ const getPdbById = async id => {
 };
 
 onMounted(async () => {
-  const res = await ossList({ proteins: "proteins", max_keys: 1 });
+  const res = await ossList({ ...ossListCommomParams, max_keys: 1 });
   if (res.success) {
     const exampleData = res.data.objects.map(item => ({
       name: item.filename || item.key.replace(/^.*\//, ""),
@@ -414,19 +446,8 @@ const handlePreprocess = async () => {
   try {
     preprocessingBtns.loading = true;
     preprocessingBtns.text = "预处理中...";
-    const args = {
-      chain_list: step1Form.protein_chain.map(item => item.chain_id),
-      hets: step1Form.het_group.map(item => ({ chain_id: item.chain_id, residue_number: item.residue_number })),
-      waters: step1Form.het_group.reduce((acc, item) => {
-        item.water_within_dist.forEach(water => {
-          acc.push({ chain_id: item.chain_id, residue_number: water.residue_number });
-        });
-        return acc;
-      }, []),
-      irrelevant_waters: false
-    };
     const formData = new FormData();
-    formData.append("args", JSON.stringify(args));
+    formData.append("args", JSON.stringify(step1Form.delete_record));
     formData.append("pdb", step1Form.disclose_file);
     const componentsDeleteRes = await componentsDelete(formData);
     if (componentsDeleteRes.success) {
@@ -447,17 +468,13 @@ const handlePreprocess = async () => {
           const formData = new FormData();
           formData.append("pdb", fixFile);
           const residueMissingFindRes = await residueMissingFind(formData);
-          console.log(11, residueMissingFindRes);
           if (residueMissingFindRes.success) {
             const residue_missing = residueMissingFindRes.data.residue_missing;
             const formData = new FormData();
             formData.append("pdb", fixFile);
             formData.append("args", JSON.stringify({ residue_missing }));
             const residueMissingFixRes = await residueMissingFix(formData);
-            console.log(22, residueMissingFixRes);
             if (residueMissingFixRes.success) {
-              preprocessingBtns.text = "处理完成";
-              preprocessingBtns.disabled = true;
               const pdb_string = residueMissingFixRes.data.pdb_string;
               const loading = ElLoading.service({
                 lock: true,
@@ -478,20 +495,25 @@ const handlePreprocess = async () => {
               } finally {
                 loading.close();
               }
+            } else {
+              ElMessage.error(residueMissingFixRes.message);
             }
+          } else {
+            ElMessage.error(residueMissingFindRes.message);
           }
+        } else {
+          ElMessage.error(residueErrorFixRes.message);
         }
+      } else {
+        ElMessage.error(residueErrorFindRes.message);
       }
-      console.log(componentsDeleteRes);
-      // const file = componentsDeleteRes
-      // step1Form.protein_chain = proteinRes.data.chains.map(item => ({ if_checked: true, ...item }));
-      // step1Form.het_group = proteinRes.data.hets.map(item => ({ if_checked: true, ...item }));
+    } else {
+      ElMessage.error(componentsDeleteRes.message);
     }
   } catch (error) {
-    console.log(error);
-    preprocessingBtns.text = "处理失败";
-    preprocessingBtns.disabled = true;
+    ElMessage.error(error.message);
   } finally {
+    preprocessingBtns.text = "重新处理";
     preprocessingBtns.loading = false;
   }
 };
@@ -580,7 +602,7 @@ const handlePreprocess = async () => {
         </el-form-item>
         <p slot="label" class="label_1_1">优化蛋白</p>
         <el-form-item>
-          <el-checkbox v-model="step1Form.add_missing_residue" class="w-full">Add Missing Residue/Repair Faulty Structure</el-checkbox>
+          <!-- <el-checkbox v-model="step1Form.add_missing_residue" class="w-full">Add Missing Residue/Repair Faulty Structure</el-checkbox> -->
           <el-checkbox v-model="step1Form.addh" class="w-full">Add Hydrogens</el-checkbox>
           <el-checkbox v-model="step1Form.modify_protonation" class="w-full">
             Modify Protonation at pH:
