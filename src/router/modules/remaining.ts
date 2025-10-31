@@ -13,7 +13,7 @@ export default [
     }
   },
   {
-    path: "/signin",
+    path: "/login",
     name: "Signin",
     component: () => import("@/views/login/signin/index.vue"),
     meta: {
@@ -23,7 +23,7 @@ export default [
     }
   },
   {
-    path: "/signup",
+    path: "/register",
     name: "Signup",
     component: () => import("@/views/login/signup/index.vue"),
     meta: {

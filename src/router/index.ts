@@ -71,7 +71,7 @@ export function resetRouter() {
 }
 
 /** 路由白名单 */
-const whiteList = ["/signin", "/micro-fep", "/signup"];
+const whiteList = ["/login", "/micro-fep", "/register"];
 
 const { VITE_HIDE_HOME } = import.meta.env;
 
@@ -184,7 +184,7 @@ router.beforeEach((to: ToRouteType, _from, next) => {
   } else {
     // 用户未登录的处理逻辑
     // 如果目标路径不是登录页
-    if (to.path !== "/signin") {
+    if (to.path !== "/login") {
       // 检查目标路径是否在白名单中
       if (whiteList.indexOf(to.path) !== -1) {
         // 如果在白名单中，允许访问
@@ -192,7 +192,7 @@ router.beforeEach((to: ToRouteType, _from, next) => {
       } else {
         // 如果不在白名单中，清除token并跳转到登录页
         removeToken();
-        next({ path: "/signin" });
+        next({ path: "/login" });
       }
     } else {
       // 如果目标路径就是登录页，直接允许访问

@@ -79,7 +79,7 @@ useEventListener(document, "keydown", ({ code }) => {
 });
 
 const onRegister = () => {
-  router.push("/signup");
+  router.push("/register");
 };
 </script>
 

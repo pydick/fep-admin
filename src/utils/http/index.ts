@@ -9,6 +9,7 @@ import { removeToken } from "@/utils/auth";
 import { camelToSnake } from "@/utils/golbal";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { Action } from "element-plus";
+import { apiV1 } from "@/config/api";
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
   // 请求超时时间
@@ -67,7 +68,7 @@ class PureHttp {
           return config;
         }
         /** 请求白名单，放置一些不需要`token`的接口（通过设置请求白名单，防止`token`过期后再请求造成的死循环问题） */
-        const whiteList = ["/refresh", "/login", "/get_csrf_token", "/signin"];
+        const whiteList = ["/refresh", `${apiV1}/auth/login`, "/get_csrf_token", "/signin"];
         return whiteList.some(url => config.url.endsWith(url))
           ? config
           : new Promise(resolve => {
@@ -93,7 +94,7 @@ class PureHttp {
                           setTimeout(() => {
                             PureHttp.requests = []; // 清空待重试的请求队列
                             removeToken(); // 清除本地存储的token
-                            router.push("/signin"); // 跳转到登录页面
+                            router.push("/login"); // 跳转到登录页面
                           }, 1000);
                         }
                       })
@@ -111,7 +112,7 @@ class PureHttp {
                 ElMessage.error("token失效，请重新登录");
                 setTimeout(() => {
                   removeToken(); // 清除本地存储的token
-                  router.push("/signin"); // 跳转到登录页面
+                  router.push("/login"); // 跳转到登录页面
                 }, 1000);
 
                 resolve(config);
@@ -161,7 +162,7 @@ class PureHttp {
         NProgress.done();
         if (error.response.status === 401) {
           removeToken();
-          router.push("/signin");
+          router.push("/login");
         }
         // 所有的响应异常 区分来源为取消请求/非取消请求
         return Promise.reject($error);

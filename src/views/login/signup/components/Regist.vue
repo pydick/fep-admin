@@ -56,7 +56,7 @@ const onUpdate = async (formEl: FormInstance | undefined) => {
             type: "success"
           });
           loading.value = false;
-          router.push("/signin");
+          router.push("/login");
         } else {
           message(res.message, {
             type: "error"
@@ -76,7 +76,7 @@ const onUpdate = async (formEl: FormInstance | undefined) => {
 };
 
 function onSignin() {
-  router.push("/signin");
+  router.push("/login");
   // useVerifyCode().end();
   // useUserStoreHook().SET_CURRENTPAGE(0);
 }

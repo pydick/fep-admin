@@ -299,9 +299,6 @@ export function time_format(time) {
  * @param imgPath: string
  */
 export function requireImg(imgPath) {
-  if (!imgPath) {
-    console.error("requireImg: imgPath is required, but received:", imgPath);
-    throw new Error(`requireImg: imgPath cannot be ${imgPath}. Please provide a valid image path.`);
-  }
+  console.log(111, new URL(`../assets/${imgPath}`, import.meta.url).href);
   return new URL(`../assets/${imgPath}`, import.meta.url).href;
 }

@@ -1,7 +1,7 @@
 <template>
   <!-- 加载遮罩层 -->
   <div v-show="if_cover" class="cover_frame">
-    <img :src="requireImg('assets/protein3DCover.png')" alt="protein3D cover" class="cover_img" />
+    <img src="@/assets/protein3DCover.png" class="cover_img" alt="protein3D cover" />
   </div>
 
   <!-- 配体控制面板 -->
