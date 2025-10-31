@@ -6,6 +6,7 @@ import { h, nextTick } from "vue";
 import { throttle } from "@pureadmin/utils";
 import { pxToRemPx } from "@/utils/rem";
 import { cloneDeep } from "@pureadmin/utils";
+import { ElMessage } from "element-plus";
 defineOptions({
   name: "PerturbationGraph"
 });
@@ -20,6 +21,8 @@ interface Iprops {
   width?: string;
   height?: string;
 }
+
+const sourceNodeId = ref<string | null>(null);
 const props = withDefaults(defineProps<Iprops>(), {
   isDialogEnter: false,
   width: "500px",
@@ -164,15 +167,83 @@ const initGraph = () => {
           return [{ name: "断开连接", value: "disconnect" }];
         },
         onClick: (value, target, current) => {
-          if (!graph || !target) return;
+          if (!graph || !target || !current) return;
           if (value === "disconnect") {
             const edgeId = current.id;
-            graph.removeEdgeData([edgeId]);
-            graph.draw();
-            edgeCount.value = graph.getEdgeData()?.length || 0;
             if (currentHighlightedEdge.value === edgeId) {
               currentHighlightedEdge.value = null;
             }
+            graph.removeEdgeData([edgeId]);
+            graph.draw();
+            edgeCount.value = graph.getEdgeData()?.length || 0;
+          }
+
+          if (sourceNodeId.value) {
+            sourceNodeId.value = null; // 取消源节点的选中状态
+          }
+        }
+      },
+      {
+        type: "contextmenu",
+        enable: e => e.targetType === "node", // 只对节点触发右键菜单
+        getItems: e => {
+          const nodeId = e.target.id;
+          return [{ name: sourceNodeId.value ? "选择目标节点" : "选择源节点", value: "selectNode", nodeId }];
+        },
+        onClick: (value, target, current) => {
+          if (!graph || !target || !current) return;
+          const nodeId = current.id;
+
+          if (value === "selectNode") {
+            // 第一次点击
+            if (!sourceNodeId.value) {
+              sourceNodeId.value = nodeId;
+              graph.updateNodeData([
+                {
+                  id: nodeId,
+                  style: { fill: "#FF5733" } // 高亮源节点
+                }
+              ]);
+              console.log(`Source node selected: ${nodeId}`);
+            } else {
+              if (sourceNodeId.value === nodeId) {
+                ElMessage.warning("源节点和目标节点不能相同！");
+                if (sourceNodeId.value) sourceNodeId.value = null;
+                return;
+              }
+              const edgeData = graph.getEdgeData();
+              // 检查源节点和目标节点之间是否已有边
+              const existingEdge = edgeData.find(edge => (edge.source === sourceNodeId.value && edge.target === nodeId) || (edge.source === nodeId && edge.target === sourceNodeId.value));
+              if (existingEdge) {
+                ElMessage.warning("源节点和目标节点之间已有边！");
+                if (sourceNodeId.value) sourceNodeId.value = null;
+                return;
+              }
+              // 第二次点击，设置目标节点，添加边
+              const edgeId = `edge${edgeData.length + 1}-${Date.now()}`;
+              const newEdge = {
+                id: edgeId,
+                source: sourceNodeId.value,
+                target: nodeId,
+                label: "0.01"
+              };
+
+              // 添加新边到图形
+              edgeData.push(newEdge);
+              graph.addEdgeData([newEdge]);
+              edgeCount.value = edgeData.length;
+              console.log(111, graph.getNodeData(sourceNodeId.value));
+              // 清除源节点高亮，并重置源节点
+              graph.updateNodeData([
+                {
+                  id: graph.getNodeData(sourceNodeId.value).id,
+                  style: { fill: "#ffffff" }
+                }
+              ]);
+              sourceNodeId.value = null;
+              console.log(`Edge added: ${sourceNodeId.value} -> ${nodeId}`);
+            }
+            graph.draw();
           }
         }
       }
@@ -217,6 +288,9 @@ const initGraph = () => {
   // 添加边点击事件
   graph.on("edge:click", (evt: any) => {
     const clickedEdge = evt.target;
+    if (sourceNodeId.value) {
+      sourceNodeId.value = null; // 取消源节点的选中状态
+    }
     if (currentHighlightedEdge.value && currentHighlightedEdge.value !== clickedEdge.id) {
       graph.updateEdgeData([
         {
