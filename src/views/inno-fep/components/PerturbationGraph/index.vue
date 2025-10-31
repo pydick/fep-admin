@@ -5,12 +5,15 @@ import GraphNode from "./GraphNode/index.vue";
 import { h, nextTick } from "vue";
 import { throttle } from "@pureadmin/utils";
 import { pxToRemPx } from "@/utils/rem";
+import { cloneDeep } from "@pureadmin/utils";
 defineOptions({
   name: "PerturbationGraph"
 });
 let graph: Graph | null = null;
 
 const containerRef = ref<HTMLElement>();
+
+const currentHighlightedEdge = ref<string | null>(null);
 
 interface Iprops {
   isDialogEnter?: boolean;
@@ -23,7 +26,7 @@ const props = withDefaults(defineProps<Iprops>(), {
   height: "500px"
 });
 
-const data = {
+const initialData = {
   nodes: [
     {
       id: "c",
@@ -102,6 +105,17 @@ const data = {
   ]
 };
 
+// 深拷贝初始数据用于重置（保留函数属性）
+const getInitialData = () => {
+  return cloneDeep(initialData);
+};
+
+// 当前数据
+const data = getInitialData();
+
+// 用于响应式更新边数
+const edgeCount = ref(data.edges.length);
+
 const initGraph = () => {
   if (!containerRef.value) return;
   const width = containerRef.value.clientWidth;
@@ -123,7 +137,8 @@ const initGraph = () => {
         getItems: () => [
           { id: "zoom-in", value: "zoom-in" },
           { id: "zoom-out", value: "zoom-out" },
-          { id: "auto-fit", value: "auto-fit" }
+          { id: "auto-fit", value: "auto-fit" },
+          { id: "reset", value: "reset" }
         ],
         onClick: value => {
           if (value === "zoom-in") {
@@ -132,6 +147,32 @@ const initGraph = () => {
             graph.zoomTo(0.9);
           } else if (value === "auto-fit") {
             graph.fitView();
+          } else if (value === "reset") {
+            currentHighlightedEdge.value = null;
+            // 重置数据到初始状态
+            const resetData = getInitialData();
+            graph.setData(resetData);
+            graph.render();
+            edgeCount.value = resetData.edges.length;
+          }
+        }
+      },
+      {
+        type: "contextmenu",
+        enable: e => e.targetType === "edge",
+        getItems: () => {
+          return [{ name: "断开连接", value: "disconnect" }];
+        },
+        onClick: (value, target, current) => {
+          if (!graph || !target) return;
+          if (value === "disconnect") {
+            const edgeId = current.id;
+            graph.removeEdgeData([edgeId]);
+            graph.draw();
+            edgeCount.value = graph.getEdgeData()?.length || 0;
+            if (currentHighlightedEdge.value === edgeId) {
+              currentHighlightedEdge.value = null;
+            }
           }
         }
       }
@@ -151,14 +192,13 @@ const initGraph = () => {
     edge: {
       style: {
         labelText: (d: any) => d.label,
-        labelFontSize: 10,
-        labelFill: "#000000",
-        labelBackgroundFill: "#ffffff",
-        labelBackgroundOpacity: 0.8,
-        labelPadding: [2, 4],
+        labelFontSize: 14,
+        labelFill: (d: any) => d.style?.labelFill || "#606266",
+        labelBackgroundOpacity: (d: any) => d.style?.labelBackgroundOpacity ?? 0.1,
         stroke: (d: any) => d.style?.stroke || "#cccccc",
-        lineWidth: (d: any) => d.style?.lineWidth || 2,
-        endArrow: true
+        lineWidth: (d: any) => d.style?.lineWidth || 3,
+        endArrow: true,
+        cursor: "pointer"
       }
     },
     layout: {
@@ -176,7 +216,35 @@ const initGraph = () => {
 
   // 添加边点击事件
   graph.on("edge:click", (evt: any) => {
-    console.log("点击边:", evt);
+    const clickedEdge = evt.target;
+    if (currentHighlightedEdge.value && currentHighlightedEdge.value !== clickedEdge.id) {
+      graph.updateEdgeData([
+        {
+          id: currentHighlightedEdge.value,
+          style: {
+            stroke: "#cccccc",
+            lineWidth: 3,
+            labelFontWeight: "normal",
+            opacity: 1
+          }
+        }
+      ]);
+    }
+
+    graph.updateEdgeData([
+      {
+        id: clickedEdge.id,
+        style: {
+          stroke: "#409EFF",
+          lineWidth: 3,
+          labelFontWeight: "bold",
+          opacity: 0.5
+        }
+      }
+    ]);
+
+    currentHighlightedEdge.value = clickedEdge.id;
+    graph.draw();
   });
 };
 const handleResize = throttle(() => {
@@ -218,19 +286,38 @@ onUnmounted(() => {
     graph.destroy();
     graph = null;
   }
-  window.removeEventListener("resize", handleResize);
+  // window.removeEventListener("resize", handleResize);
 });
 </script>
 
 <template>
-  <div id="perturbationGraph" ref="containerRef" class="g6-container" />
+  <div class="pre-container">
+    <div id="perturbationGraph" ref="containerRef" class="g6-container" />
+    <div class="count-container">
+      <span>共{{ edgeCount }}对配体</span>
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-.g6-container {
+.pre-container {
   width: 100%;
   height: 100%;
-  min-width: 300px;
-  min-height: 300px;
+  position: relative;
+  .g6-container {
+    width: 100%;
+    height: 100%;
+    min-width: 300px;
+    min-height: 300px;
+  }
+  .count-container {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    background-color: #fff;
+    padding: 0 0 0 20px;
+  }
 }
 </style>
