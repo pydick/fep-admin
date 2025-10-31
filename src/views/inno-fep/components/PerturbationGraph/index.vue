@@ -232,7 +232,6 @@ const initGraph = () => {
               edgeData.push(newEdge);
               graph.addEdgeData([newEdge]);
               edgeCount.value = edgeData.length;
-              console.log(111, graph.getNodeData(sourceNodeId.value));
               // 清除源节点高亮，并重置源节点
               graph.updateNodeData([
                 {
@@ -325,23 +324,8 @@ const handleResize = throttle(() => {
   if (graph && containerRef.value) {
     const width = containerRef.value.clientWidth;
     const height = containerRef.value.clientHeight;
-    const radius = (Math.min(width, height) / 2) * 0.75;
-
-    // 调整画布大小
     graph.resize(width, height);
-
-    // 更新布局参数（重要：使用更新后的 radius）
-    graph.setLayout({
-      type: "radial",
-      unitRadius: radius,
-      linkDistance: 250
-    });
-
-    // 重新渲染
-    graph.render();
-
-    // 可选：自适应视图以保持居中
-    graph.fitView();
+    // graph.fitView();
   }
 }, 200);
 
@@ -351,7 +335,7 @@ onMounted(async () => {
   }
   if (containerRef.value) {
     initGraph();
-    // window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize);
   }
 });
 
@@ -360,7 +344,7 @@ onUnmounted(() => {
     graph.destroy();
     graph = null;
   }
-  // window.removeEventListener("resize", handleResize);
+  window.removeEventListener("resize", handleResize);
 });
 </script>
 
