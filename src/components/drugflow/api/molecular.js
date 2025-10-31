@@ -41,7 +41,7 @@ export function download_data(job_id, params) {
 
 export function get_interaction_iframe_api(data) {
   return request.post(
-    "api/toolkits/protein/draw_interaction",
+    "/api/toolkits/protein/draw_interaction",
     { data },
     {
       headers: { "content-type": "multipart/form-data" }
