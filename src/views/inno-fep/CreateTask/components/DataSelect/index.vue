@@ -2,8 +2,8 @@
   <el-dialog :modelValue="if_show" :title="name" width="70%" :before-close="handleConfirm" append-to-body class="min-h-[400px]">
     <div style="min-height: 40vh; max-height: 60vh; padding: 0 5rem; overflow-y: auto">
       <el-row v-if="data_list.length" :gutter="20">
-        <el-col v-for="item in change_list(data_list)" :key="item.dataset_id" :span="8" style="margin-bottom: 1rem">
-          <el-button :title="item.name" bg style="width: 100%; overflow: hidden" text type="info" @click="sendDataToParent(item.dataset_id, item.name, item.extras?.osskey)">
+        <el-col v-for="item in change_list(data_list)" :key="item.dataset_id" :span="4" style="margin-bottom: 1rem">
+          <el-button :title="item.name" bg style="width: 100%; overflow: hidden" text type="primary" @click="sendDataToParent(item.dataset_id, item.name, item.extras?.osskey)">
             <div style="display: flex; height: 1.1rem; justify-content: center">
               <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis">{{ item.name.split(".").slice(0, -1).join(".") }}.</span>
               <span>{{ item.name.split(".").pop() }}</span>
