@@ -12,7 +12,7 @@
 
 <script>
 import { useI18n } from "vue-i18n";
-import { ossUpload, checkProtein } from "@/api/fep";
+import { ligandUpload } from "@/api/fep";
 import { ref } from "vue";
 
 export default {
@@ -50,41 +50,45 @@ export default {
   },
   setup(props, context) {
     const { t } = useI18n();
+    const upload_ref = ref(null);
     const file_action = ref();
     const file_osskey = ref();
     const type_arr = props.file_accept.split(",").map(function (item) {
       return item.trim().substring(1);
     });
     const privatization = ref(sessionStorage.getItem("privatization"));
+    context.expose({
+      triggerClick: () => {
+        const upload = upload_ref.value;
+        if (upload && upload.$el) {
+          const input = upload.$el.querySelector('input[type="file"]');
+          input && input.click();
+        }
+      }
+    });
     return {
       t,
       context,
       type_arr,
       file_action,
       file_osskey,
-      privatization
+      privatization,
+      upload_ref
     };
   },
   methods: {
     async file_on_change(file, fileList) {
-      console.log(1111, fileList);
       if (fileList.length > 1) {
         fileList.splice(0, 1);
       }
       if (fileList.length) {
         const formData = new FormData();
         formData.append("file", file.raw);
-        console.log(file);
-        const checkRes = await checkProtein(formData);
-        if (checkRes.success) {
-          const res = await ossUpload(formData);
-          if (res.success) {
-            this.$emit("uploadSuc", res.data.key, file);
-          } else {
-            ElMessage.error("上传失败");
-          }
+        const res = await ligandUpload(formData);
+        if (res.success) {
+          this.$emit("uploadSuc", res.data);
         } else {
-          ElMessage.error("检查未通过");
+          ElMessage.error("上传失败");
         }
       }
     }

@@ -432,7 +432,7 @@ onMounted(async () => {
       name: item.filename || item.key.replace(/^.*\//, ""),
       value: item.key
     }));
-    Object.assign(exampleList, exampleData);
+    exampleList.push(...exampleData);
   }
 });
 const tab_list = reactive(["数据库导入", "上传文件", "数据中心"]);

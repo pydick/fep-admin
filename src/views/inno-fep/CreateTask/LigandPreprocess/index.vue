@@ -47,6 +47,7 @@ const referenceLigand = reactive([
     value: "cpd3"
   }
 ]);
+let ligandList = reactive([]);
 
 const experimentMethods = ref([
   { label: "IC50", value: "IC50" },
@@ -96,16 +97,23 @@ const handleAlign = () => {
 const handleGenerateMap = () => {
   console.log("生成映射图");
 };
+const addUploadRef = ref();
 const addNewLigand = () => {
-  console.log("添加新分子");
+  console.log("添加新分子", addUploadRef.value);
+  addUploadRef.value.triggerClick();
 };
 
 const perturbationGraphVisible = ref(false);
 const perturbationGraphShow = () => {
   perturbationGraphVisible.value = true;
 };
-const uploadSuc = value => {
-  console.log(value);
+const uploadSuc = data => {
+  ligandList.length = 0;
+  ligandList.push(...data.molecules);
+};
+
+const addNewLigandSuc = data => {
+  ligandList.push(...data.molecules);
 };
 
 let exampleList = reactive<{ name: string; value: string }[]>([]);
@@ -121,7 +129,7 @@ onMounted(async () => {
       name: item.filename || item.key.replace(/^.*\//, ""),
       value: item.key
     }));
-    Object.assign(exampleList, exampleData);
+    exampleList.push(...exampleData);
   }
 });
 </script>
@@ -135,15 +143,16 @@ onMounted(async () => {
       </el-radio-group>
       <div v-show="tab === tab_list[0]" class="dbid_input_box">
         <el-form-item ref="pdbid_url_ref" label-width="0px" prop="ligandId">
-          <Upload inp_placeholder="上传" file_accept=".csv/sdf" :is_slot="false" @uploadSuc="uploadSuc" />
+          <Upload inp_placeholder="上传" file_accept=".csv,.sdf" :is_slot="false" @uploadSuc="uploadSuc" />
         </el-form-item>
         <el-form-item prop="pdbid_select" label-width="0px" class="w-[120px]!">
           <el-select v-model="step2Form.example" placeholder="选择示例" @change="exampleChoose">
             <el-option v-for="item in exampleList" :key="item.value" :label="item.name" :value="item.value" />
           </el-select>
         </el-form-item>
-        <div class="pt-[15px] inline-block ml-[15px]">
+        <div class="pt-[15px] inline-block ml-[15px] relative">
           <el-button type="primary" @click="addNewLigand()">添加新分子</el-button>
+          <Upload ref="addUploadRef" class="add-upload" inp_placeholder="上传" file_accept=".csv,.sdf" :is_slot="false" @uploadSuc="addNewLigandSuc" />
         </div>
       </div>
       <div v-show="tab === tab_list[1]" class="w-full">
@@ -155,7 +164,7 @@ onMounted(async () => {
       </div>
     </el-card>
     <BlcokTitle title="配体列表" />
-    <LiTable class="mt-[15px]" />
+    <LiTable v-model:data="ligandList" class="mt-[15px]" />
 
     <BlcokTitle title="分子叠合">
       <el-switch v-model="step2Form.showLigandOverlay" class="ml-[10px]" />
@@ -228,5 +237,12 @@ onMounted(async () => {
 .el-form-item {
   margin-bottom: 0px;
   margin-top: 15px;
+}
+.add-upload {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  visibility: hidden;
 }
 </style>

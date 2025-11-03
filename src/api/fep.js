@@ -97,3 +97,13 @@ export async function fetchFileAsBlob(url) {
   const res = await request.get(url, { params: { responseType: "blob" } });
   return res;
 }
+
+export function ligandUpload(data) {
+  return request.post(
+    `${apiV1}/ligand/parse/upload`,
+    { data },
+    {
+      headers: { "content-type": "multipart/form-data" }
+    }
+  );
+}
