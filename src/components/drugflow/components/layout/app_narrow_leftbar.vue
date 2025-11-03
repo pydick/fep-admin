@@ -218,7 +218,7 @@ export default {
           localStorage.removeItem("cs_is_staff");
           localStorage.removeItem("cs_user_info");
           localStorage.setItem("cs_signined", "false");
-          this.router_push({ name: "signin" });
+          this.router_push({ name: "login" });
         })
         .catch(() => {
           ElMessage.error(this.t("message.登出失败"));
