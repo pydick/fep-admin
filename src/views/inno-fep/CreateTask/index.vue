@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
 import { ref, provide, reactive } from "vue";
-import Protein3d from "./Protein3d/index.vue";
-import Ligand3d from "./Ligand3d/index.vue";
+import Protein3d from "@/views/inno-fep/components/Protein3d/index.vue";
+import Ligand3d from "@/views/inno-fep/components/Ligand3d/index.vue";
+import PerturbationGraph from "@/views/inno-fep/components/PerturbationGraph/index.vue";
 import ProteinPreprocess from "./ProteinPreprocess/index.vue";
 import LigandPreprocess from "./LigandPreprocess/index.vue";
 import CalculationParameters from "./CalculationParameters/index.vue";
 import CSstep from "@/components/CSstep/index.vue";
-import PerturbationGraph from "@/views/inno-fep/components/PerturbationGraph/index.vue";
 
 defineOptions({
   name: "CreateTask"
