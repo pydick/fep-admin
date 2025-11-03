@@ -4,7 +4,9 @@ import { ref, reactive, onMounted, inject } from "vue";
 import LiTable from "./LiTable/index.vue";
 import CSupload from "@/components/CSupload/index.vue";
 import PerturbationGraphDialog from "./PerGraphDialog/index.vue";
+import Data_select from "../components/DataSelect/index.vue";
 import { ossList } from "@/api/fep";
+const data_list = ref([]);
 defineOptions({
   name: "LigandPreprocess"
 });
@@ -27,6 +29,7 @@ const step2Form = reactive({
   mapType: "Star map",
   centerMolecule: "cpd1"
 });
+const showDataCenter = ref(false);
 
 taskFormData.step2Form = step2Form;
 
@@ -75,8 +78,15 @@ const exampleChoose = value => {
   console.log(value);
 };
 
-const show_dialog = value => {
-  console.log("show_dialog");
+const show_dialog = async (type?: string) => {
+  const res = await ossList({ ...ossListCommomParams });
+  if (res.success) {
+    data_list.value = res.data.objects.map(item => ({
+      dataset_id: item.key,
+      name: item.filename || item.key
+    }));
+    showDataCenter.value = true;
+  }
 };
 
 const handleAlign = () => {
@@ -85,6 +95,9 @@ const handleAlign = () => {
 
 const handleGenerateMap = () => {
   console.log("生成映射图");
+};
+const addNewLigand = () => {
+  console.log("添加新分子");
 };
 
 const perturbationGraphVisible = ref(false);
@@ -96,6 +109,10 @@ const uploadSuc = value => {
 };
 
 let exampleList = reactive<{ name: string; value: string }[]>([]);
+
+const sucessSure = ({ id }) => {
+  console.log(id);
+};
 
 onMounted(async () => {
   const res = await ossList({ ...ossListCommomParams, max_keys: 1 });
@@ -125,11 +142,14 @@ onMounted(async () => {
             <el-option v-for="item in exampleList" :key="item.value" :label="item.name" :value="item.value" />
           </el-select>
         </el-form-item>
+        <div class="pt-[15px] inline-block ml-[15px]">
+          <el-button type="primary" @click="addNewLigand()">添加新分子</el-button>
+        </div>
       </div>
       <div v-show="tab === tab_list[1]" class="w-full">
         <el-form-item label-width="0px" :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="ligandData">
-          <el-button class="w-full w_100" @click="show_dialog('protein')">
-            <el-input v-model="step2Form.ligandData" :input-style="{ textAlign: 'center' }" class="w-full" placeholder="数据中心导入pdb" readonly />
+          <el-button class="w-full w_100" @click="show_dialog()">
+            <el-input v-model="step2Form.ligandData" :input-style="{ textAlign: 'center' }" class="w-full" placeholder="数据中心导入ligand" readonly />
           </el-button>
         </el-form-item>
       </div>
@@ -183,6 +203,7 @@ onMounted(async () => {
       </div>
     </div>
     <PerturbationGraphDialog v-model:visible="perturbationGraphVisible" />
+    <Data_select v-model:if_show="showDataCenter" :data_list="data_list" name="配体数据中心" @custom-event="sucessSure" />
   </el-form>
 </template>
 
