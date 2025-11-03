@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import svgBox from "@drugflow/common/svgBox.vue";
+import SvgBox from "@/components/CSsvgbox/index.vue";
 defineOptions({
   name: "GraphNode"
 });
@@ -8,7 +8,7 @@ defineOptions({
 <template>
   <div class="node-container">
     <div class="text-center">
-      <svgBox class="svgBox w-[40px]! h-[40px]!" />
+      <SvgBox class="svgBox w-[40px]! h-[40px]!" />
     </div>
     <span class="label-text">c5</span>
   </div>

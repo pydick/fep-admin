@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import { tableData } from "./data";
 import { ElTag, ElButton } from "element-plus";
-import SvgBox from "@drugflow/common/svgBox.vue";
 
 const tableRef = ref();
 interface IProps {
@@ -74,7 +73,6 @@ const emptyText = ref("暂无数据");
       </template>
       <template #2dStructure="{ row }">
         <div v-if="row.structure" class="w-[70px] h-[50px] svg-container" v-html="row.structure" />
-        <!-- <SvgBox :smiles="row.structure" width="70" height="50" /> -->
       </template>
       <template #operation="{ row }">
         <el-button link type="primary" size="small" @click="handleDelete(row)">删除</el-button>

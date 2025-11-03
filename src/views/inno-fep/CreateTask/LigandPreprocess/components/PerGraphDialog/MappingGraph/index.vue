@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SvgBox from "@drugflow/common/svgBox.vue";
+import SvgBox from "@/components/CSsvgbox/index.vue";
 defineOptions({
   name: "MappingGraph"
 });

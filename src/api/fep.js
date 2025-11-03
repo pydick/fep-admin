@@ -107,3 +107,7 @@ export function ligandUpload(data) {
     }
   );
 }
+
+export function svgdraw(data) {
+  return request.post(`${apiV1}/ligand/svgdraw`, { data });
+}
