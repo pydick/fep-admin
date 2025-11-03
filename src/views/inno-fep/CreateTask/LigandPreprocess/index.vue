@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import BlcokTitle from "../../components/BlcokTitle/index.vue";
 import { ref, reactive, onMounted, inject } from "vue";
-import LiTable from "./LiTable/index.vue";
-import CSupload from "@/components/CSupload/index.vue";
-import PerturbationGraphDialog from "./PerGraphDialog/index.vue";
+import LiTable from "./components/LiTable/index.vue";
+import Upload from "./components/Upload/index.vue";
+import PerturbationGraphDialog from "./components/PerGraphDialog/index.vue";
 import Data_select from "../components/DataSelect/index.vue";
 import { ossList } from "@/api/fep";
 const data_list = ref([]);
@@ -135,7 +135,7 @@ onMounted(async () => {
       </el-radio-group>
       <div v-show="tab === tab_list[0]" class="dbid_input_box">
         <el-form-item ref="pdbid_url_ref" label-width="0px" prop="ligandId">
-          <CSupload inp_placeholder="上传" file_accept=".csv/sdf" :is_slot="false" @uploadSuc="uploadSuc" />
+          <Upload inp_placeholder="上传" file_accept=".csv/sdf" :is_slot="false" @uploadSuc="uploadSuc" />
         </el-form-item>
         <el-form-item prop="pdbid_select" label-width="0px" class="w-[120px]!">
           <el-select v-model="step2Form.example" placeholder="选择示例" @change="exampleChoose">
