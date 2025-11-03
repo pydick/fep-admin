@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Data_select from "../components/DataSelect/index.vue";
 import { inject, ref, reactive, onMounted } from "vue";
-import CSupload from "@/components/CSupload/index.vue";
+import Upload from "./components/Upload/index.vue";
 import CSspinner from "@/components/CSspinner/index.vue";
 import { check_pdb_api, datalists, basic_info } from "@/api/data";
 import { ossList, ossGetDownload, proteinInfo, componentsDelete, residueErrorFind, residueErrorFix, residueMissingFind, residueMissingFix } from "@/api/fep";
@@ -542,7 +542,7 @@ const handlePreprocess = async () => {
         </div>
         <div v-show="step1Form.input_tab === '上传文件'" class="">
           <el-form-item prop="protein_file" :rules="[{ required: true, message: '请上传蛋白pdb文件', trigger: 'submit' }]">
-            <CSupload inp_placeholder="上传" file_accept=".pdb" :is_slot="false" @uploadSuc="uploadSuc" />
+            <Upload inp_placeholder="上传" file_accept=".pdb" :is_slot="false" @uploadSuc="uploadSuc" />
           </el-form-item>
         </div>
         <div v-show="step1Form.input_tab === '数据中心'" class="">
