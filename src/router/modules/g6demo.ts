@@ -10,7 +10,8 @@ export default {
       name: "G6demo",
       component: () => import("@/views/g6demo/index.vue"),
       meta: {
-        title: "g6demo"
+        title: "g6demo",
+        showLink: false
       }
     }
   ]

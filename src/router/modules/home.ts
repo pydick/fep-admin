@@ -6,7 +6,7 @@ export default {
   path: "/",
   name: "Home",
   component: Layout,
-  redirect: "/welcome",
+  redirect: "/inno-fep/index",
   meta: {
     icon: "ep/home-filled",
     title: $t("menus.pureHome"),
@@ -19,7 +19,7 @@ export default {
       component: () => import("@/views/welcome/index.vue"),
       meta: {
         title: $t("menus.pureHome"),
-        showLink: VITE_HIDE_HOME === "true" ? false : true,
+        showLink: false,
         auths: ["permission:btn:add", "permission:btn:edit"]
       }
     }

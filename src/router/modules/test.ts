@@ -10,7 +10,8 @@ export default {
       name: "Test",
       component: () => import("@/views/test/index.vue"),
       meta: {
-        title: "test"
+        title: "test",
+        showLink: false
       }
     }
   ]

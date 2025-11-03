@@ -82,8 +82,8 @@ status:
   pureNoTodo: 暂无待办
 login:
   pureNoAccount: 没有帐户？
-  pureCreateAccount: 创建新帐户
-  pureSignin: 而是登录
+  pureCreateAccount: 去注册
+  pureSignin: 去登录
   pureUsername: 账号
   purePassword: 密码
   pureVerifyCode: 验证码
