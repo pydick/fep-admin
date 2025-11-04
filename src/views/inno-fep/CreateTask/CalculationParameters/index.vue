@@ -199,9 +199,4 @@ const handleSubmit = () => {
 :deep(.el-form-item) {
   margin-bottom: 15px;
 }
-
-:deep(.el-table) {
-  border: 1px solid var(--el-border-color);
-  border-radius: 4px;
-}
 </style>

@@ -4,16 +4,14 @@ import CScard from "@/components/CScard/index.vue";
 import CStab from "@/components/CStab/index.vue";
 import CreateTask from "./CreateTask/index.vue";
 import RecentResult from "./RecentResult/index.vue";
+import { tabListEnum } from "./const";
 import { ref, reactive } from "vue";
 defineOptions({
   name: "Inno-Fep"
 });
 
-const tabList = reactive<{ label: string; name: string }[]>([
-  { label: "创建任务", name: "createTask" },
-  { label: "最近结果", name: "recentResult" }
-]);
-const activeName = ref(tabList[0].name);
+const tabList = reactive<{ label: string; name: string }[]>(tabListEnum);
+const activeName = ref(tabList[1].name);
 const handleTabClick = (name: string) => {
   console.log(name);
 };
@@ -30,7 +28,7 @@ const handleTabClick = (name: string) => {
           <CreateTask />
         </template>
         <template #recentResult>
-          <RecentResult />
+          <RecentResult v-model:activeName="activeName" />
         </template>
       </CStab>
     </template>

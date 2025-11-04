@@ -114,3 +114,8 @@ export function svgdraw(data) {
 export function getPerturbationGraphData(data) {
   return request.post(`${apiV1}/ligand/perturbation-graph`, { data });
 }
+
+// mock
+export function refresh_task() {
+  return request.get(`/api/jobs/15337/args`);
+}
