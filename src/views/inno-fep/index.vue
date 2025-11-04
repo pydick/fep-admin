@@ -25,10 +25,10 @@ const handleTabClick = (name: string) => {
     <template #content>
       <CStab v-model:activeName="activeName" :tabList="tabList" @tabClcik="handleTabClick">
         <template #createTask>
-          <CreateTask />
+          <CreateTask v-if="activeName === tabListEnum[0].name" />
         </template>
         <template #recentResult>
-          <RecentResult v-model:activeName="activeName" />
+          <RecentResult v-if="activeName === tabListEnum[1].name" v-model:activeName="activeName" />
         </template>
       </CStab>
     </template>
