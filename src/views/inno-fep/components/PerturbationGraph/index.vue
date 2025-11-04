@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { onMounted, ref, onUnmounted, reactive, h, nextTick } from "vue";
 import { Graph, GraphOptions, NodeOptions, EdgeOptions } from "@antv/g6";
-import GraphNode from "./GraphNode/index.vue";
+import GraphNode from "./components/GraphNode/index.vue";
 import { throttle } from "@pureadmin/utils";
 import { pxToRemPx } from "@/utils/rem";
 import { cloneDeep } from "@pureadmin/utils";
 import { ElMessage } from "element-plus";
 import { getPerturbationGraphData } from "@/api/fep";
+
+import { register, ExtensionCategory } from "@antv/g6";
+import { CustomToolbarPlugin } from "./plugins/CustomToolbarPlugin/index";
+register(ExtensionCategory.PLUGIN, "custom-toolbar", CustomToolbarPlugin);
 defineOptions({
   name: "PerturbationGraph"
 });
@@ -195,7 +199,6 @@ const plugins = reactive([
 ]);
 const nodeConfig = reactive({
   style: {
-    size: [pxToRemPx(70), pxToRemPx(70)],
     radius: 8,
     labelText: (d: any) => d.data?.label || d.label,
     labelFontSize: 12,
@@ -306,7 +309,8 @@ const handleNodes = nodes => {
       id: node.id,
       type: "vue-node",
       style: {
-        component: () => h(GraphNode, { data: Object.assign({}, GraphNodeData) })
+        component: () => h(GraphNode, { data: Object.assign({}, GraphNodeData) }),
+        size: [pxToRemPx(70), pxToRemPx(70)]
       }
     };
   });
