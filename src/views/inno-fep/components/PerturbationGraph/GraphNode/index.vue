@@ -1,16 +1,27 @@
 <script setup lang="ts">
 import SvgBox from "@/components/CSsvgbox/index.vue";
+import { onMounted } from "vue";
 defineOptions({
   name: "GraphNode"
+});
+
+interface Props {
+  data?: {
+    smiles: string;
+    name: string;
+  };
+}
+const props = withDefaults(defineProps<Props>(), {
+  data: () => ({ smiles: "", name: "" })
 });
 </script>
 
 <template>
   <div class="node-container">
     <div class="text-center">
-      <SvgBox class="svgBox w-[40px]! h-[40px]!" />
+      <SvgBox :smiles="data.smiles" class="svgBox w-[40px]! h-[40px]!" />
     </div>
-    <span class="label-text">c5</span>
+    <span class="label-text">{{ data.name }}</span>
   </div>
 </template>
 

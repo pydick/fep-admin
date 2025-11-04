@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref, onUnmounted } from "vue";
-import { Graph } from "@antv/g6";
+import { onMounted, ref, onUnmounted, reactive, h, nextTick } from "vue";
+import { Graph, GraphOptions, NodeOptions, EdgeOptions } from "@antv/g6";
 import GraphNode from "./GraphNode/index.vue";
-import { h, nextTick } from "vue";
 import { throttle } from "@pureadmin/utils";
 import { pxToRemPx } from "@/utils/rem";
 import { cloneDeep } from "@pureadmin/utils";
 import { ElMessage } from "element-plus";
+import { getPerturbationGraphData } from "@/api/fep";
 defineOptions({
   name: "PerturbationGraph"
 });
@@ -29,253 +29,220 @@ const props = withDefaults(defineProps<Iprops>(), {
   height: "500px"
 });
 
-const initialData = {
-  nodes: [
-    {
-      id: "c",
-      type: "vue-node",
-      style: {
-        component: () => h(GraphNode)
-      }
-    },
-    {
-      id: "c1",
-      type: "vue-node",
-      style: {
-        component: () => h(GraphNode)
-      }
-    },
-    {
-      id: "c2",
-      type: "vue-node",
-      style: {
-        component: () => h(GraphNode)
-      }
-    },
-    {
-      id: "c3",
-      type: "vue-node",
-      style: {
-        component: () => h(GraphNode)
-      }
-    },
-    {
-      id: "c4",
-      type: "vue-node",
-      style: {
-        component: () => h(GraphNode)
-      }
-    },
-    {
-      id: "c5",
-      type: "vue-node",
-      style: {
-        component: () => h(GraphNode)
-      }
-    }
-  ],
-  edges: [
-    {
-      id: "edge1",
-      source: "c",
-      target: "c1",
-      label: "0.008"
-    },
-    {
-      id: "edge2",
-      source: "c",
-      target: "c2",
-      label: "0.01"
-    },
-    {
-      id: "edge3",
-      source: "c",
-      target: "c3",
-      label: "0.01"
-    },
-    {
-      id: "edge4",
-      source: "c",
-      target: "c4",
-      label: "0.01"
-    },
-    {
-      id: "edge5",
-      source: "c",
-      target: "c5",
-      label: "0.008"
-    }
-  ]
+const unitRadius = ref(0);
+// 当前数据改为响应式
+const graphData = reactive({
+  nodes: [],
+  edges: []
+});
+// 用于保存初始数据快照（用于重置）
+let initialGraphData = {
+  nodes: [],
+  edges: []
 };
 
-// 深拷贝初始数据用于重置（保留函数属性）
-const getInitialData = () => {
-  return cloneDeep(initialData);
-};
+const edgeCount = ref(0);
 
-// 当前数据
-const data = getInitialData();
+const plugins = reactive([
+  {
+    type: "toolbar",
+    getItems: () => [
+      { id: "zoom-in", value: "zoom-in" },
+      { id: "zoom-out", value: "zoom-out" },
+      { id: "auto-fit", value: "auto-fit" },
+      { id: "reset", value: "reset" }
+    ],
+    onClick: value => {
+      // 放大操作
+      if (value === "zoom-in") {
+        const currentZoom = graph.getZoom(); // 获取当前缩放比例
+        const zoomFactor = 1.1; // 放大倍数（每次放大10%）
+        const maxZoom = 1.6; // 最大缩放限制（160%）
+        const newZoom = currentZoom * zoomFactor; // 计算放大后的新缩放值
 
-// 用于响应式更新边数
-const edgeCount = ref(data.edges.length);
+        // 如果放大后会超过最大限制
+        if (newZoom > maxZoom) {
+          // 如果当前已经达到或超过最大缩放，则不执行任何操作
+          if (currentZoom >= maxZoom) {
+            return;
+          }
+          // 否则，计算并应用刚好达到最大缩放的缩放比例
+          const targetZoom = maxZoom / currentZoom;
+          graph.zoomBy(targetZoom);
+        } else {
+          // 如果放大后仍在限制范围内，正常放大
+          graph.zoomBy(zoomFactor);
+        }
+      }
+      // 缩小操作
+      else if (value === "zoom-out") {
+        const currentZoom = graph.getZoom(); // 获取当前缩放比例
+        const zoomFactor = 0.9; // 缩小倍数（每次缩小10%）
+        const minZoom = 0.8; // 最小缩放限制（80%）
+        const newZoom = currentZoom * zoomFactor; // 计算缩小后的新缩放值
+
+        // 如果缩小后仍在最小限制之上
+        if (newZoom >= minZoom) {
+          // 正常缩小
+          graph.zoomBy(zoomFactor);
+        } else {
+          // 如果缩小后会低于最小限制
+          // 如果当前已经达到或低于最小缩放，则不执行任何操作
+          if (currentZoom <= minZoom) {
+            return;
+          }
+          // 否则，计算并应用刚好达到最小缩放的缩放比例
+          const targetZoom = minZoom / currentZoom;
+          graph.zoomBy(targetZoom);
+        }
+      } else if (value === "auto-fit") {
+        graph.fitCenter();
+      } else if (value === "reset") {
+        currentHighlightedEdge.value = null;
+        graph.setData(initialGraphData);
+        graph.zoomTo(1);
+        graph.render();
+        edgeCount.value = initialGraphData.edges.length;
+      }
+    }
+  },
+  {
+    type: "contextmenu",
+    enable: e => e.targetType === "edge",
+    getItems: () => {
+      return [{ name: "断开连接", value: "disconnect" }];
+    },
+    onClick: (value, target, current) => {
+      if (!graph || !target || !current) return;
+      if (value === "disconnect") {
+        const edgeId = current.id;
+        if (currentHighlightedEdge.value === edgeId) {
+          currentHighlightedEdge.value = null;
+        }
+        graph.removeEdgeData([edgeId]);
+        graph.draw();
+        edgeCount.value = graph.getEdgeData()?.length || 0;
+      }
+
+      if (sourceNodeId.value) {
+        sourceNodeId.value = null; // 取消源节点的选中状态
+      }
+    }
+  },
+  {
+    type: "contextmenu",
+    enable: e => e.targetType === "node", // 只对节点触发右键菜单
+    getItems: e => {
+      const nodeId = e.target.id;
+      return [{ name: sourceNodeId.value ? "选择目标节点" : "选择源节点", value: "selectNode", nodeId }];
+    },
+    onClick: (value, target, current) => {
+      if (!graph || !target || !current) return;
+      const nodeId = current.id;
+
+      if (value === "selectNode") {
+        // 第一次点击
+        if (!sourceNodeId.value) {
+          sourceNodeId.value = nodeId;
+          graph.updateNodeData([
+            {
+              id: nodeId,
+              style: { fill: "#FF5733" } // 高亮源节点
+            }
+          ]);
+          console.log(`Source node selected: ${nodeId}`);
+        } else {
+          if (sourceNodeId.value === nodeId) {
+            ElMessage.warning("源节点和目标节点不能相同！");
+            if (sourceNodeId.value) sourceNodeId.value = null;
+            return;
+          }
+          const edgeData = graph.getEdgeData();
+          // 检查源节点和目标节点之间是否已有边
+          const existingEdge = edgeData.find(edge => (edge.source === sourceNodeId.value && edge.target === nodeId) || (edge.source === nodeId && edge.target === sourceNodeId.value));
+          if (existingEdge) {
+            ElMessage.warning("源节点和目标节点之间已有边！");
+            if (sourceNodeId.value) sourceNodeId.value = null;
+            return;
+          }
+          // 第二次点击，设置目标节点，添加边
+          const edgeId = `edge${edgeData.length + 1}-${Date.now()}`;
+          const newEdge = {
+            id: edgeId,
+            source: sourceNodeId.value,
+            target: nodeId,
+            label: "0.01"
+          };
+
+          // 添加新边到图形
+          edgeData.push(newEdge);
+          graph.addEdgeData([newEdge]);
+          edgeCount.value = edgeData.length;
+          // 清除源节点高亮，并重置源节点
+          graph.updateNodeData([
+            {
+              id: graph.getNodeData(sourceNodeId.value).id,
+              style: { fill: "#ffffff" }
+            }
+          ]);
+          sourceNodeId.value = null;
+          console.log(`Edge added: ${sourceNodeId.value} -> ${nodeId}`);
+        }
+        graph.draw();
+      }
+    }
+  }
+]);
+const nodeConfig = reactive({
+  style: {
+    size: [pxToRemPx(70), pxToRemPx(70)],
+    radius: 8,
+    labelText: (d: any) => d.data?.label || d.label,
+    labelFontSize: 12,
+    labelFill: "#000000",
+    fill: (d: any) => d.style?.fill || "#ffffff",
+    stroke: (d: any) => d.style?.stroke || "#666666",
+    lineWidth: (d: any) => d.style?.lineWidth || 2
+  }
+});
+
+const edgeConfig = reactive({
+  style: {
+    labelText: (d: any) => d.label,
+    labelFontSize: 14,
+    labelFill: (d: any) => d.style?.labelFill || "#606266",
+    labelBackgroundOpacity: (d: any) => d.style?.labelBackgroundOpacity ?? 0.1,
+    stroke: (d: any) => d.style?.stroke || "#cccccc",
+    lineWidth: (d: any) => d.style?.lineWidth || 3,
+    endArrow: true,
+    cursor: "pointer"
+  }
+});
+
+const layoutConfig = reactive({
+  type: "radial",
+  unitRadius: unitRadius.value,
+  linkDistance: 250
+});
 
 const initGraph = () => {
   if (!containerRef.value) return;
   const width = containerRef.value.clientWidth;
   const height = containerRef.value.clientHeight;
-  const radius = (Math.min(width, height) / 2) * 0.75;
-  console.log(width, height, radius);
+  unitRadius.value = (Math.min(width, height) / 2) * 0.75;
   graph = new Graph({
     container: containerRef.value,
-    width: containerRef.value.clientWidth,
-    height: containerRef.value.clientHeight,
+    width: containerRef.value?.clientWidth || 300,
+    height: containerRef.value?.clientHeight || 300,
     behaviors: ["drag-canvas", "zoom-canvas", "drag-element"],
     autoFit: {
       type: "center"
     },
-    data,
-    plugins: [
-      {
-        type: "toolbar",
-        getItems: () => [
-          { id: "zoom-in", value: "zoom-in" },
-          { id: "zoom-out", value: "zoom-out" },
-          { id: "auto-fit", value: "auto-fit" },
-          { id: "reset", value: "reset" }
-        ],
-        onClick: value => {
-          if (value === "zoom-in") {
-            graph.zoomTo(1.1);
-          } else if (value === "zoom-out") {
-            graph.zoomTo(0.9);
-          } else if (value === "auto-fit") {
-            graph.fitView();
-          } else if (value === "reset") {
-            currentHighlightedEdge.value = null;
-            // 重置数据到初始状态
-            const resetData = getInitialData();
-            graph.setData(resetData);
-            graph.render();
-            edgeCount.value = resetData.edges.length;
-          }
-        }
-      },
-      {
-        type: "contextmenu",
-        enable: e => e.targetType === "edge",
-        getItems: () => {
-          return [{ name: "断开连接", value: "disconnect" }];
-        },
-        onClick: (value, target, current) => {
-          if (!graph || !target || !current) return;
-          if (value === "disconnect") {
-            const edgeId = current.id;
-            if (currentHighlightedEdge.value === edgeId) {
-              currentHighlightedEdge.value = null;
-            }
-            graph.removeEdgeData([edgeId]);
-            graph.draw();
-            edgeCount.value = graph.getEdgeData()?.length || 0;
-          }
-
-          if (sourceNodeId.value) {
-            sourceNodeId.value = null; // 取消源节点的选中状态
-          }
-        }
-      },
-      {
-        type: "contextmenu",
-        enable: e => e.targetType === "node", // 只对节点触发右键菜单
-        getItems: e => {
-          const nodeId = e.target.id;
-          return [{ name: sourceNodeId.value ? "选择目标节点" : "选择源节点", value: "selectNode", nodeId }];
-        },
-        onClick: (value, target, current) => {
-          if (!graph || !target || !current) return;
-          const nodeId = current.id;
-
-          if (value === "selectNode") {
-            // 第一次点击
-            if (!sourceNodeId.value) {
-              sourceNodeId.value = nodeId;
-              graph.updateNodeData([
-                {
-                  id: nodeId,
-                  style: { fill: "#FF5733" } // 高亮源节点
-                }
-              ]);
-              console.log(`Source node selected: ${nodeId}`);
-            } else {
-              if (sourceNodeId.value === nodeId) {
-                ElMessage.warning("源节点和目标节点不能相同！");
-                if (sourceNodeId.value) sourceNodeId.value = null;
-                return;
-              }
-              const edgeData = graph.getEdgeData();
-              // 检查源节点和目标节点之间是否已有边
-              const existingEdge = edgeData.find(edge => (edge.source === sourceNodeId.value && edge.target === nodeId) || (edge.source === nodeId && edge.target === sourceNodeId.value));
-              if (existingEdge) {
-                ElMessage.warning("源节点和目标节点之间已有边！");
-                if (sourceNodeId.value) sourceNodeId.value = null;
-                return;
-              }
-              // 第二次点击，设置目标节点，添加边
-              const edgeId = `edge${edgeData.length + 1}-${Date.now()}`;
-              const newEdge = {
-                id: edgeId,
-                source: sourceNodeId.value,
-                target: nodeId,
-                label: "0.01"
-              };
-
-              // 添加新边到图形
-              edgeData.push(newEdge);
-              graph.addEdgeData([newEdge]);
-              edgeCount.value = edgeData.length;
-              // 清除源节点高亮，并重置源节点
-              graph.updateNodeData([
-                {
-                  id: graph.getNodeData(sourceNodeId.value).id,
-                  style: { fill: "#ffffff" }
-                }
-              ]);
-              sourceNodeId.value = null;
-              console.log(`Edge added: ${sourceNodeId.value} -> ${nodeId}`);
-            }
-            graph.draw();
-          }
-        }
-      }
-    ],
-    node: {
-      style: {
-        size: [pxToRemPx(70), pxToRemPx(70)],
-        radius: 8,
-        labelText: (d: any) => d.data?.label || d.label,
-        labelFontSize: 12,
-        labelFill: "#000000",
-        fill: (d: any) => d.style?.fill || "#ffffff",
-        stroke: (d: any) => d.style?.stroke || "#666666",
-        lineWidth: (d: any) => d.style?.lineWidth || 2
-      }
-    },
-    edge: {
-      style: {
-        labelText: (d: any) => d.label,
-        labelFontSize: 14,
-        labelFill: (d: any) => d.style?.labelFill || "#606266",
-        labelBackgroundOpacity: (d: any) => d.style?.labelBackgroundOpacity ?? 0.1,
-        stroke: (d: any) => d.style?.stroke || "#cccccc",
-        lineWidth: (d: any) => d.style?.lineWidth || 3,
-        endArrow: true,
-        cursor: "pointer"
-      }
-    },
-    layout: {
-      type: "radial",
-      unitRadius: radius,
-      linkDistance: 250
-    }
+    data: graphData,
+    plugins,
+    node: nodeConfig,
+    edge: edgeConfig,
+    layout: layoutConfig
   });
   graph.render();
 
@@ -325,17 +292,60 @@ const handleResize = throttle(() => {
     const width = containerRef.value.clientWidth;
     const height = containerRef.value.clientHeight;
     graph.resize(width, height);
-    // graph.fitView();
   }
 }, 200);
+
+const handleNodes = nodes => {
+  console.log(nodes);
+  const finalNodes = nodes.map(node => {
+    let GraphNodeData = {
+      smiles: node.smiles,
+      name: node.id
+    };
+    return {
+      id: node.id,
+      type: "vue-node",
+      style: {
+        component: () => h(GraphNode, { data: Object.assign({}, GraphNodeData) })
+      }
+    };
+  });
+
+  graphData.nodes = finalNodes;
+};
+const handleEdges = edges => {
+  console.log(edges);
+  const finalEdges = edges.map((edge, index) => {
+    return {
+      id: edge.index,
+      source: edge.source,
+      target: edge.target,
+      label: `${edge.ecr}`
+    };
+  });
+  graphData.edges = finalEdges;
+};
 
 onMounted(async () => {
   if (props.isDialogEnter) {
     await nextTick();
   }
-  if (containerRef.value) {
-    initGraph();
-    window.addEventListener("resize", handleResize);
+  const data = {
+    smiles: "CC(=O)O"
+  };
+  const res = await getPerturbationGraphData(data);
+  if (res.success) {
+    console.log(res.data);
+    handleNodes(res.data.nodes);
+    handleEdges(res.data.links);
+    edgeCount.value = res.data.links.length;
+    Object.assign(initialGraphData, cloneDeep(graphData));
+    if (containerRef.value) {
+      initGraph();
+      window.addEventListener("resize", handleResize);
+    }
+  } else {
+    ElMessage.error(res.message);
   }
 });
 
