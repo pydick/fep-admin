@@ -39,7 +39,10 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 </script>
 
 <template>
-  <el-tabs v-model="innerActiveName" :type="type" class="h-full cs-tabs" @tab-click="handleClick">
+  <el-tabs v-model="innerActiveName" addable :type="type" class="h-full cs-tabs tab-container" @tab-click="handleClick">
+    <template v-if="$slots.addIcon" #add-icon>
+      <slot name="addIcon" />
+    </template>
     <el-tab-pane v-for="item in tabList" :key="item.name" :label="item.label" :name="item.name">
       <slot :name="item.name" />
     </el-tab-pane>
@@ -49,5 +52,11 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 <style lang="scss" scoped>
 :deep(.el-tab-pane) {
   height: 100%;
+}
+.tab-container {
+  position: relative;
+}
+:deep(.el-tabs__new-tab) {
+  width: auto !important;
 }
 </style>

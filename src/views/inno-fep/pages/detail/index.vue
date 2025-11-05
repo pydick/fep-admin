@@ -5,7 +5,10 @@ import Ligand3d from "@/views/inno-fep/components/Ligand3d/index.vue";
 import CStab from "@/components/CStab/index.vue";
 import Pairs from "./Pairs/index.vue";
 import Ligand from "./Ligand/index.vue";
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
+import { Filter, Setting } from "@element-plus/icons-vue";
+import FilterDrawer from "./FilterDrawer/index.vue";
+import { mockData1 } from "./data";
 defineOptions({
   name: "Inno-Fep-Detail"
 });
@@ -14,6 +17,56 @@ const tabList = reactive([
   { label: "Ligand", name: "Ligand" }
 ]);
 const activeName = ref(tabList[1].name);
+const isCollect = ref(false);
+const if_show_filter = ref(false);
+const histogram_data_all = ref([]);
+const cascadOptions = ref([]);
+const score_name_dict = {
+  vina: "Vina",
+  vina_gpu: "Vina",
+  IGN: "IGN",
+  RTMS: "RTMScore",
+  vinardo: "Vinardo",
+  plp: "Plp",
+  chemplp: "ChemPlp",
+  plp95: "Plp95",
+  ad4: "AutoDock 4",
+  carsidock: "CarsiScore",
+  karmadock: "KarmaScore"
+};
+const default_list = ref([]);
+const residue_list = ref([]);
+
+const change_table_filter = dict => {
+  console.log("change_table_filter");
+};
+
+onMounted(() => {
+  histogram_data_all.value = mockData1.compute.aggregations.histogram;
+  for (let i = 0; i < mockData1.compute.aggregations.histogram?.residues.length; i++) {
+    residue_list.value.push({
+      id: i,
+      name: mockData1.compute.aggregations.histogram.residues[i],
+      selected: false
+    });
+  }
+  Object.keys(mockData1.compute.aggregations.histogram).map(key => {
+    if (key !== "residues") {
+      default_list.value.push(key);
+      if (key === "affinity") {
+        cascadOptions.value.push({
+          value: key,
+          label: score_name_dict[mockData1.args.docking.scoring_function]
+        });
+      } else {
+        cascadOptions.value.push({
+          value: key,
+          label: score_name_dict[key]
+        });
+      }
+    }
+  });
+});
 </script>
 
 <template>
@@ -21,7 +74,12 @@ const activeName = ref(tabList[1].name);
     <el-row :gutter="15" class="h-full">
       <el-col :span="12">
         <div class="left-container h-full">
-          <div class="left-block1 h-[110px]" />
+          <BlcokTitle title="分析列表">
+            <div class="inline-block flex-1 text-right">
+              <el-button type="primary">相关性分析</el-button>
+              <el-button type="primary">结果分析</el-button>
+            </div>
+          </BlcokTitle>
           <div class="left-block2 pt-[15px]">
             <CStab v-model:activeName="activeName" :tabList="tabList">
               <template #Pairs>
@@ -30,13 +88,27 @@ const activeName = ref(tabList[1].name);
               <template #Ligand>
                 <Ligand />
               </template>
+              <template #addIcon>
+                <div class="extra-container">
+                  <el-checkbox v-model="isCollect" label="收藏" size="large" />
+                  <el-tooltip content="高级筛选" placement="top" effect="light">
+                    <el-icon :size="20" class="ml-[15px]!" @click="if_show_filter = !if_show_filter">
+                      <Setting />
+                    </el-icon>
+                  </el-tooltip>
+                  <el-tooltip content="显示/隐藏列" placement="top" effect="light">
+                    <el-icon :size="20" class="ml-[15px]!">
+                      <Filter />
+                    </el-icon>
+                  </el-tooltip>
+                </div>
+              </template>
             </CStab>
           </div>
         </div>
       </el-col>
       <el-col :span="12">
         <div class="right-container h-full">
-          <div class="right-block1 h-[110px]" />
           <div class="right-block2 h-[calc(100%-110px)]!">
             <div v-if="activeName === 'Pairs'" class="h-full">
               <BlcokTitle title="微扰图" class="pb-[15px]">
@@ -62,6 +134,7 @@ const activeName = ref(tabList[1].name);
         </div>
       </el-col>
     </el-row>
+    <FilterDrawer v-model:if_show="if_show_filter" :array="histogram_data_all" :cascadOptions="cascadOptions" :need_cascad="false" :default_list="default_list" :residue_list="residue_list" data_type="docking" @change_table_for_filter="change_table_filter" />
   </div>
 </template>
 
@@ -88,5 +161,16 @@ const activeName = ref(tabList[1].name);
       flex: 1;
     }
   }
+}
+.extra-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  // width: 200px;
+  height: 40px;
+  line-height: 40px;
+  display: flex;
+  align-items: center;
+  padding-right: 15px;
 }
 </style>

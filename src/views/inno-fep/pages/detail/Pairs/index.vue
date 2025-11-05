@@ -133,8 +133,8 @@ const handleInfo = (row: any) => {
 </script>
 
 <template>
-  <div class="pairs-container">cell-class-name="h-[60px]"
-    <pure-table :data="pairsData" :columns="pairsColumns" class="m-pure-table-fit flex-1" >
+  <div class="pairs-container">
+    <pure-table :data="pairsData" :columns="pairsColumns" class="m-pure-table-fit flex-1" cell-class-name="h-[60px]">
       <template #confidence="{ row }">
         <span v-if="row.confidence" :class="['confidence-text', `confidence-${row.confidence.toLowerCase()}`]">
           {{ row.confidence }}
