@@ -97,3 +97,23 @@
 *:hover {
   scrollbar-color: rgba(144, 147, 153, 0.5) transparent;
 }
+
+.m-pure-table-fit {
+  :deep(.el-table--fit) {
+    height: 100%;
+  }
+}
+
+.star-icon-btn {
+  font-size: 18px !important;
+  color: #909399;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    color: #409eff;
+  }
+  &.is-favorite {
+    color: #409eff;
+  }
+}

@@ -117,7 +117,7 @@ const dialogOptions = ref({
 
 <template>
   <div class="recentresult-container">
-    <pure-table :data="taskData" :columns="taskColumns" class="m-pure-table flex-1">
+    <pure-table :data="taskData" :columns="taskColumns" class="m-pure-table-fit flex-1">
       <template #opreate="{ row }">
         <el-tooltip content="去创建任务" placement="top" effect="light">
           <el-button :icon="RefreshRight" circle plain @click="gotoCreateTask" />
@@ -170,11 +170,6 @@ const dialogOptions = ref({
   display: flex;
   flex-direction: column;
   height: 100%;
-  .m-pure-table {
-    :deep(.el-table--fit) {
-      height: 100%;
-    }
-  }
 }
 </style>
 <style lang="scss">
