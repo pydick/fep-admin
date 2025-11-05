@@ -8,7 +8,7 @@ export default {
     {
       path: "/inno-fep/index",
       name: "Inno-Fep",
-      component: () => import("@/views/inno-fep/index.vue"),
+      component: () => import("@/views/inno-fep/pages/home/index.vue"),
       meta: {
         title: "inno-fep"
       }
@@ -16,7 +16,7 @@ export default {
     {
       path: "/inno-fep/detail",
       name: "Inno-Fep-Detail",
-      component: () => import("@/views/inno-fep/detail.vue"),
+      component: () => import("@/views/inno-fep/pages/detail/index.vue"),
       meta: {
         title: "inno-fep-detail",
         showLink: false

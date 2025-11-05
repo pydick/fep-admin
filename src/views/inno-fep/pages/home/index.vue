@@ -4,7 +4,7 @@ import CScard from "@/components/CScard/index.vue";
 import CStab from "@/components/CStab/index.vue";
 import CreateTask from "./CreateTask/index.vue";
 import RecentResult from "./RecentResult/index.vue";
-import { tabListEnum } from "./const";
+import { tabListEnum } from "@/views/inno-fep/const";
 import { ref, reactive } from "vue";
 defineOptions({
   name: "Inno-Fep"

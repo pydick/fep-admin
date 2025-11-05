@@ -7,7 +7,7 @@ import { check_pdb_api, datalists, basic_info } from "@/api/data";
 import { ossList, ossGetDownload, proteinInfo, componentsDelete, residueErrorFind, residueErrorFix, residueMissingFind, residueMissingFix } from "@/api/fep";
 import { binaryToUploadFile } from "@/utils/common";
 import { ElLoading, ElMessage } from "element-plus";
-import BlockTitle from "../../components/BlcokTitle/index.vue";
+import BlockTitle from "@/views/inno-fep/components/BlcokTitle/index.vue";
 import { clone } from "@pureadmin/utils";
 
 import { debounce } from "@pureadmin/utils";

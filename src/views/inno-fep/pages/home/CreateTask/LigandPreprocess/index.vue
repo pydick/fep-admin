@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BlcokTitle from "../../components/BlcokTitle/index.vue";
+import BlcokTitle from "@/views/inno-fep/components/BlcokTitle/index.vue";
 import { ref, reactive, onMounted, inject } from "vue";
 import LiTable from "./components/LiTable/index.vue";
 import Upload from "./components/Upload/index.vue";
