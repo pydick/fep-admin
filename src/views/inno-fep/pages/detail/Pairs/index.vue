@@ -107,7 +107,8 @@ const pairsColumns = [
     align: "center",
     prop: "operation",
     width: 80,
-    slot: "operation"
+    slot: "operation",
+    fixed: "right"
   }
 ];
 
