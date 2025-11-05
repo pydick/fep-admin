@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import DetailIcon from "@/assets/svg/detail.svg?component";
+import DetailIcon from "@/assets/svg/detail.svg";
 import { useRouter } from "vue-router";
 import ParameterDialog from "./components/ParameterDialog/index.vue";
 import { Delete, InfoFilled, RefreshRight, WarningFilled, Close } from "@element-plus/icons-vue";
@@ -33,7 +33,6 @@ const taskData = ref([
 const taskColumns = [
   {
     type: "selection",
-    align: "left",
     width: 50,
     align: "center"
   },
@@ -117,7 +116,7 @@ const dialogOptions = ref({
 
 <template>
   <div class="recentresult-container">
-    <pure-table :data="taskData" :columns="taskColumns" class="m-pure-table-fit flex-1">
+    <pure-table :data="taskData" :columns="taskColumns" class="m-pure-table-fit flex-1" cell-class-name="h-[60px]">
       <template #opreate="{ row }">
         <el-tooltip content="去创建任务" placement="top" effect="light">
           <el-button :icon="RefreshRight" circle plain @click="gotoCreateTask" />

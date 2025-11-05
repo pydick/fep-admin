@@ -65,14 +65,14 @@ const emptyText = ref("暂无数据");
 
 <template>
   <div class="li-table-wrapper">
-    <pure-table ref="tableRef" :data="props.data" :columns="columns" border :empty-text="emptyText" @selection-change="handleSelectionChange">
+    <pure-table ref="tableRef" :data="props.data" :columns="columns" border :empty-text="emptyText" cell-class-name="h-[60px]" @selection-change="handleSelectionChange">
       <template #status="{ row }">
         <el-tag v-if="row.status === 'success'" type="success" effect="plain">成功</el-tag>
         <el-tag v-else-if="row.status === 'warning'" type="warning" effect="plain">警告</el-tag>
         <el-tag v-else type="danger" effect="plain">失败</el-tag>
       </template>
       <template #2dStructure="{ row }">
-        <div v-if="row.structure" class="w-[70px] h-[50px] svg-container" v-html="row.structure" />
+        <div v-if="row.structure" class="structure-container w-[42px] h-[42px]" v-html="row.structure" />
       </template>
       <template #operation="{ row }">
         <el-button link type="primary" size="small" @click="handleDelete(row)">删除</el-button>
@@ -89,16 +89,6 @@ const emptyText = ref("暂无数据");
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  .svg-container {
-    margin: 0 auto;
-    :deep(svg) {
-      width: 100% !important;
-      height: 100% !important;
-      & > rect:first-of-type {
-        fill: transparent !important;
-      }
-    }
   }
 }
 </style>

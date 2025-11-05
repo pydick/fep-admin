@@ -117,3 +117,14 @@
     color: #409eff;
   }
 }
+.structure-container {
+  margin: 0 auto;
+  svg {
+    width: 100% !important;
+    height: 100% !important;
+
+    &>rect:first-of-type {
+      fill: transparent !important;
+    }
+  }
+}

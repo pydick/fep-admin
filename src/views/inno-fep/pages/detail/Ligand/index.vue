@@ -112,7 +112,7 @@ onMounted(() => {
 
 <template>
   <div class="ligand-container">
-    <pure-table ref="tableRef" :data="ligandData" :columns="ligandColumns" class="m-pure-table-fit flex-1">
+    <pure-table ref="tableRef" :data="ligandData" :columns="ligandColumns" class="m-pure-table-fit flex-1" cell-class-name="h-[60px]">
       <template #operation="{ row }">
         <div class="operation-buttons">
           <el-icon class="star-icon-btn" :class="{ 'is-favorite': row.isFavorite }" @click="handleFavorite(row)">
@@ -122,7 +122,7 @@ onMounted(() => {
         </div>
       </template>
       <template #structure="{ row }">
-        <div class="structure-container" v-html="row.structure" />
+        <div class="structure-container w-[42px] h-[42px]" v-html="row.structure" />
       </template>
     </pure-table>
     <div class="pt-[15px]">
@@ -145,17 +145,17 @@ onMounted(() => {
   gap: 12px;
 }
 
-.structure-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 60px;
-  margin: 0 auto;
+// .structure-container {
+//   width: 70px;
+//   height: 50px;
+//   margin: 0 auto;
+//   :deep(svg) {
+//     width: 100% !important;
+//     height: 100% !important;
 
-  :deep(svg) {
-    max-width: 100%;
-    max-height: 100%;
-  }
-}
+//     & > rect:first-of-type {
+//       fill: transparent !important;
+//     }
+//   }
+// }
 </style>
