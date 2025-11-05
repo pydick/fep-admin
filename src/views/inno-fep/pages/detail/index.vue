@@ -9,6 +9,7 @@ import { ref, reactive, onMounted } from "vue";
 import { Filter, Setting } from "@element-plus/icons-vue";
 import FilterDrawer from "./FilterDrawer/index.vue";
 import { mockData1 } from "./data";
+import FilterColumn from "./FilterColumn/index.vue";
 defineOptions({
   name: "Inno-Fep-Detail"
 });
@@ -90,17 +91,26 @@ onMounted(() => {
               </template>
               <template #addIcon>
                 <div class="extra-container">
-                  <el-checkbox v-model="isCollect" label="收藏" size="large" />
                   <el-tooltip content="高级筛选" placement="top" effect="light">
-                    <el-icon :size="20" class="ml-[15px]!" @click="if_show_filter = !if_show_filter">
+                    <el-icon :size="20" @click="if_show_filter = !if_show_filter">
                       <Setting />
                     </el-icon>
                   </el-tooltip>
                   <el-tooltip content="显示/隐藏列" placement="top" effect="light">
-                    <el-icon :size="20" class="ml-[15px]!">
-                      <Filter />
-                    </el-icon>
+                    <span class="ml-[15px]! leading-1 top-[1px] relative">
+                      <el-popover placement="bottom" :width="200" trigger="click">
+                        <template #reference>
+                          <el-icon :size="20">
+                            <Filter />
+                          </el-icon>
+                        </template>
+                        <template #default>
+                          <FilterColumn />
+                        </template>
+                      </el-popover>
+                    </span>
                   </el-tooltip>
+                  <el-checkbox v-model="isCollect" label="收藏" size="large" class="ml-[15px]!" />
                 </div>
               </template>
             </CStab>
@@ -168,7 +178,6 @@ onMounted(() => {
   top: 0;
   // width: 200px;
   height: 40px;
-  line-height: 40px;
   display: flex;
   align-items: center;
   padding-right: 15px;
