@@ -5,7 +5,8 @@ import LiTable from "./components/LiTable/index.vue";
 import Upload from "./components/Upload/index.vue";
 import PerturbationGraphDialog from "./components/PerGraphDialog/index.vue";
 import Data_select from "../components/DataSelect/index.vue";
-import { ossList } from "@/api/fep";
+import { ossList, selectLigandExample } from "@/api/fep";
+import { ElMessage } from "element-plus";
 const data_list = ref([]);
 defineOptions({
   name: "LigandPreprocess"
@@ -72,11 +73,15 @@ const tab = ref<string>(tab_list.value[0]);
 const changeInputTab = value => {
   console.log(value);
 };
-const ligandIdChange = value => {
+
+const exampleChoose = async value => {
   console.log(value);
-};
-const exampleChoose = value => {
-  console.log(value);
+  const res = await selectLigandExample({ oss_key: value });
+  if (res.success) {
+    ligandList.value = res.data.molecules;
+  } else {
+    ElMessage.error(res.message);
+  }
 };
 
 const show_dialog = async (type?: string) => {

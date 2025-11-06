@@ -125,3 +125,7 @@ export function removeLigand(data) {
 export function refresh_task() {
   return request.get(`/api/jobs/15337/args`);
 }
+
+export function selectLigandExample(data) {
+  return request.post(`${apiV1}/ligand/select-example`, { data });
+}
