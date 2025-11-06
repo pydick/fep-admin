@@ -116,10 +116,7 @@ onMounted(() => {
     <pure-table ref="tableRef" :data="ligandData" :columns="ligandColumns" class="m-pure-table-fit flex-1" cell-class-name="h-[60px]">
       <template #operation="{ row }">
         <div class="operation-buttons">
-          <el-icon class="star-icon-btn" :class="{ 'is-favorite': row.isFavorite }" @click="handleFavorite(row)">
-            <StarFilled v-if="row.isFavorite" />
-            <Star v-else />
-          </el-icon>
+          <el-button :icon="row.isFavorite ? 'StarFilled' : 'Star'" class="star-icon-btn" circle plain @click="handleFavorite(row)" />
         </div>
       </template>
       <template #structure="{ row }">

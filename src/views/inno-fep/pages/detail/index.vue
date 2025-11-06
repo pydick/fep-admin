@@ -17,7 +17,7 @@ const tabList = reactive([
   { label: "Pairs", name: "Pairs" },
   { label: "Ligand", name: "Ligand" }
 ]);
-const activeName = ref(tabList[1].name);
+const activeName = ref(tabList[0].name);
 const isCollect = ref(false);
 const if_show_filter = ref(false);
 const histogram_data_all = ref([]);

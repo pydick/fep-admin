@@ -21,6 +21,15 @@ export default {
         title: "inno-fep-detail",
         showLink: false
       }
+    },
+    {
+      path: "/inno-fep/analysis-detail",
+      name: "Inno-Fep-Analysis-Detail",
+      component: () => import("@/views/inno-fep/pages/analysis-detail/index.vue"),
+      meta: {
+        title: "inno-fep-analysis-detail",
+        showLink: false
+      }
     }
   ]
 } satisfies RouteConfigsTable;

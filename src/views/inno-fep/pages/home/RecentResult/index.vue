@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import DetailIcon from "@/assets/svg/detail.svg";
 import { useRouter } from "vue-router";
 import ParameterDialog from "./components/ParameterDialog/index.vue";
-import { Delete, InfoFilled, RefreshRight, WarningFilled, Close } from "@element-plus/icons-vue";
+import { Delete, InfoFilled, RefreshRight, WarningFilled, Close, Position } from "@element-plus/icons-vue";
 import { tabListEnum } from "@/views/inno-fep/const/index";
 import { ElMessage } from "element-plus";
 defineOptions({
@@ -153,7 +152,7 @@ const dialogOptions = ref({
         </el-tooltip>
 
         <el-tooltip content="结果详情" placement="top" effect="light">
-          <el-button :icon="DetailIcon" circle plain @click="gotoDetail(row.type, row.id)" />
+          <el-button :icon="Position" circle plain @click="gotoDetail(row.type, row.id)" />
         </el-tooltip>
       </template>
     </pure-table>

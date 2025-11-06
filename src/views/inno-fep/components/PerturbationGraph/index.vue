@@ -339,10 +339,10 @@ onMounted(async () => {
   };
   const res = await getPerturbationGraphData(data);
   if (res.success) {
-    console.log(res.data);
     handleNodes(res.data.nodes);
     handleEdges(res.data.links);
     edgeCount.value = res.data.links.length;
+    console.log(111, graphData);
     Object.assign(initialGraphData, cloneDeep(graphData));
     if (containerRef.value) {
       initGraph();

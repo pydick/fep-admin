@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { reactive } from "vue";
-import { Star, InfoFilled } from "@element-plus/icons-vue";
+import { Star, Position } from "@element-plus/icons-vue";
+import { useRouter } from "vue-router";
 defineOptions({
   name: "Pairs"
 });
-
+const router = useRouter();
 // 示例数据，根据截图
 const pairsData = reactive([
   {
@@ -106,7 +107,7 @@ const pairsColumns = [
     label: "操作",
     align: "center",
     prop: "operation",
-    width: 80,
+    width: 120,
     slot: "operation",
     fixed: "right"
   }
@@ -128,8 +129,8 @@ const handleFavorite = (row: any) => {
   console.log("收藏", row);
 };
 
-const handleInfo = (row: any) => {
-  console.log("查看详情", row);
+const gotoDetail = (id: string) => {
+  router.push("/inno-fep/analysis-detail");
 };
 </script>
 
@@ -158,10 +159,13 @@ const handleInfo = (row: any) => {
       </template>
       <template #operation="{ row }">
         <div class="operation-buttons">
-          <el-icon class="star-icon-btn" :class="{ 'is-favorite': false }" @click="handleFavorite(row)">
-            <StarFilled v-if="row.isFavorite" />
-            <Star v-else />
-          </el-icon>
+          <el-tooltip content="收藏" placement="top" effect="light">
+            <el-button :icon="row.isFavorite ? 'StarFilled' : 'Star'" class="star-icon-btn" circle plain @click="handleFavorite(row)" />
+          </el-tooltip>
+
+          <el-tooltip content="前往Paires详情" placement="top" effect="light">
+            <el-button :icon="Position" circle plain @click="gotoDetail(row.id)" />
+          </el-tooltip>
         </div>
       </template>
     </pure-table>

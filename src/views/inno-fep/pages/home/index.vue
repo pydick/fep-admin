@@ -16,7 +16,7 @@ defineOptions({
 const taskStore = useTaskStoreHook();
 
 const tabList = reactive<{ label: string; name: string }[]>(tabListEnum);
-const activeName = ref(tabList[0].name);
+const activeName = ref(tabList[1].name);
 
 onMounted(async () => {
   const res = await initTask();
