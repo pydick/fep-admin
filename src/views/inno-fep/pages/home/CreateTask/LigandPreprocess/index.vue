@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BlcokTitle from "@/views/inno-fep/components/BlcokTitle/index.vue";
-import { ref, reactive, onMounted, inject } from "vue";
+import { ref, reactive, onMounted, inject, watch } from "vue";
 import LiTable from "./components/LiTable/index.vue";
 import Upload from "./components/Upload/index.vue";
 import PerturbationGraphDialog from "./components/PerGraphDialog/index.vue";
@@ -47,7 +47,7 @@ const referenceLigand = reactive([
     value: "cpd3"
   }
 ]);
-let ligandList = reactive([]);
+let ligandList = ref([]);
 
 const experimentMethods = ref([
   { label: "IC50", value: "IC50" },
@@ -108,12 +108,11 @@ const perturbationGraphShow = () => {
   perturbationGraphVisible.value = true;
 };
 const uploadSuc = data => {
-  ligandList.length = 0;
-  ligandList.push(...data.molecules);
+  ligandList.value = data.molecules;
 };
 
 const addNewLigandSuc = data => {
-  ligandList.push(...data.molecules);
+  ligandList.value.push(...data.molecules);
 };
 
 let exampleList = reactive<{ name: string; value: string }[]>([]);

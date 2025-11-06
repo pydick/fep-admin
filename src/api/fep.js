@@ -99,6 +99,9 @@ export async function fetchFileAsBlob(url) {
 }
 
 export function ligandUpload(data) {
+  const defaultParams = {
+    key: "uploaded_ligands"
+  };
   return request.post(
     `${apiV1}/ligand/parse/upload`,
     { data },
@@ -113,6 +116,9 @@ export function svgdraw(data) {
 }
 export function getPerturbationGraphData(data) {
   return request.post(`${apiV1}/ligand/perturbation-graph`, { data });
+}
+export function removeLigand(data) {
+  return request.post(`${apiV1}/ligand/remove-molecules`, { data });
 }
 
 // mock

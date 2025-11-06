@@ -11,7 +11,7 @@ defineOptions({
 });
 
 const tabList = reactive<{ label: string; name: string }[]>(tabListEnum);
-const activeName = ref(tabList[1].name);
+const activeName = ref(tabList[0].name);
 const handleTabClick = (name: string) => {
   console.log(name);
 };

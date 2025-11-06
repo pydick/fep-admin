@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { tableData } from "./data";
-import { ElTag, ElButton } from "element-plus";
+import { ElTag, ElButton, ElMessage } from "element-plus";
+import { removeLigand } from "@/api/fep";
 
 const tableRef = ref();
 interface IProps {
@@ -10,13 +11,24 @@ interface IProps {
 const props = withDefaults(defineProps<IProps>(), {
   data: () => []
 });
+const emit = defineEmits<{
+  "update:data": [value: any[]];
+}>();
+
 const multipleSelection = ref([]);
 const handleSelectionChange = val => {
   multipleSelection.value = val;
 };
 
-const handleDelete = row => {
-  console.log("删除", row);
+const handleDelete = async row => {
+  const res = await removeLigand({ indices_to_remove: [row.id] });
+  if (res.success) {
+    ElMessage.success("删除成功");
+    const newData = res.data.molecules;
+    emit("update:data", newData);
+  } else {
+    ElMessage.error("删除失败");
+  }
 };
 
 const columns: TableColumnList = [
