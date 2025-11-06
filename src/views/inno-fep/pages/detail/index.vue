@@ -6,13 +6,13 @@ import CStab from "@/components/CStab/index.vue";
 import Pairs from "./Pairs/index.vue";
 import Ligand from "./Ligand/index.vue";
 import { ref, reactive, onMounted } from "vue";
-import { Filter, Setting, Download } from "@element-plus/icons-vue";
+import { Filter, Setting } from "@element-plus/icons-vue";
 import FilterDrawer from "./FilterDrawer/index.vue";
 import { mockData1 } from "./data";
 import FilterColumn from "./FilterColumn/index.vue";
-import FluentSave16Regular from "~icons/fluent/save-16-regular";
 import CarbonTextLinkAnalysis from "~icons/carbon/text-link-analysis";
 import StreamlineCodeAnalysis from "~icons/streamline/code-analysis";
+import FileRow from "@/views/inno-fep/components/FileRow/index.vue";
 defineOptions({
   name: "Inno-Fep-Detail"
 });
@@ -43,10 +43,6 @@ const residue_list = ref([]);
 
 const change_table_filter = dict => {
   console.log("change_table_filter");
-};
-
-const fileDownload = () => {
-  console.log("下载");
 };
 
 const correlationAnalysis = () => {
@@ -133,19 +129,10 @@ onMounted(() => {
       </el-col>
       <el-col :span="12">
         <div class="right-container h-full">
-          <div class="right-block2 h-[calc(100%-110px)]!">
+          <div class="right-block">
             <div v-if="activeName === 'Pairs'" class="h-full">
               <BlcokTitle title="微扰图" class="pb-[15px]">
-                <div class="flex-1 flex items-center justify-end">
-                  <el-tooltip content="文件保存" placement="top">
-                    <el-icon :size="20" class="mr-[15px] icon-hover" @click="fileDownload()">
-                      <FluentSave16Regular />
-                    </el-icon>
-                  </el-tooltip>
-                  <el-tooltip content="文件下载" placement="top">
-                    <el-icon :size="20" class="mr-[15px] icon-hover" @click="fileDownload()"><Download /></el-icon>
-                  </el-tooltip>
-                </div>
+                <FileRow />
               </BlcokTitle>
               <div class="h-[calc(100%-62px)]!">
                 <preturbationGraph />
@@ -153,9 +140,7 @@ onMounted(() => {
             </div>
             <div v-if="activeName === 'Ligand'" class="h-full">
               <BlcokTitle title="Pocket Viewer" class="pb-[15px]">
-                <div class="inline-block flex-1 text-right">
-                  <el-button type="primary">生成</el-button>
-                </div>
+                <FileRow />
               </BlcokTitle>
               <div class="h-[calc(100%-62px)]!">
                 <Ligand3d ref="ligand3dRef" class="h-full" />
@@ -185,10 +170,7 @@ onMounted(() => {
   .right-container {
     display: flex;
     flex-direction: column;
-    .right-block1 {
-      background-color: #f0f2f5;
-    }
-    .right-block2 {
+    .right-block {
       flex: 1;
     }
   }
