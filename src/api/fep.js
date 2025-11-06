@@ -129,3 +129,6 @@ export function refresh_task() {
 export function selectLigandExample(data) {
   return request.post(`${apiV1}/ligand/select-example`, { data });
 }
+export function initTask() {
+  return request.post(`${apiV1}/task/init`);
+}

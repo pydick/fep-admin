@@ -5,16 +5,25 @@ import CStab from "@/components/CStab/index.vue";
 import CreateTask from "./CreateTask/index.vue";
 import RecentResult from "./RecentResult/index.vue";
 import { tabListEnum } from "@/views/inno-fep/const";
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
+import { initTask } from "@/api/fep";
+import { useTaskStoreHook } from "@/store/modules/task";
+
 defineOptions({
   name: "Inno-Fep"
 });
 
+const taskStore = useTaskStoreHook();
+
 const tabList = reactive<{ label: string; name: string }[]>(tabListEnum);
 const activeName = ref(tabList[0].name);
-const handleTabClick = (name: string) => {
-  console.log(name);
-};
+
+onMounted(async () => {
+  const res = await initTask();
+  if (res.success) {
+    taskStore.SET_TASK_ID(res.data.task_id);
+  }
+});
 </script>
 
 <template>
@@ -23,7 +32,7 @@ const handleTabClick = (name: string) => {
       <FepHeader />
     </template>
     <template #content>
-      <CStab v-model:activeName="activeName" :tabList="tabList" @tabClcik="handleTabClick">
+      <CStab v-model:activeName="activeName" :tabList="tabList">
         <template #createTask>
           <CreateTask v-if="activeName === tabListEnum[0].name" />
         </template>
