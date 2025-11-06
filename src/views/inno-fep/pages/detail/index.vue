@@ -6,10 +6,13 @@ import CStab from "@/components/CStab/index.vue";
 import Pairs from "./Pairs/index.vue";
 import Ligand from "./Ligand/index.vue";
 import { ref, reactive, onMounted } from "vue";
-import { Filter, Setting } from "@element-plus/icons-vue";
+import { Filter, Setting, Download } from "@element-plus/icons-vue";
 import FilterDrawer from "./FilterDrawer/index.vue";
 import { mockData1 } from "./data";
 import FilterColumn from "./FilterColumn/index.vue";
+import FluentSave16Regular from "~icons/fluent/save-16-regular";
+import CarbonTextLinkAnalysis from "~icons/carbon/text-link-analysis";
+import StreamlineCodeAnalysis from "~icons/streamline/code-analysis";
 defineOptions({
   name: "Inno-Fep-Detail"
 });
@@ -40,6 +43,17 @@ const residue_list = ref([]);
 
 const change_table_filter = dict => {
   console.log("change_table_filter");
+};
+
+const fileDownload = () => {
+  console.log("下载");
+};
+
+const correlationAnalysis = () => {
+  console.log("相关性分析");
+};
+const resultAnalysis = () => {
+  console.log("结果分析");
 };
 
 onMounted(() => {
@@ -76,37 +90,37 @@ onMounted(() => {
       <el-col :span="12">
         <div class="left-container h-full">
           <BlcokTitle title="分析列表">
-            <div class="inline-block flex-1 text-right">
-              <el-button type="primary">相关性分析</el-button>
-              <el-button type="primary">结果分析</el-button>
+            <div class="flex-1 flex items-center justify-end">
+              <el-tooltip content="相关性分析" placement="top">
+                <el-icon :size="20" class="icon-hover mr-[15px]" @click="correlationAnalysis()">
+                  <CarbonTextLinkAnalysis />
+                </el-icon>
+              </el-tooltip>
+              <el-tooltip content="结果分析" placement="top">
+                <el-icon :size="20" class="icon-hover" @click="resultAnalysis()">
+                  <StreamlineCodeAnalysis />
+                </el-icon>
+              </el-tooltip>
             </div>
           </BlcokTitle>
           <div class="left-block2 pt-[15px]">
             <CStab v-model:activeName="activeName" :tabList="tabList">
-              <template #Pairs>
-                <Pairs />
-              </template>
-              <template #Ligand>
-                <Ligand />
-              </template>
+              <template #Pairs><Pairs /></template>
+              <template #Ligand><Ligand /></template>
               <template #addIcon>
                 <div class="extra-container">
-                  <el-tooltip content="高级筛选" placement="top" effect="light">
+                  <el-tooltip content="高级筛选" placement="top">
                     <el-icon :size="20" @click="if_show_filter = !if_show_filter">
                       <Setting />
                     </el-icon>
                   </el-tooltip>
-                  <el-tooltip content="显示/隐藏列" placement="top" effect="light">
+                  <el-tooltip content="显示/隐藏列" placement="top">
                     <span class="ml-[15px]! leading-1 top-[1px] relative">
                       <el-popover placement="bottom" :width="200" trigger="click">
                         <template #reference>
-                          <el-icon :size="20">
-                            <Filter />
-                          </el-icon>
+                          <el-icon :size="20"><Filter /></el-icon>
                         </template>
-                        <template #default>
-                          <FilterColumn />
-                        </template>
+                        <template #default><FilterColumn /></template>
                       </el-popover>
                     </span>
                   </el-tooltip>
@@ -122,8 +136,15 @@ onMounted(() => {
           <div class="right-block2 h-[calc(100%-110px)]!">
             <div v-if="activeName === 'Pairs'" class="h-full">
               <BlcokTitle title="微扰图" class="pb-[15px]">
-                <div class="inline-block flex-1 text-right">
-                  <el-button type="primary">生成</el-button>
+                <div class="flex-1 flex items-center justify-end">
+                  <el-tooltip content="文件保存" placement="top">
+                    <el-icon :size="20" class="mr-[15px] icon-hover" @click="fileDownload()">
+                      <FluentSave16Regular />
+                    </el-icon>
+                  </el-tooltip>
+                  <el-tooltip content="文件下载" placement="top">
+                    <el-icon :size="20" class="mr-[15px] icon-hover" @click="fileDownload()"><Download /></el-icon>
+                  </el-tooltip>
                 </div>
               </BlcokTitle>
               <div class="h-[calc(100%-62px)]!">

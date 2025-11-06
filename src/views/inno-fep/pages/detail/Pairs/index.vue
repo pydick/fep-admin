@@ -159,11 +159,11 @@ const gotoDetail = (id: string) => {
       </template>
       <template #operation="{ row }">
         <div class="operation-buttons">
-          <el-tooltip content="收藏" placement="top" effect="light">
+          <el-tooltip content="收藏" placement="top">
             <el-button :icon="row.isFavorite ? 'StarFilled' : 'Star'" class="star-icon-btn" circle plain @click="handleFavorite(row)" />
           </el-tooltip>
 
-          <el-tooltip content="前往Paires详情" placement="top" effect="light">
+          <el-tooltip content="前往Paires详情" placement="top">
             <el-button :icon="Position" circle plain @click="gotoDetail(row.id)" />
           </el-tooltip>
         </div>

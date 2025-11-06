@@ -117,15 +117,15 @@ const dialogOptions = ref({
   <div class="recentresult-container">
     <pure-table :data="taskData" :columns="taskColumns" class="m-pure-table-fit flex-1" cell-class-name="h-[60px]">
       <template #opreate="{ row }">
-        <el-tooltip content="去创建任务" placement="top" effect="light">
+        <el-tooltip content="去创建任务" placement="top">
           <el-button :icon="RefreshRight" circle plain @click="gotoCreateTask" />
         </el-tooltip>
 
-        <el-tooltip content="参数详情" placement="top" effect="light">
+        <el-tooltip content="参数详情" placement="top">
           <el-button :icon="InfoFilled" circle plain @click="openParameterDialog(row)" />
         </el-tooltip>
 
-        <el-tooltip content="删除任务" placement="top" effect="light">
+        <el-tooltip content="删除任务" placement="top">
           <span class="inline-block mx-[8px]">
             <el-popconfirm title="该操作不能恢复，确认删除该任务吗？" :icon="WarningFilled" width="300px" placement="bottom" @confirm="deleteTask(row.id)">
               <template #reference>
@@ -135,7 +135,7 @@ const dialogOptions = ref({
           </span>
         </el-tooltip>
 
-        <el-tooltip content="任务异常" placement="top" effect="light">
+        <el-tooltip content="任务异常" placement="top">
           <span class="inline-block mx-[8px]">
             <el-popover ref="popover" :visible="exceptionReasonVisible" popper-class="relative" placement="bottom" title="异常原因" trigger="focus">
               <template #default>
@@ -151,7 +151,7 @@ const dialogOptions = ref({
           </span>
         </el-tooltip>
 
-        <el-tooltip content="结果详情" placement="top" effect="light">
+        <el-tooltip content="结果详情" placement="top">
           <el-button :icon="Position" circle plain @click="gotoDetail(row.type, row.id)" />
         </el-tooltip>
       </template>
