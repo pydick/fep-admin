@@ -22,6 +22,7 @@ const currentHighlightedEdge = ref<string | null>(null);
 
 interface Iprops {
   isDialogEnter?: boolean;
+  isSelectedFirstEdge?: boolean;
   width?: string;
   height?: string;
 }
@@ -29,6 +30,7 @@ interface Iprops {
 const sourceNodeId = ref<string | null>(null);
 const props = withDefaults(defineProps<Iprops>(), {
   isDialogEnter: false,
+  isSelectedFirstEdge: false,
   width: "500px",
   height: "500px"
 });
@@ -335,6 +337,19 @@ const handleEdges = edges => {
   graphData.edges = finalEdges;
 };
 
+const handleFirstEdgeClick = () => {
+  if (!props.isSelectedFirstEdge || graphData.edges.length === 0) return;
+  const firstEdgeId = graphData.edges[0].id;
+  // 获取边元素
+  const edgeElement = graph.getElementData(firstEdgeId);
+  if (edgeElement) {
+    // 触发边点击事件
+    graph.emit("edge:click", {
+      target: edgeElement,
+      item: edgeElement
+    });
+  }
+};
 onMounted(async () => {
   if (props.isDialogEnter) {
     await nextTick();
@@ -347,10 +362,10 @@ onMounted(async () => {
     handleNodes(res.data.nodes);
     handleEdges(res.data.links);
     edgeCount.value = res.data.links.length;
-    console.log(111, graphData);
     Object.assign(initialGraphData, cloneDeep(graphData));
     if (containerRef.value) {
       initGraph();
+      handleFirstEdgeClick();
       window.addEventListener("resize", handleResize);
     }
   } else {

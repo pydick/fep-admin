@@ -2,7 +2,7 @@ import { defineFakeRoute } from "vite-plugin-fake-server/client";
 import { proteinsData } from "./proteinsData.js";
 export default defineFakeRoute([
   {
-    url: "/api/v1/auth/login",
+    url: "/api/v1/auth/login1",
     method: "post",
     response: ({ body }) => {
       if (body.username === "pengyong") {
@@ -52,7 +52,7 @@ export default defineFakeRoute([
     }
   },
   {
-    url: "/api/v1/task/init",
+    url: "/api/v1/task/init1",
     method: "post",
     response: ({ body }) => {
       return {
