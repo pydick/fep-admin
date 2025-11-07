@@ -48,7 +48,7 @@ watch(
       </el-col>
       <el-col :span="12" class="h-full">
         <BlcokTitle title="映射图" class="pb-[15px]" />
-        <MappingGraph class="pt-[15px]" :edgeId="edgeId" />
+        <MappingGraph :edgeId="edgeId" />
       </el-col>
     </el-row>
     <template #footer>
