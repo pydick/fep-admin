@@ -19,6 +19,7 @@ let graph: Graph | null = null;
 const containerRef = ref<HTMLElement>();
 
 const currentHighlightedEdge = ref<string | null>(null);
+const currentHighlightedNode = ref<string | null>(null);
 
 interface Iprops {
   isDialogEnter?: boolean;
@@ -148,6 +149,7 @@ const plugins = reactive([
     },
     onClick: (value, target, current) => {
       if (!graph || !target || !current) return;
+      clearAllHighlight();
       const nodeId = current.id;
 
       if (value === "selectNode") {
@@ -236,7 +238,32 @@ const layoutConfig = reactive({
 const highlightEdgeStyle = {
   stroke: "#409EFF",
   lineWidth: 3,
-  opacity: 0.5
+  opacity: 0.5,
+  labelFontWeight: "bold"
+};
+const normalEdgeStyle = {
+  stroke: "#cccccc",
+  lineWidth: 3,
+  labelFontWeight: "normal",
+  opacity: 1
+};
+
+const clearAllHighlight = () => {
+  // 1. 清除所有节点高亮
+  graph.getNodeData().forEach(n => {
+    n.data.isHighlighted = false;
+    graph.updateNodeData([{ id: n.id, style: { ...n.style, component: () => h(GraphNode, { data: { ...n.data } }) } }]);
+  });
+
+  // 2. 清除所有边高亮
+  graph.getEdgeData().forEach(e => {
+    graph.updateEdgeData([
+      {
+        id: e.id,
+        style: normalEdgeStyle
+      }
+    ]);
+  });
 };
 
 const initGraph = () => {
@@ -262,40 +289,41 @@ const initGraph = () => {
 
   // 添加节点点击事件
   graph.on("node:click", (evt: any) => {
-    console.log("点击节点:", evt);
+    const nodeId = evt.target.id;
+
+    clearAllHighlight();
+
+    // 设置当前节点高亮
+    const nodeData = graph.getNodeData(nodeId);
+    nodeData.data.isHighlighted = true;
+    graph.updateNodeData([
+      {
+        id: nodeId,
+        style: {
+          ...nodeData.style,
+          component: () => h(GraphNode, { data: Object.assign({}, nodeData.data) })
+        }
+      }
+    ]);
+
+    currentHighlightedNode.value = nodeId;
+    graph.draw();
   });
 
   // 添加边点击事件
   graph.on("edge:click", (evt: any) => {
-    const clickedEdge = evt.target;
-    if (sourceNodeId.value) {
-      sourceNodeId.value = null; // 取消源节点的选中状态
-    }
-    const normalEdgeStyle = {
-      stroke: "#cccccc",
-      lineWidth: 3,
-      labelFontWeight: "normal",
-      opacity: 1
-    };
-    if (currentHighlightedEdge.value && currentHighlightedEdge.value !== clickedEdge.id) {
-      graph.updateEdgeData([
-        {
-          id: currentHighlightedEdge.value,
-          style: normalEdgeStyle
-        }
-      ]);
-    }
+    const edgeId = evt.target.id;
+    clearAllHighlight();
 
+    // 3. 高亮当前边
     graph.updateEdgeData([
       {
-        id: clickedEdge.id,
-        style: { ...highlightEdgeStyle, labelFontWeight: "bold" }
+        id: edgeId,
+        style: highlightEdgeStyle
       }
     ]);
-
-    currentHighlightedEdge.value = clickedEdge.id;
     graph.draw();
-    emit("edgeChange", clickedEdge.id);
+    emit("edgeChange", edgeId);
   });
 };
 const handleResize = throttle(() => {
@@ -311,13 +339,15 @@ const handleNodes = nodes => {
   const finalNodes = nodes.map(node => {
     let GraphNodeData = {
       smiles: node.smiles,
-      name: node.id
+      name: node.id,
+      isHighlighted: false
     };
     return {
       id: node.id,
       type: "vue-node",
+      data: GraphNodeData,
       style: {
-        component: () => h(GraphNode, { data: GraphNodeData }),
+        component: () => h(GraphNode, { data: Object.assign({}, GraphNodeData) }),
         size: [pxToRemPx(70), pxToRemPx(70)]
       }
     };

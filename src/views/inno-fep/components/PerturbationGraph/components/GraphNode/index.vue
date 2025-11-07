@@ -9,15 +9,16 @@ interface Props {
   data?: {
     smiles: string;
     name: string;
+    isHighlighted: boolean;
   };
 }
 const props = withDefaults(defineProps<Props>(), {
-  data: () => ({ smiles: "", name: "" })
+  data: () => ({ smiles: "", name: "", isHighlighted: false })
 });
 </script>
 
 <template>
-  <div class="node-container">
+  <div class="node-container" :class="{ highlighted: data.isHighlighted }">
     <div class="text-center">
       <SvgBox :smiles="data.smiles" class="svgBox w-[40px]! h-[40px]!" />
     </div>
@@ -30,6 +31,9 @@ const props = withDefaults(defineProps<Props>(), {
   border: 2px solid #eee;
   border-radius: 8px;
   text-align: center;
+}
+.node-container.highlighted {
+  border-color: #409eff;
 }
 .svgBox {
   margin: 2px auto 2px;
