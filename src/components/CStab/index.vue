@@ -2,7 +2,7 @@
 defineOptions({
   name: "CStab"
 });
-import { ref, defineEmits, computed } from "vue";
+import { ref, defineEmits, computed, useSlots } from "vue";
 
 import type { TabsPaneContext } from "element-plus";
 
@@ -11,7 +11,7 @@ interface Props {
   type?: "border-card" | "card" | "";
   activeName?: string;
 }
-
+const slots = useSlots();
 const props = withDefaults(defineProps<Props>(), {
   type: "border-card",
   tabList: () => [
@@ -39,8 +39,8 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 </script>
 
 <template>
-  <el-tabs v-model="innerActiveName" addable :type="type" class="h-full cs-tabs tab-container" @tab-click="handleClick">
-    <template v-if="$slots.addIcon" #add-icon>
+  <el-tabs v-model="innerActiveName" :addable="!!slots.addIcon" :type="type" class="h-full cs-tabs tab-container" @tab-click="handleClick">
+    <template v-if="slots.addIcon" #add-icon>
       <slot name="addIcon" />
     </template>
     <el-tab-pane v-for="item in tabList" :key="item.name" :label="item.label" :name="item.name">

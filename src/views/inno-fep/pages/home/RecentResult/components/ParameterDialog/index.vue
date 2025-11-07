@@ -28,7 +28,7 @@ const dialogConfig = reactive({
 </script>
 
 <template>
-  <el-dialog v-model="props.visible" width="550px" v-bind="dialogConfig" :before-close="handleClose" :close-on-click-modal="false">
+  <el-dialog v-model="props.visible" v-bind="dialogConfig" :before-close="handleClose" :close-on-click-modal="false">
     <Content :options="props.options" />
   </el-dialog>
 </template>
