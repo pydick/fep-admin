@@ -233,6 +233,11 @@ const layoutConfig = reactive({
   unitRadius: unitRadius.value,
   linkDistance: 250
 });
+const highlightEdgeStyle = {
+  stroke: "#409EFF",
+  lineWidth: 3,
+  opacity: 0.5
+};
 
 const initGraph = () => {
   if (!containerRef.value) return;
@@ -266,16 +271,17 @@ const initGraph = () => {
     if (sourceNodeId.value) {
       sourceNodeId.value = null; // 取消源节点的选中状态
     }
+    const normalEdgeStyle = {
+      stroke: "#cccccc",
+      lineWidth: 3,
+      labelFontWeight: "normal",
+      opacity: 1
+    };
     if (currentHighlightedEdge.value && currentHighlightedEdge.value !== clickedEdge.id) {
       graph.updateEdgeData([
         {
           id: currentHighlightedEdge.value,
-          style: {
-            stroke: "#cccccc",
-            lineWidth: 3,
-            labelFontWeight: "normal",
-            opacity: 1
-          }
+          style: normalEdgeStyle
         }
       ]);
     }
@@ -283,12 +289,7 @@ const initGraph = () => {
     graph.updateEdgeData([
       {
         id: clickedEdge.id,
-        style: {
-          stroke: "#409EFF",
-          lineWidth: 3,
-          labelFontWeight: "bold",
-          opacity: 0.5
-        }
+        style: { ...highlightEdgeStyle, labelFontWeight: "bold" }
       }
     ]);
 
