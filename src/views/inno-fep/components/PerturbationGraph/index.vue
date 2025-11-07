@@ -135,13 +135,13 @@ const plugins = reactive([
       }
 
       if (sourceNodeId.value) {
-        sourceNodeId.value = null; // 取消源节点的选中状态
+        sourceNodeId.value = null;
       }
     }
   },
   {
     type: "contextmenu",
-    enable: e => e.targetType === "node", // 只对节点触发右键菜单
+    enable: e => e.targetType === "node",
     getItems: e => {
       const nodeId = e.target.id;
       return [{ name: sourceNodeId.value ? "选择目标节点" : "选择源节点", value: "selectNode", nodeId }];
@@ -157,7 +157,7 @@ const plugins = reactive([
           graph.updateNodeData([
             {
               id: nodeId,
-              style: { fill: "#FF5733" } // 高亮源节点
+              style: { fill: "#FF5733" }
             }
           ]);
           console.log(`Source node selected: ${nodeId}`);
@@ -317,7 +317,7 @@ const handleNodes = nodes => {
       id: node.id,
       type: "vue-node",
       style: {
-        component: () => h(GraphNode, { data: Object.assign({}, GraphNodeData) }),
+        component: () => h(GraphNode, { data: GraphNodeData }),
         size: [pxToRemPx(70), pxToRemPx(70)]
       }
     };
