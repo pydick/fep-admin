@@ -48,6 +48,9 @@ const tableData = ref([
     rotatableBonds: chart5
   }
 ]);
+const imageMap = ref({
+  scale: 3
+});
 
 const columns = ref([
   {
@@ -106,23 +109,23 @@ const columns = ref([
         <pure-table :data="tableData" :columns="columns" border>
           <template #conergence="{ row }">
             <!-- <el-image :src="svgToDataUrl(row.conergence)" :preview-src-list="[svgToDataUrl(row.conergence)]" fit="contain" class="w-full charts-photo" :preview-teleported="true" /> -->
-            <el-image :src="row.conergence" :preview-src-list="[row.conergence]" fit="contain" class="w-full charts-photo" :preview-teleported="true" />
+            <el-image :scale="imageMap.scale" :src="row.conergence" :preview-src-list="[row.conergence]" fit="contain" class="w-full charts-photo" :preview-teleported="true" />
           </template>
           <template #overlapMatrix="{ row }">
             <!-- <div class="w-full charts-photo" v-html="row.overlapMatrix" /> -->
-            <el-image :src="row.overlapMatrix" :preview-src-list="[row.overlapMatrix]" fit="contain" class="w-full charts-photo" :preview-teleported="true" />
+            <el-image :scale="imageMap.scale" :src="row.overlapMatrix" :preview-src-list="[row.overlapMatrix]" fit="contain" class="w-full charts-photo" :preview-teleported="true" />
           </template>
           <template #replicaDistribution="{ row }">
             <!-- <div class="w-full charts-photo" v-html="row.replicaDistribution" /> -->
-            <el-image :src="row.replicaDistribution" :preview-src-list="[row.replicaDistribution]" fit="contain" class="w-full charts-photo" :preview-teleported="true" />
+            <el-image :scale="imageMap.scale" :src="row.replicaDistribution" :preview-src-list="[row.replicaDistribution]" fit="contain" class="w-full charts-photo" :preview-teleported="true" />
           </template>
           <template #rmsf="{ row }">
             <!-- <div class="w-full charts-photo" v-html="row.rmsf" /> -->
-            <el-image :src="row.rmsf" :preview-src-list="[row.rmsf]" fit="contain" class="w-full charts-photo" :preview-teleported="true" />
+            <el-image :scale="imageMap.scale" :src="row.rmsf" :preview-src-list="[row.rmsf]" fit="contain" class="w-full charts-photo" :preview-teleported="true" />
           </template>
           <template #rotatableBonds="{ row }">
             <!-- <div class="w-full charts-photo" v-html="row.rotatableBonds" /> -->
-            <el-image :src="row.rotatableBonds" :preview-src-list="[row.rotatableBonds]" fit="contain" class="w-full charts-photo" :preview-teleported="true" />
+            <el-image :scale="imageMap.scale" :src="row.rotatableBonds" :preview-src-list="[row.rotatableBonds]" fit="contain" class="w-full charts-photo" :preview-teleported="true" />
           </template>
         </pure-table>
       </el-descriptions-item>
