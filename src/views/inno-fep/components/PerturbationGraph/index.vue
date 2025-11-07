@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, onUnmounted, reactive, h, nextTick } from "vue";
+import { onMounted, ref, onUnmounted, reactive, h, nextTick, defineEmits } from "vue";
 import { Graph, GraphOptions, NodeOptions, EdgeOptions } from "@antv/g6";
 import GraphNode from "./components/GraphNode/index.vue";
 import { throttle } from "@pureadmin/utils";
@@ -32,6 +32,10 @@ const props = withDefaults(defineProps<Iprops>(), {
   width: "500px",
   height: "500px"
 });
+
+const emit = defineEmits<{
+  (e: "edgeChange", value: string): void;
+}>();
 
 const unitRadius = ref(0);
 // 当前数据改为响应式
@@ -288,6 +292,7 @@ const initGraph = () => {
 
     currentHighlightedEdge.value = clickedEdge.id;
     graph.draw();
+    emit("edgeChange", clickedEdge.id);
   });
 };
 const handleResize = throttle(() => {
@@ -321,7 +326,7 @@ const handleEdges = edges => {
   console.log(edges);
   const finalEdges = edges.map((edge, index) => {
     return {
-      id: edge.index,
+      id: `${edge.source}-${edge.target}`,
       source: edge.source,
       target: edge.target,
       label: `${edge.ecr}`

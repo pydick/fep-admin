@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<Props>(), {
   visible: false
 });
 
+const edgeId = ref<string | null>(null);
 const emit = defineEmits<{
   (e: "update:visible", value: boolean): void;
 }>();
@@ -21,6 +22,9 @@ const handleSure = () => {
 };
 const handleCancel = () => {
   emit("update:visible", false);
+};
+const handleEdgeChange = (value: string) => {
+  edgeId.value = value;
 };
 watch(
   () => props.visible,
@@ -39,12 +43,12 @@ watch(
       <el-col :span="12" class="h-full">
         <BlcokTitle title="微扰图" class="pb-[15px]" />
         <div class="perturbation-container h-full">
-          <PerturbationGraph class="pt-[15px] h-[600px]!" :isDialogEnter="true" />
+          <PerturbationGraph class="pt-[15px] h-[600px]!" :isDialogEnter="true" @edgeChange="handleEdgeChange" />
         </div>
       </el-col>
       <el-col :span="12" class="h-full">
         <BlcokTitle title="映射图" class="pb-[15px]" />
-        <MappingGraph class="pt-[15px]" />
+        <MappingGraph class="pt-[15px]" :edgeId="edgeId" />
       </el-col>
     </el-row>
     <template #footer>

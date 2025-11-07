@@ -108,7 +108,7 @@ const addNewLigand = () => {
   addUploadRef.value.triggerClick();
 };
 
-const perturbationGraphVisible = ref(false);
+const perturbationGraphVisible = ref(true);
 const perturbationGraphShow = () => {
   perturbationGraphVisible.value = true;
 };

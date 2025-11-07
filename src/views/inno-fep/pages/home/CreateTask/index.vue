@@ -13,7 +13,7 @@ defineOptions({
   name: "CreateTask"
 });
 const stepList = ref<string[]>(["蛋白预处理", "配体预处理", "计算参数"]);
-const activeStep = ref(1);
+const activeStep = ref(2);
 const protein3dRef = ref();
 
 const stepRef = ref();

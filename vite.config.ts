@@ -27,6 +27,7 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
       proxy: {
         "/api/v1": {
           target: "http://82.157.191.16:8690",
+          // target: targetUlr,
           changeOrigin: true
         },
         "/api": {

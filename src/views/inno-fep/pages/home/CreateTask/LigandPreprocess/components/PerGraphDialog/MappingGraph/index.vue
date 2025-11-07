@@ -1,7 +1,20 @@
 <script setup lang="ts">
 import SvgBox from "@/components/CSsvgbox/index.vue";
+import { mappingList } from "./data";
+import { ref, computed } from "vue";
 defineOptions({
   name: "MappingGraph"
+});
+
+interface Props {
+  edgeId?: string | null;
+}
+const props = withDefaults(defineProps<Props>(), {
+  edgeId: null
+});
+
+const mappingData = computed(() => {
+  return mappingList[props.edgeId] || {};
 });
 </script>
 
@@ -9,16 +22,16 @@ defineOptions({
   <el-row>
     <el-col :span="12">
       <div class="mapping-item">
-        <el-text class="mx-1" size="large">c5</el-text>
-        <SvgBox width="200px" height="auto" />
-        <el-text class="mx-1" size="large">c5</el-text>
+        <el-text class="mx-1" size="large">{{ mappingData.name1 }}</el-text>
+        <SvgBox width="200px" height="auto" :smiles="mappingData.smiles1" />
+        <el-text class="mx-1" size="large">{{ mappingData.name2 }}</el-text>
       </div>
     </el-col>
     <el-col :span="12">
       <div class="mapping-item">
-        <el-text class="mx-1" size="large">c5</el-text>
-        <SvgBox width="200px" height="auto" />
-        <el-text class="mx-1" size="large">c5</el-text>
+        <el-text class="mx-1" size="large">{{ mappingData.name3 }}</el-text>
+        <SvgBox width="200px" height="auto" :smiles="mappingData.smiles2" />
+        <el-text class="mx-1" size="large">{{ mappingData.name4 }}</el-text>
       </div>
     </el-col>
   </el-row>
