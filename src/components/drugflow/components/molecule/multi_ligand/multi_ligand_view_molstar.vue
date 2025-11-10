@@ -278,7 +278,7 @@ export default {
         this.loading = null;
       }
       this.loading = ElLoading.service({
-        // target: document.getElementById('ngl_multi_ligand_frame'),
+        target: document.getElementById("ngl_multi_ligand_frame"),
         text: content,
         background: "rgba(255, 255, 255, 0.4)"
       });
