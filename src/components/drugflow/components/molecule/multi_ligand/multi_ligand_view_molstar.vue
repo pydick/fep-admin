@@ -234,7 +234,16 @@ export default {
         }
       }
     },
-    // 在Molstar中添加配体视图
+    /**
+     * 在Molstar中添加配体视图
+     * @param {string} pdb_input_string - PDB格式的字符串，包含配体分子的结构数据
+     * @param {string|undefined} ligand_hex_id - 配体的十六进制ID，用于唯一标识配体。参考配体时传入undefined
+     * @param {number} ligand_cnt_id - 配体在列表中的索引位置（计数ID）
+     * @param {boolean} is_refer_ligand - 是否为参考配体。true表示参考配体，false表示普通配体
+     * @param {string} ligand_name - 配体的显示名称，用于标识和显示
+     * @param {string} color - 配体的颜色名称（如"red", "blue", "green"等），用于在3D视图中渲染配体颜色
+     * @param {Array} residue_full_info - 残基的完整信息数组，包含配体周围残基的详细信息
+     */
     async add_ligand_view(pdb_input_string, ligand_hex_id, ligand_cnt_id, is_refer_ligand, ligand_name, color, residue_full_info) {
       this.open_loading();
 
