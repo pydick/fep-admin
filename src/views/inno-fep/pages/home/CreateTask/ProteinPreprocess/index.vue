@@ -91,32 +91,14 @@ const preprocessingBtns = reactive({
 const charge_option = reactive([
   {
     key: 0,
-    label: "AMBER FF14SB",
-    value: "amber14/protein.ff14SB",
+    label: "AMBER99SB",
+    value: "amber99sb",
     if_selected: true
   },
   {
-    key: 1,
-    label: "AMBER FF15IPQ",
-    value: "amber14/protein.ff15ipq",
-    if_selected: false
-  },
-  {
-    key: 3,
-    label: "AMBER96",
-    value: "amber96",
-    if_selected: false
-  },
-  {
-    key: 4,
-    label: "AMBER99SB",
-    value: "amber99sb",
-    if_selected: false
-  },
-  {
     key: 5,
-    label: "CHARMM36",
-    value: "charmm36",
+    label: "AMBER03",
+    value: "amber03",
     if_selected: false
   }
 ]);
