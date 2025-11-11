@@ -31,6 +31,8 @@ const taskFormData = reactive<TaskFormData>({
   step3Form: null
 });
 
+const ligandStr = ref("");
+
 const handleNext = () => {
   stepRef.value?.next();
 };
@@ -67,6 +69,7 @@ const handleCheckAndNext = () => {
 // 提供任务表单数据和验证器
 provide("protein3dRef", protein3dRef);
 provide("taskFormData", taskFormData);
+provide("ligandStr", ligandStr);
 </script>
 
 <template>

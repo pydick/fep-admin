@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import { tableData } from "./data";
 import { ElTag, ElButton, ElMessage } from "element-plus";
 import { removeLigand } from "@/api/fep";
-
 const tableRef = ref();
+const ligandStr = inject<any>("ligandStr");
+
 interface IProps {
   data?: any[];
 }
@@ -16,8 +17,10 @@ const emit = defineEmits<{
 }>();
 
 const multipleSelection = ref([]);
-const handleSelectionChange = val => {
-  multipleSelection.value = val;
+const handleSelectionChange = item => {
+  console.log(item);
+  multipleSelection.value = item;
+  ligandStr.value = JSON.stringify(item.ligandData);
 };
 
 const handleDelete = async row => {

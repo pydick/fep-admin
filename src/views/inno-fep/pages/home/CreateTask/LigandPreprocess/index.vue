@@ -7,6 +7,7 @@ import PerturbationGraphDialog from "./components/PerGraphDialog/index.vue";
 import Data_select from "../components/DataSelect/index.vue";
 import { ossList, selectLigandExample } from "@/api/fep";
 import { ElMessage } from "element-plus";
+import { mockrow1, mockrow2, mockrow3 } from "./data2";
 const data_list = ref([]);
 defineOptions({
   name: "LigandPreprocess"
@@ -75,25 +76,28 @@ const tab = ref<string>(tab_list.value[0]);
 const changeInputTab = value => {
   console.log(value);
 };
+const mockLigandData = data => {
+  return data.map((item, index) => {
+    let ligandData = {};
+    if (index === 0) {
+      ligandData = mockrow1;
+    } else if (index === 1) {
+      ligandData = mockrow2;
+    } else if (index === 2) {
+      ligandData = mockrow3;
+    }
+    return {
+      ...item,
+      ligandData: ligandData
+    };
+  });
+};
 
 const exampleChoose = async value => {
   console.log(value);
   const res = await selectLigandExample({ oss_key: value });
   if (res.success) {
-    ligandList.value = res.data.molecules;
-  } else {
-    ElMessage.error(res.message);
-  }
-};
-
-const show_dialog = async (type?: string) => {
-  const res = await ossList({ ...ossListCommomParams });
-  if (res.success) {
-    data_list.value = res.data.objects.map(item => ({
-      dataset_id: item.key,
-      name: item.filename || item.key
-    }));
-    showDataCenter.value = true;
+    ligandList.value = mockLigandData(res.data.molecules);
   }
 };
 
@@ -115,11 +119,12 @@ const perturbationGraphShow = () => {
   perturbationGraphVisible.value = true;
 };
 const uploadSuc = data => {
-  ligandList.value = data.molecules;
+  ligandList.value = mockLigandData(data.molecules);
 };
 
 const addNewLigandSuc = data => {
-  ligandList.value.push(...data.molecules);
+  const newData = mockLigandData(data.molecules);
+  ligandList.value.push(...newData);
 };
 
 let exampleList = reactive<{ name: string; value: string }[]>([]);

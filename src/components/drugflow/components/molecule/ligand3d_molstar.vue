@@ -7,6 +7,8 @@
 import { ref, watch, onMounted, nextTick } from "vue";
 import multi_ligand_view_molstar from "./multi_ligand/multi_ligand_view_molstar.vue";
 import { screen_get_pdb, screen_get_ori_pdb } from "@drugflow/api/screen";
+import { pdbmock } from "@/views/inno-fep/pages/home/mockdata/pdbData.js";
+import { mockSmiles } from "@/views/inno-fep/pages/home/mockdata/otherdata.js";
 
 // 定义 props
 const props = defineProps({
@@ -41,12 +43,15 @@ const draw = async () => {
     // 首次绘制时获取参考配体信息
     if (!first_draw.value) {
       try {
-        const res = await screen_get_ori_pdb(props.job_id);
-        if (res.show_ref_ligand) {
-          ligand_view_dict.value.has_refer = true;
-          ligand_view_dict.value.refer_smiles = res.smiles;
-          ligand_view_dict.value.refer_pdb_string = res.pdb;
-        }
+        // const res = await screen_get_ori_pdb(props.job_id);
+        // if (res.show_ref_ligand) {
+        //   ligand_view_dict.value.has_refer = true;
+        //   ligand_view_dict.value.refer_smiles = res.smiles;
+        //   ligand_view_dict.value.refer_pdb_string = res.pdb;
+        // }
+        ligand_view_dict.value.has_refer = true;
+        ligand_view_dict.value.refer_smiles = mockSmiles;
+        ligand_view_dict.value.refer_pdb_string = pdbmock;
         first_draw.value = true;
       } catch {
         console.log("no refer ligand");

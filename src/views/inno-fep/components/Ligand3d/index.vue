@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import Ligand3d_molstar from "@drugflow/components/molecule/ligand3d_molstar.vue";
-import { ref } from "vue";
+import { ref, inject, onMounted } from "vue";
 import { data2 } from "./data2.js";
+const ligandStr = inject<any>("ligandStr");
 defineOptions({
   name: "Ligand3d"
 });
 
 const task_id = ref("15190");
 const frame_data = ref(data2);
+
+onMounted(() => {
+  console.log(ligandStr.value);
+});
 </script>
 
 <template>
