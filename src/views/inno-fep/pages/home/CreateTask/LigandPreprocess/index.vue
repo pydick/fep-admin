@@ -59,7 +59,9 @@ const experimentMethods = ref([
 const experimentUnits = ref([
   { label: "nM", value: "nM" },
   { label: "μM", value: "μM" },
-  { label: "mM", value: "mM" }
+  { label: "mM", value: "mM" },
+  { label: "M", value: "M" },
+  { label: "kcal/mol", value: "kcal/mol" }
 ]);
 
 const mapTypes = ref([
@@ -186,13 +188,13 @@ onMounted(async () => {
       <el-switch v-model="step2Form.showExperimentData" class="ml-[10px]" />
     </BlcokTitle>
     <div v-show="step2Form.showExperimentData" class="flex">
-      <el-form-item label="实验数据方式" prop="experimentMethod">
-        <el-select v-model="step2Form.experimentMethod" placeholder="选择实验数据方式" class="select-w-responsive mr-[15px]">
+      <el-form-item label="实验亲和力" prop="experimentMethod">
+        <el-select v-model="step2Form.experimentMethod" placeholder="选择实验亲和力" class="select-w-responsive mr-[15px]">
           <el-option v-for="item in experimentMethods" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="实验能力" prop="experimentUnit" label-width="70px">
-        <el-select v-model="step2Form.experimentUnit" placeholder="选择实验能力单位" class="select-w-responsive">
+      <el-form-item label="亲和力单位" prop="experimentUnit" label-width="90px">
+        <el-select v-model="step2Form.experimentUnit" placeholder="选择亲和力单位" class="select-w-responsive">
           <el-option v-for="item in experimentUnits" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
