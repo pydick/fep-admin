@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Ligand3d_molstar from "@drugflow/components/molecule/ligand3d_molstar.vue";
+import multi_ligand_dock_frame from "@drugflow/components/molecule/multi_ligand/multi_ligand_dock_frame.vue";
 import { ref } from "vue";
 import { data2 } from "./data2.js";
 defineOptions({
@@ -12,7 +12,7 @@ const frame_data = ref(data2);
 
 <template>
   <div class="relative w-full h-full">
-    <Ligand3d_molstar ref="ngl_ref" :job_id="task_id" :smiles_id_list_str="JSON.stringify(frame_data)" />
+    <multi_ligand_dock_frame ref="ngl_ref" :job_id="task_id" :smiles_id_list_str="JSON.stringify(frame_data)" />
   </div>
 </template>
 
