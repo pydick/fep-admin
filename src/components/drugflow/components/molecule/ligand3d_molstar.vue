@@ -54,8 +54,6 @@ const draw = async () => {
       ligand_view_dict.value.has_refer = true;
       ligand_view_dict.value.refer_smiles = mockSmiles;
       ligand_view_dict.value.refer_pdb_string = originData;
-      console.log(111, mockSmiles);
-      console.log(111, originData);
       first_draw.value = true;
     }
 
@@ -121,7 +119,9 @@ const draw = async () => {
     }
     // 标记Molstar已初始化
     init_molstar.value = true;
-    console.log(222);
+    // 使用 nextTick 等待 props 更新完成后再调用 draw
+    await nextTick();
+
     // 调用Molstar组件绘制方法
     molstar_ref.value.draw();
   } catch {

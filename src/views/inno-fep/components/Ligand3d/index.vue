@@ -7,10 +7,6 @@ defineOptions({
 });
 
 const task_id = ref("15337");
-
-watch(ligandStr, newVal => {
-  console.log(444, newVal);
-});
 </script>
 
 <template>

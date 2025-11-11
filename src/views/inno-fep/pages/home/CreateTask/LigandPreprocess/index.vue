@@ -114,37 +114,6 @@ const tab = ref<string>(tab_list.value[0]);
 const changeInputTab = value => {
   console.log(value);
 };
-const mockLigandData = data => {
-  const data1 = data.map((item, index) => {
-    let ligandData = {};
-    if (index === 0) {
-      ligandData = mockrow1;
-    } else if (index === 1) {
-      ligandData = mockrow2;
-    } else if (index === 2) {
-      ligandData = mockrow3;
-    }
-    return {
-      ...item,
-      ligandData: ligandData
-    };
-  });
-  const data2 = data1.map(item => item.ligandData);
-  const data3 = preprocess_data({ results: data2 });
-  const data4 = data1.map((item, index) => {
-    if (index === 0) {
-      item.ligandData = data3.results[index];
-    } else if (index === 1) {
-      item.ligandData = data3.results[index];
-    } else if (index === 3) {
-      item.ligandData = data3.results[index];
-    } else {
-      item.ligandData = {};
-    }
-    return item;
-  });
-  return data4;
-};
 
 const exampleChoose = async value => {
   console.log(value);
@@ -178,6 +147,38 @@ const uploadSuc = data => {
 const addNewLigandSuc = data => {
   ligandList.value.push(...data.molecules);
   ligandList.value = mockLigandData(ligandList.value);
+};
+
+const mockLigandData = data => {
+  const data1 = data.map((item, index) => {
+    let ligandData = {};
+    if (index === 0) {
+      ligandData = mockrow1;
+    } else if (index === 1) {
+      ligandData = mockrow2;
+    } else if (index === 2) {
+      ligandData = mockrow3;
+    }
+    return {
+      ...item,
+      ligandData: ligandData
+    };
+  });
+  const data2 = data1.map(item => item.ligandData);
+  const data3 = preprocess_data({ results: data2 });
+  const data4 = data1.map((item, index) => {
+    if (index === 0) {
+      item.ligandData = data3.results[index];
+    } else if (index === 1) {
+      item.ligandData = data3.results[index];
+    } else if (index === 2) {
+      item.ligandData = data3.results[index];
+    } else {
+      item.ligandData = {};
+    }
+    return item;
+  });
+  return data4;
 };
 
 let exampleList = reactive<{ name: string; value: string }[]>([]);
