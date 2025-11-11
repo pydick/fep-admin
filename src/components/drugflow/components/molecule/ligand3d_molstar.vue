@@ -107,15 +107,17 @@ const draw = async () => {
       console.log(666, pdbResults);
 
       // 将获取到的PDB数据添加到配体列表中
-      pdbResults.forEach(result => {
-        ligand_view_dict.value.ligands_list.push({
+      const addLigandsList = pdbResults.reduce((acc, result) => {
+        acc.push({
           ligand_hex_id: result.id,
           ligand_smiles: result.smiles,
           pdb_string: result.pdbData,
           ligand_show_name: result.showId,
           residue_full_info: result.residueFullInfo
         });
-      });
+        return acc;
+      }, []);
+      ligand_view_dict.value.ligands_list.push(...addLigandsList);
     }
     // 标记Molstar已初始化
     init_molstar.value = true;
