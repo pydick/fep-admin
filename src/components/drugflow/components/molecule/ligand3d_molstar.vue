@@ -7,7 +7,10 @@
 import { ref, watch, onMounted, nextTick } from "vue";
 import multi_ligand_view_molstar from "./multi_ligand/multi_ligand_view_molstar.vue";
 import { screen_get_pdb, screen_get_ori_pdb } from "@drugflow/api/screen";
-import { pdbmock } from "@/views/inno-fep/pages/home/mockdata/pdbData.js";
+import { originData } from "@/views/inno-fep/pages/home/mockdata/pdb/orgin.js";
+import { pdb_5940408 } from "@/views/inno-fep/pages/home/mockdata/pdb/5940408-pdf.js";
+import { pdb_5940409 } from "@/views/inno-fep/pages/home/mockdata/pdb/5940409-pdf.js";
+import { pdb_5940410 } from "@/views/inno-fep/pages/home/mockdata/pdb/5940410-pdf.js";
 import { mockSmiles } from "@/views/inno-fep/pages/home/mockdata/otherdata.js";
 
 // 定义 props
@@ -42,20 +45,18 @@ const draw = async () => {
     const smiles_id_list = JSON.parse(props.smiles_id_list_str);
     // 首次绘制时获取参考配体信息
     if (!first_draw.value) {
-      try {
-        // const res = await screen_get_ori_pdb(props.job_id);
-        // if (res.show_ref_ligand) {
-        //   ligand_view_dict.value.has_refer = true;
-        //   ligand_view_dict.value.refer_smiles = res.smiles;
-        //   ligand_view_dict.value.refer_pdb_string = res.pdb;
-        // }
-        ligand_view_dict.value.has_refer = true;
-        ligand_view_dict.value.refer_smiles = mockSmiles;
-        ligand_view_dict.value.refer_pdb_string = pdbmock;
-        first_draw.value = true;
-      } catch {
-        console.log("no refer ligand");
-      }
+      // const res = await screen_get_ori_pdb(props.job_id);
+      // if (res.show_ref_ligand) {
+      //   ligand_view_dict.value.has_refer = true;
+      //   ligand_view_dict.value.refer_smiles = res.smiles;
+      //   ligand_view_dict.value.refer_pdb_string = res.pdb;
+      // }
+      ligand_view_dict.value.has_refer = true;
+      ligand_view_dict.value.refer_smiles = mockSmiles;
+      ligand_view_dict.value.refer_pdb_string = originData;
+      console.log(111, mockSmiles);
+      console.log(111, originData);
+      first_draw.value = true;
     }
 
     // 步骤1：从现有的配体列表中移除不在新SMILES列表中的配体
@@ -70,21 +71,42 @@ const draw = async () => {
     // 过滤出不在已有列表中的新配体
     const newLigands = smiles_id_list.filter(item => !existingIds.includes(item._id));
 
+    console.log(333, newLigands);
+
     // 步骤3：如果有新配体，并行请求PDB数据并添加到列表
     if (newLigands.length > 0) {
       // 为每个新配体创建PDB数据请求Promise
       const pdbPromises = newLigands.map(item =>
-        screen_get_pdb(props.job_id, item._id).then(res => ({
-          id: item._id,
-          smiles: item.SMILES,
-          showId: item.show_id,
-          residueFullInfo: item.values.residues_full_info,
-          pdbData: res.data
-        }))
+        // screen_get_pdb(props.job_id, item._id).then(res => ({
+        //   id: item._id,
+        //   smiles: item.SMILES,
+        //   showId: item.show_id,
+        //   residueFullInfo: item.values.residues_full_info,
+        //   pdbData: res.data
+        // }))
+
+        {
+          let pdbData = "";
+          if (item._id === 5940408) {
+            pdbData = pdb_5940408;
+          } else if (item._id === 5940409) {
+            pdbData = pdb_5940409;
+          } else if (item._id === 5940410) {
+            pdbData = pdb_5940410;
+          }
+          return {
+            id: item._id,
+            smiles: item.SMILES,
+            showId: item.show_id,
+            residueFullInfo: item.values.residues_full_info,
+            pdbData: pdbData
+          };
+        }
       );
 
       // 并行等待所有PDB请求完成
       const pdbResults = await Promise.all(pdbPromises);
+      console.log(666, pdbResults);
 
       // 将获取到的PDB数据添加到配体列表中
       pdbResults.forEach(result => {
@@ -99,7 +121,7 @@ const draw = async () => {
     }
     // 标记Molstar已初始化
     init_molstar.value = true;
-
+    console.log(222);
     // 调用Molstar组件绘制方法
     molstar_ref.value.draw();
   } catch {
@@ -111,19 +133,16 @@ const draw = async () => {
 };
 
 // 监听SMILES ID列表变化
-// watch(
-//   () => props.smiles_id_list_str,
-//   () => {
-//     molstar_ref.value.open_loading();
-//     draw();
-//   }
-// );
+watch(
+  () => props.smiles_id_list_str,
+  () => {
+    draw();
+  }
+);
 
 // 组件挂载后初始化
 onMounted(() => {
-  if (props.smiles_id_list_str !== "[]" && props.smiles_id_list_str !== "") {
-    draw();
-  }
+  draw();
 });
 </script>
 

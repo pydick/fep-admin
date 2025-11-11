@@ -7,11 +7,49 @@ import PerturbationGraphDialog from "./components/PerGraphDialog/index.vue";
 import Data_select from "../components/DataSelect/index.vue";
 import { ossList, selectLigandExample } from "@/api/fep";
 import { ElMessage } from "element-plus";
-import { mockrow1, mockrow2, mockrow3 } from "./data2";
+import { mockrow1, mockrow2, mockrow3 } from "@/views/inno-fep/pages/home/mockdata/otherdata.js";
+import { distribute_data } from "@/views/inno-fep/pages/home/mockdata/table_getdata_distribute.js";
 const data_list = ref([]);
 defineOptions({
   name: "LigandPreprocess"
 });
+
+const num_poses = ref(distribute_data.args.docking.num_poses);
+
+const preprocess_data = data => {
+  const ret_list = [];
+  for (let i = 0; i < data.results.length; i++) {
+    const ret_dict = {};
+    ret_dict.SMILES = data.results[i].SMILES;
+    ret_dict._id = data.results[i].id;
+    ret_dict.row_id = i;
+    ret_dict.raw_data = data.results[i].raw_data;
+    ret_dict.id = data.results[i].values._id;
+    ret_dict.iso_id = data.results[i].values._iso_id ? data.results[i].values._iso_id : "-";
+    ret_dict.ori_id = data.results[i].values._ori_id ? data.results[i].values._ori_id : "-";
+    ret_dict.show_id = data.results[i].values._show_id ? data.results[i].values._show_id : data.results[i].values._res_idx ? data.results[i].values._res_idx : "-";
+    ret_dict.key = data.results[i].values._id * num_poses.value + data.results[i].values._ori_id;
+    ret_dict.values = data.results[i].values;
+    ret_dict.weight = data.results[i].weight;
+    ret_dict.finished = data.results[i].finished;
+    // ret_dict.affinity = Math.round(data.results[i].values['Vina Score'] * 1000) / 1000
+    Object.keys(data.results[i].values).forEach(key => {
+      if (key !== "IGN" && key !== "RTMS" && key !== "Residues" && key !== "residues" && key !== "residues_full_info" && key !== "_id" && key !== "_iso_id" && key !== "_ori_id" && key !== "_res_idx" && key !== "_show_id") {
+        ret_dict.affinity = isNaN(data.results[i].values[key]) ? data.results[i].values[key] : Math.round(data.results[i].values[key] * 1000) / 1000;
+        // ret_dict.affinity = Math.round(data.results[i].values[key] * 1000) / 1000
+      }
+    });
+    ret_dict.IGN = data.results[i].values.IGN === undefined ? data.results[i].values.IGN : Math.round(data.results[i].values.IGN * 1000) / 1000;
+
+    ret_dict.RTMS = data.results[i].values.RTMScore === undefined ? data.results[i].values.RTMScore : Math.round(data.results[i].values.RTMScore * 1000) / 1000;
+
+    ret_dict.score = data.results[i].values.score === undefined ? data.results[i].values.score : Math.round(data.results[i].values.score * 1000) / 1000;
+
+    ret_list.push(ret_dict);
+  }
+  data.results = ret_list;
+  return data;
+};
 
 // 注入父组件提供的任务表单数据对象
 const taskFormData = inject<any>("taskFormData");
@@ -77,7 +115,7 @@ const changeInputTab = value => {
   console.log(value);
 };
 const mockLigandData = data => {
-  return data.map((item, index) => {
+  const data1 = data.map((item, index) => {
     let ligandData = {};
     if (index === 0) {
       ligandData = mockrow1;
@@ -91,6 +129,21 @@ const mockLigandData = data => {
       ligandData: ligandData
     };
   });
+  const data2 = data1.map(item => item.ligandData);
+  const data3 = preprocess_data({ results: data2 });
+  const data4 = data1.map((item, index) => {
+    if (index === 0) {
+      item.ligandData = data3.results[index];
+    } else if (index === 1) {
+      item.ligandData = data3.results[index];
+    } else if (index === 3) {
+      item.ligandData = data3.results[index];
+    } else {
+      item.ligandData = {};
+    }
+    return item;
+  });
+  return data4;
 };
 
 const exampleChoose = async value => {
@@ -123,8 +176,8 @@ const uploadSuc = data => {
 };
 
 const addNewLigandSuc = data => {
-  const newData = mockLigandData(data.molecules);
-  ligandList.value.push(...newData);
+  ligandList.value.push(...data.molecules);
+  ligandList.value = mockLigandData(ligandList.value);
 };
 
 let exampleList = reactive<{ name: string; value: string }[]>([]);

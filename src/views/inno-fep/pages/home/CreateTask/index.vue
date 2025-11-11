@@ -31,7 +31,7 @@ const taskFormData = reactive<TaskFormData>({
   step3Form: null
 });
 
-const ligandStr = ref("");
+const ligandStr = ref("[]");
 
 const handleNext = () => {
   stepRef.value?.next();

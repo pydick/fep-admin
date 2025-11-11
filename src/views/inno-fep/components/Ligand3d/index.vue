@@ -1,23 +1,21 @@
 <script setup lang="ts">
 import Ligand3d_molstar from "@drugflow/components/molecule/ligand3d_molstar.vue";
-import { ref, inject, onMounted } from "vue";
-import { data2 } from "./data2.js";
+import { ref, inject, onMounted, watch } from "vue";
 const ligandStr = inject<any>("ligandStr");
 defineOptions({
   name: "Ligand3d"
 });
 
-const task_id = ref("15190");
-const frame_data = ref(data2);
+const task_id = ref("15337");
 
-onMounted(() => {
-  console.log(ligandStr.value);
+watch(ligandStr, newVal => {
+  console.log(444, newVal);
 });
 </script>
 
 <template>
   <div class="relative w-full h-full">
-    <Ligand3d_molstar ref="ngl_ref" :job_id="task_id" :smiles_id_list_str="JSON.stringify(frame_data)" />
+    <Ligand3d_molstar ref="ngl_ref" :job_id="task_id" :smiles_id_list_str="ligandStr" />
   </div>
 </template>
 

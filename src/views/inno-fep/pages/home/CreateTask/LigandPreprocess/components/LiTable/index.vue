@@ -17,10 +17,10 @@ const emit = defineEmits<{
 }>();
 
 const multipleSelection = ref([]);
-const handleSelectionChange = item => {
-  console.log(item);
-  multipleSelection.value = item;
-  ligandStr.value = JSON.stringify(item.ligandData);
+const handleSelectionChange = selectedArr => {
+  multipleSelection.value = selectedArr;
+  const data = selectedArr.map(item => item.ligandData);
+  ligandStr.value = JSON.stringify(data);
 };
 
 const handleDelete = async row => {
