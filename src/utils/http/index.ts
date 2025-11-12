@@ -71,7 +71,7 @@ class PureHttp {
         const whiteList = ["/refresh", `${apiV1}/auth/login`, "/get_csrf_token", "/signin"];
         return whiteList.some(url => config.url.endsWith(url))
           ? config
-          : new Promise(resolve => {
+          : new Promise((resolve, reject) => {
               const data = getToken();
               if (data) {
                 const now = new Date().getTime();
@@ -107,11 +107,12 @@ class PureHttp {
                   resolve(config);
                 }
               } else {
-                ElMessage.error("token失效，请重新登录");
+                const errorStr = "token失效，请重新登录";
+                ElMessage.error(errorStr);
                 removeToken(); // 清除本地存储的token
                 router.push("/login"); // 跳转到登录页面
-
-                resolve(config);
+                reject(new Error(errorStr));
+                // resolve(config);
               }
             });
       },
