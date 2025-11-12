@@ -1,6 +1,9 @@
 import { http as request } from "@/utils/http";
 import { apiV1 } from "@/config/api";
 import { ossBucket as bucket } from "@/config/api";
+import { useTaskStoreHook } from "@/store/modules/task";
+
+const taskStore = useTaskStoreHook();
 
 export function ossPostDownload(data) {
   return request.post(`${apiV1}/oss/download`, { data });
@@ -84,6 +87,7 @@ export function residueMissingFix(data) {
 }
 
 export function checkProtein(data) {
+  data.append("task_id", taskStore.taskId);
   return request.post(
     `${apiV1}/protein/check/upload?verbose=true`,
     { data },
@@ -99,9 +103,8 @@ export async function fetchFileAsBlob(url) {
 }
 
 export function ligandUpload(data) {
-  const defaultParams = {
-    key: "uploaded_ligands"
-  };
+  data.append("task_id", taskStore.taskId);
+  data.append("key", "uploaded_ligands");
   return request.post(
     `${apiV1}/ligand/parse/upload`,
     { data },
@@ -118,7 +121,7 @@ export function getPerturbationGraphData(data) {
   return request.post(`${apiV1}/ligand/perturbation-graph`, { data });
 }
 export function removeLigand(data) {
-  return request.post(`${apiV1}/ligand/remove-molecules`, { data });
+  return request.post(`${apiV1}/ligand/remove-molecules`, { data: { ...data, task_id: taskStore.taskId } });
 }
 
 // mock

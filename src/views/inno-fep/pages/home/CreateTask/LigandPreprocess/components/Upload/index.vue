@@ -87,7 +87,6 @@ export default {
       if (fileList.length) {
         const formData = new FormData();
         formData.append("file", file.raw);
-        formData.append("key", "uploaded_ligands");
         const res = await ligandUpload(formData);
         if (res.success) {
           this.$emit("uploadSuc", res.data);
