@@ -20,31 +20,32 @@ const preprocess_data = data => {
   const ret_list = [];
   for (let i = 0; i < data.results.length; i++) {
     const ret_dict = {};
-    ret_dict.SMILES = data.results[i].SMILES;
-    ret_dict._id = data.results[i].id;
-    ret_dict.row_id = i;
-    ret_dict.raw_data = data.results[i].raw_data;
-    ret_dict.id = data.results[i].values._id;
-    ret_dict.iso_id = data.results[i].values._iso_id ? data.results[i].values._iso_id : "-";
-    ret_dict.ori_id = data.results[i].values._ori_id ? data.results[i].values._ori_id : "-";
-    ret_dict.show_id = data.results[i].values._show_id ? data.results[i].values._show_id : data.results[i].values._res_idx ? data.results[i].values._res_idx : "-";
-    ret_dict.key = data.results[i].values._id * num_poses.value + data.results[i].values._ori_id;
-    ret_dict.values = data.results[i].values;
-    ret_dict.weight = data.results[i].weight;
-    ret_dict.finished = data.results[i].finished;
-    // ret_dict.affinity = Math.round(data.results[i].values['Vina Score'] * 1000) / 1000
-    Object.keys(data.results[i].values).forEach(key => {
-      if (key !== "IGN" && key !== "RTMS" && key !== "Residues" && key !== "residues" && key !== "residues_full_info" && key !== "_id" && key !== "_iso_id" && key !== "_ori_id" && key !== "_res_idx" && key !== "_show_id") {
-        ret_dict.affinity = isNaN(data.results[i].values[key]) ? data.results[i].values[key] : Math.round(data.results[i].values[key] * 1000) / 1000;
-        // ret_dict.affinity = Math.round(data.results[i].values[key] * 1000) / 1000
-      }
-    });
-    ret_dict.IGN = data.results[i].values.IGN === undefined ? data.results[i].values.IGN : Math.round(data.results[i].values.IGN * 1000) / 1000;
+    if (JSON.stringify(data.results[i]) !== "{}") {
+      ret_dict.SMILES = data.results[i].SMILES;
+      ret_dict._id = data.results[i].id;
+      ret_dict.row_id = i;
+      ret_dict.raw_data = data.results[i].raw_data;
+      ret_dict.id = data.results[i].values._id;
+      ret_dict.iso_id = data.results[i].values._iso_id ? data.results[i].values._iso_id : "-";
+      ret_dict.ori_id = data.results[i].values._ori_id ? data.results[i].values._ori_id : "-";
+      ret_dict.show_id = data.results[i].values._show_id ? data.results[i].values._show_id : data.results[i].values._res_idx ? data.results[i].values._res_idx : "-";
+      ret_dict.key = data.results[i].values._id * num_poses.value + data.results[i].values._ori_id;
+      ret_dict.values = data.results[i].values;
+      ret_dict.weight = data.results[i].weight;
+      ret_dict.finished = data.results[i].finished;
+      // ret_dict.affinity = Math.round(data.results[i].values['Vina Score'] * 1000) / 1000
+      Object.keys(data.results[i].values).forEach(key => {
+        if (key !== "IGN" && key !== "RTMS" && key !== "Residues" && key !== "residues" && key !== "residues_full_info" && key !== "_id" && key !== "_iso_id" && key !== "_ori_id" && key !== "_res_idx" && key !== "_show_id") {
+          ret_dict.affinity = isNaN(data.results[i].values[key]) ? data.results[i].values[key] : Math.round(data.results[i].values[key] * 1000) / 1000;
+          // ret_dict.affinity = Math.round(data.results[i].values[key] * 1000) / 1000
+        }
+      });
+      ret_dict.IGN = data.results[i].values.IGN === undefined ? data.results[i].values.IGN : Math.round(data.results[i].values.IGN * 1000) / 1000;
 
-    ret_dict.RTMS = data.results[i].values.RTMScore === undefined ? data.results[i].values.RTMScore : Math.round(data.results[i].values.RTMScore * 1000) / 1000;
+      ret_dict.RTMS = data.results[i].values.RTMScore === undefined ? data.results[i].values.RTMScore : Math.round(data.results[i].values.RTMScore * 1000) / 1000;
 
-    ret_dict.score = data.results[i].values.score === undefined ? data.results[i].values.score : Math.round(data.results[i].values.score * 1000) / 1000;
-
+      ret_dict.score = data.results[i].values.score === undefined ? data.results[i].values.score : Math.round(data.results[i].values.score * 1000) / 1000;
+    }
     ret_list.push(ret_dict);
   }
   data.results = ret_list;
@@ -208,8 +209,23 @@ const buildDisabled = computed(() => {
   }
 });
 
-const sucessSure = ({ id }) => {
+const sucessSure = async ({ id }) => {
   console.log(id);
+  const res = await selectLigandExample({ oss_key: id });
+  if (res.success) {
+    ligandList.value = mockLigandData(res.data.molecules);
+  }
+};
+
+const show_dialog = async () => {
+  const res = await ossList({ ...ossListCommomParams });
+  if (res.success) {
+    data_list.value = res.data.objects.map(item => ({
+      dataset_id: item.key,
+      name: item.filename || item.key
+    }));
+    showDataCenter.value = true;
+  }
 };
 
 onMounted(async () => {

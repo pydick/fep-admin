@@ -130,7 +130,7 @@ const check_pdb = file => {
   return check_pdb_api(formData);
 };
 
-const show_dialog = async (type?: string) => {
+const show_dialog = async () => {
   const res = await ossList({ ...ossListCommomParams });
   if (res.success) {
     data_list.value = res.data.objects.map(item => ({
@@ -529,7 +529,7 @@ const handlePreprocess = async () => {
         </div>
         <div v-show="step1Form.input_tab === '数据中心'" class="">
           <el-form-item :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="protein_data">
-            <el-button class="w-full w_100" @click="show_dialog('protein')">
+            <el-button class="w-full w_100" @click="show_dialog()">
               <el-input v-model="step1Form.protein_data" :input-style="{ textAlign: 'center' }" class="w-full!" placeholder="数据中心导入pdb" readonly />
             </el-button>
           </el-form-item>
