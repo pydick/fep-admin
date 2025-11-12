@@ -169,7 +169,7 @@ export default {
           this.drawed_refer = true;
           await this.draw_refer();
         }
- 
+
         // 获取当前配体ID列表
         const ligands_hex_id_list = this.ligands_list.map(item => item.ligand_hex_id);
 
@@ -186,6 +186,7 @@ export default {
         }
 
         // 添加新的配体
+        const addPromises = [];
         for (let i = 0; i < ligands_hex_id_list.length; i++) {
           if (this.own_ligands_hex_id_list.indexOf(ligands_hex_id_list[i]) === -1) {
             this.own_ligands_hex_id_list.push(ligands_hex_id_list[i]);
@@ -199,11 +200,10 @@ export default {
               check: true,
               color: color
             });
-            console.log("-------------");
-            // 在Molstar中添加配体视图
-            await this.add_ligand_view(this.ligands_list[i].pdb_string, ligands_hex_id_list[i], i, false, this.ligands_list[i].ligand_show_name, color, this.ligands_list[i].residue_full_info);
+            addPromises.push(this.add_ligand_view(this.ligands_list[i].pdb_string, ligands_hex_id_list[i], i, false, this.ligands_list[i].ligand_show_name, color, this.ligands_list[i].residue_full_info));
           }
         }
+        await Promise.all(addPromises);
         this.close_loading();
       } catch (error) {
         console.log("error", error);
