@@ -19,6 +19,14 @@ const emit = defineEmits<{
   "update:data": [value: any[]];
 }>();
 
+defineExpose({
+  toggleAllSelection: () => toggleAllSelection()
+});
+const toggleAllSelection = () => {
+  const elTable = tableRef.value.getTableRef();
+  elTable.toggleAllSelection();
+};
+
 const multipleSelection = ref([]);
 const handleSelectionChange = selectedArr => {
   multipleSelection.value = selectedArr;

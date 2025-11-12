@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BlcokTitle from "@/views/inno-fep/components/BlcokTitle/index.vue";
-import { ref, reactive, onMounted, inject, watch, computed } from "vue";
+import { ref, reactive, onMounted, inject, watch, computed, nextTick } from "vue";
 import LiTable from "./components/LiTable/index.vue";
 import Upload from "./components/Upload/index.vue";
 import PerturbationGraphDialog from "./components/PerGraphDialog/index.vue";
@@ -133,10 +133,12 @@ const exampleChoose = async value => {
   }
 };
 
+const liTableRef = ref();
 const isAlign = ref(false);
 
 const handleAlign = () => {
   isAlign.value = true;
+  liTableRef.value.toggleAllSelection();
 };
 
 const isGernerate = ref(false);
@@ -270,7 +272,7 @@ onMounted(async () => {
       </div>
     </el-card>
     <BlcokTitle title="配体列表" />
-    <LiTable v-model:data="ligandList" class="mt-[15px]" />
+    <LiTable ref="liTableRef" v-model:data="ligandList" class="mt-[15px]" />
 
     <BlcokTitle title="分子叠合">
       <el-switch v-model="step2Form.showLigandOverlay" class="ml-[10px]" />
