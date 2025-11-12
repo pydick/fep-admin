@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BlcokTitle from "@/views/inno-fep/components/BlcokTitle/index.vue";
-import { ref, reactive, onMounted, inject, watch } from "vue";
+import { ref, reactive, onMounted, inject, watch, computed } from "vue";
 import LiTable from "./components/LiTable/index.vue";
 import Upload from "./components/Upload/index.vue";
 import PerturbationGraphDialog from "./components/PerGraphDialog/index.vue";
@@ -63,30 +63,39 @@ const step2Form = reactive({
   ligandData: "",
   showLigandOverlay: true,
   showExperimentData: true,
-  referenceLigand: "cpd1",
+  referenceLigand: "-1",
   experimentMethod: "IC50",
   experimentUnit: "nM",
   mapType: "Star map",
-  centerMolecule: "cpd1"
+  centerMolecule: ""
 });
 const showDataCenter = ref(false);
 
 taskFormData.step2Form = step2Form;
 
-const referenceLigand = reactive([
-  {
-    label: "cpd1",
-    value: "cpd1"
-  },
-  {
-    label: "cpd2",
-    value: "cpd2"
-  },
-  {
-    label: "cpd3",
-    value: "cpd3"
-  }
-]);
+const centralMoleculeOptions = computed(() => {
+  return ligandList.value.map(item => ({
+    label: item.name,
+    value: item.id
+  }));
+});
+
+const referenceLigand = computed(() => {
+  const options = [
+    {
+      label: "参考配体",
+      value: "-1"
+    }
+  ];
+  options.push(
+    ...ligandList.value.map(item => ({
+      label: item.name,
+      value: item.id
+    }))
+  );
+  return options;
+});
+
 let ligandList = ref([]);
 
 const experimentMethods = ref([
@@ -268,7 +277,7 @@ onMounted(async () => {
       </el-form-item>
       <el-form-item label="中心分子" prop="centerMolecule" label-position="right" label-width="70px">
         <el-select v-model="step2Form.centerMolecule" placeholder="选择中心分子" class="select-w-responsive mr-[10px]">
-          <el-option v-for="item in referenceLigand" :key="item.value" :label="item.label" :value="item.value" />
+          <el-option v-for="item in centralMoleculeOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <div class="pt-[15px] xl:pl-[100PX] 2xl:pl-0">
