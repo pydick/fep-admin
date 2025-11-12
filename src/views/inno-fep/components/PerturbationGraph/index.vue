@@ -381,6 +381,15 @@ const handleFirstEdgeClick = () => {
     });
   }
 };
+
+const propertyValue = ref("Similarity score");
+const propertyOptions = [
+  { label: "Mapping score", value: "Mapping score" },
+  { label: "Similarity score", value: "Similarity score" },
+  { label: "Experimental ddG", value: "Experimental ddG" },
+  { label: "Protocol", value: "Protocol" }
+];
+
 onMounted(async () => {
   if (props.isDialogEnter) {
     await nextTick();
@@ -419,6 +428,12 @@ onUnmounted(() => {
     <div class="count-container">
       <span>共{{ edgeCount }}对配体</span>
     </div>
+    <div class="property-container">
+      <span>微扰属性：</span>
+      <el-select v-model="propertyValue" placeholder="选择微扰属性" class="w-[160px]! inline-block mr-[10px]">
+        <el-option v-for="item in propertyOptions" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+    </div>
   </div>
 </template>
 
@@ -437,7 +452,16 @@ onUnmounted(() => {
     position: absolute;
     bottom: 20px;
     left: 0;
-    width: 100%;
+    width: 50%;
+    height: 30px;
+    background-color: #fff;
+    padding: 0 0 0 20px;
+  }
+  .property-container {
+    position: absolute;
+    bottom: 20px;
+    right: 0;
+    width: 50%;
     height: 30px;
     background-color: #fff;
     padding: 0 0 0 20px;
