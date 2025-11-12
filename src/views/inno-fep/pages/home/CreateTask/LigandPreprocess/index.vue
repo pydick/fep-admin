@@ -132,12 +132,17 @@ const exampleChoose = async value => {
   }
 };
 
+const isAlign = ref(false);
+
 const handleAlign = () => {
-  console.log("执行分子叠合");
+  isAlign.value = true;
 };
+
+const isGernerate = ref(false);
 
 const handleGenerateMap = () => {
   console.log("生成映射图");
+  isGernerate.value = true;
 };
 const addUploadRef = ref();
 const addNewLigand = () => {
@@ -191,6 +196,17 @@ const mockLigandData = data => {
 };
 
 let exampleList = reactive<{ name: string; value: string }[]>([]);
+
+const buildDisabled = computed(() => {
+  if (ligandList.value.length < 2) {
+    return true;
+  } else {
+    if (isAlign.value || !step2Form.showLigandOverlay) {
+      return false;
+    }
+    return true;
+  }
+});
 
 const sucessSure = ({ id }) => {
   console.log(id);
@@ -248,7 +264,10 @@ onMounted(async () => {
         <el-select v-model="step2Form.referenceLigand" placeholder="选择参考配体" class="w-[200px]! inline-block mr-[10px]">
           <el-option v-for="item in referenceLigand" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
-        <el-button type="primary" @click="handleAlign">Align</el-button>
+        <el-button type="primary" :disabled="ligandList.length < 2" @click="handleAlign">Align</el-button>
+        <el-tooltip content="基于左侧3D区域选择的参考配体，进行分子叠合。至少有两个配体被选中，才能进行分子叠合。" placement="top">
+          <el-icon class="ml-[5px] icon-common"><QuestionFilled /></el-icon>
+        </el-tooltip>
       </el-form-item>
     </div>
 
@@ -280,9 +299,15 @@ onMounted(async () => {
           <el-option v-for="item in centralMoleculeOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <div class="pt-[15px] xl:pl-[100PX] 2xl:pl-0">
-        <el-button type="primary" @click="handleGenerateMap">生成</el-button>
-        <el-button @click="perturbationGraphShow">配体微扰图</el-button>
+      <div class="pt-[15px] xl:pl-[100PX] 2xl:pl-0 flex-bc">
+        <el-button type="primary" :disabled="buildDisabled" @click="handleGenerateMap">Build</el-button>
+        <el-tooltip content="至少两个配体以上， Align后或者关闭分子叠合，才能去Build映射图" placement="top">
+          <el-icon class="ml-[5px] icon-common"><QuestionFilled /></el-icon>
+        </el-tooltip>
+        <el-button :disabled="!isGernerate" @click="perturbationGraphShow">配体微扰图</el-button>
+        <el-tooltip content="生成后，才能打开配体微扰图" placement="top">
+          <el-icon class="ml-[5px] icon-common"><QuestionFilled /></el-icon>
+        </el-tooltip>
       </div>
     </div>
     <PerturbationGraphDialog v-model:visible="perturbationGraphVisible" />
