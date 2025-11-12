@@ -22,7 +22,6 @@ const dialogConfig = reactive({
   width: "550px",
   title: "任务参数详情",
   top: "15vh",
-  width: "550px",
   center: true
 });
 </script>
