@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref, inject } from "vue";
+import { ref, inject, computed } from "vue";
 import { tableData } from "./data";
 import { ElTag, ElButton, ElMessage } from "element-plus";
 import { removeLigand } from "@/api/fep";
+import EditPen from "~icons/ep/edit-pen";
+import Check from "~icons/ep/check";
 const tableRef = ref();
 const ligandStr = inject<any>("ligandStr");
 
@@ -49,8 +51,9 @@ const columns: TableColumnList = [
   {
     label: "分子名称",
     prop: "name",
-    minWidth: 80,
-    align: "center"
+    minWidth: 100,
+    align: "center",
+    slot: "name"
   },
   {
     label: "2D图形",
@@ -74,6 +77,29 @@ const columns: TableColumnList = [
     slot: "operation"
   }
 ];
+const editMap = ref({});
+const onEdit = (row, index) => {
+  editMap.value[index] = Object.assign({ ...row, editing: true });
+};
+const editing = computed(() => {
+  return index => {
+    return editMap.value[index]?.editing;
+  };
+});
+const iconClass = computed(() => {
+  return (index, other = false) => {
+    return ["cursor-pointer", "ml-2", "transition", "delay-100", other ? ["hover:scale-110", "hover:text-red-500"] : editing.value(index) && ["scale-150", "text-red-500"]];
+  };
+});
+const activeIndex = ref(-1);
+
+const onMouseleave = index => {
+  editing.value[index] ? (activeIndex.value = index) : (activeIndex.value = -1);
+};
+
+const onSave = function (index) {
+  editMap.value[index].editing = false;
+};
 
 const emptyText = ref("暂无数据");
 </script>
@@ -91,6 +117,16 @@ const emptyText = ref("暂无数据");
       </template>
       <template #operation="{ row }">
         <el-button link type="primary" size="small" @click="handleDelete(row)">删除</el-button>
+      </template>
+      <template #name="{ row, index }">
+        <div class="flex-bc w-full" @mouseenter="activeIndex = index" @mouseleave="onMouseleave(index)">
+          <p v-if="!editing(index)" class="w-[calc(100%-25px)]">{{ row.name }}</p>
+          <div v-else class="flex-bc">
+            <el-input v-model="row.name" />
+            <iconify-icon-offline :icon="Check" :class="iconClass(index)" @click="onSave(index)" />
+          </div>
+          <iconifyIconOffline v-show="activeIndex === index && !editing(index)" :icon="EditPen" :class="iconClass(index, true)" @click="onEdit(row, index)" />
+        </div>
       </template>
     </pure-table>
   </div>
