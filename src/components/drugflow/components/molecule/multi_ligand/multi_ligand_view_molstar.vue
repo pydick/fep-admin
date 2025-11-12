@@ -11,7 +11,7 @@
       <div v-if="has_refer" class="flex_def flex_column">
         <div class="flex_def flex_start">
           <!-- 参考配体显示控制复选框 -->
-          <el-checkbox v-model="ref_check" style="margin-right: 0.6rem" @change="change_visible('0')" />
+          <!-- <el-checkbox v-model="ref_check" style="margin-right: 0.6rem" @change="change_visible('0')" /> -->
           <!-- 参考配体颜色标识 -->
           <div style="width: 14px; height: 14px; margin-right: 0.6rem; background: red; border: 1px solid #33333340" />
           <!-- 参考配体标签 -->
@@ -25,7 +25,7 @@
       <div v-for="item in own_ligands_list" :key="item">
         <div class="flex_def flex_start">
           <!-- 配体显示控制复选框 -->
-          <el-checkbox v-model="item.check" style="margin-right: 0.6rem" @change="change_visible(item.id)" />
+          <!-- <el-checkbox v-model="item.check" style="margin-right: 0.6rem" @change="change_visible(item.id)" /> -->
           <!-- 配体颜色标识 -->
           <div :style="{ background: item.color }" style="width: 14px; height: 14px; margin-right: 0.6rem; border: 1px solid #33333340" />
           <!-- 配体名称 -->
@@ -169,7 +169,7 @@ export default {
           this.drawed_refer = true;
           await this.draw_refer();
         }
-
+ 
         // 获取当前配体ID列表
         const ligands_hex_id_list = this.ligands_list.map(item => item.ligand_hex_id);
 
@@ -199,12 +199,14 @@ export default {
               check: true,
               color: color
             });
+            console.log("-------------");
             // 在Molstar中添加配体视图
             await this.add_ligand_view(this.ligands_list[i].pdb_string, ligands_hex_id_list[i], i, false, this.ligands_list[i].ligand_show_name, color, this.ligands_list[i].residue_full_info);
           }
         }
         this.close_loading();
-      } catch {
+      } catch (error) {
+        console.log("error", error);
         this.close_loading();
       }
     },

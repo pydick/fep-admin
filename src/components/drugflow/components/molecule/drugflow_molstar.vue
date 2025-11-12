@@ -524,7 +524,7 @@ const load_structure = async input_params => {
   // prolif_data.value = res.data.iframe_string
   wait_proif.value = false;
   if (input_params.render_type != "default") {
-    const UNL_dict = find_UNL_dict(res.data.iframe_string);
+    const UNL_dict = find_UNL_dict(res.iframe_string);
     console.log("UNL_dict", UNL_dict);
     await find_and_add_prolif_data(UNL_dict, render_id);
   }
