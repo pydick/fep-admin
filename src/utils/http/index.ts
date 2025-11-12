@@ -91,11 +91,9 @@ class PureHttp {
                           PureHttp.requests = [];
                         } else {
                           ElMessage.error(res.message);
-                          setTimeout(() => {
-                            PureHttp.requests = []; // 清空待重试的请求队列
-                            removeToken(); // 清除本地存储的token
-                            router.push("/login"); // 跳转到登录页面
-                          }, 1000);
+                          PureHttp.requests = []; // 清空待重试的请求队列
+                          removeToken(); // 清除本地存储的token
+                          router.push("/login"); // 跳转到登录页面
                         }
                       })
                       .finally(() => {
@@ -110,10 +108,8 @@ class PureHttp {
                 }
               } else {
                 ElMessage.error("token失效，请重新登录");
-                setTimeout(() => {
-                  removeToken(); // 清除本地存储的token
-                  router.push("/login"); // 跳转到登录页面
-                }, 1000);
+                removeToken(); // 清除本地存储的token
+                router.push("/login"); // 跳转到登录页面
 
                 resolve(config);
               }
