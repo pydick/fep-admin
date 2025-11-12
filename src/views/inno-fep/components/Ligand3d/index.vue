@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Ligand3d_molstar from "@drugflow/components/molecule/ligand3d_molstar.vue";
+import Ligand3d_molstar from "@/components/CSmolecule/Ligand3d/index.vue";
 import { ref, inject, onMounted, watch } from "vue";
 const ligandStr = inject<any>("ligandStr");
 defineOptions({
