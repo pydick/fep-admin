@@ -319,11 +319,11 @@ onMounted(async () => {
       </el-form-item>
       <div class="pt-[15px] xl:pl-[100PX] 2xl:pl-0 flex-bc">
         <el-button type="primary" :disabled="buildDisabled" @click="handleGenerateMap">Build</el-button>
-        <el-tooltip content="至少两个配体以上， Align后或者关闭分子叠合，才能去Build映射图" placement="top">
+        <el-tooltip content="至少两个配体以上， Align后或者关闭分子叠合，才能使用Build" placement="top">
           <el-icon class="ml-[5px] icon-common mr-[15px]"><QuestionFilled /></el-icon>
         </el-tooltip>
         <el-button type="primary" :disabled="!isGernerate" @click="perturbationGraphShow">配体微扰图</el-button>
-        <el-tooltip content="生成后，才能打开配体微扰图" placement="top">
+        <el-tooltip content="Build后，才能生成并打开配体微扰图" placement="top">
           <el-icon class="ml-[5px] icon-common"><QuestionFilled /></el-icon>
         </el-tooltip>
       </div>
