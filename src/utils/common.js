@@ -497,3 +497,8 @@ export function binaryToUploadFile(binaryDataString, fileName = "test.pdb", mime
     uid: Date.now() + Math.random() // 添加唯一ID
   };
 }
+
+export const svgToDataUrl = svg => {
+  const svgBlob = new Blob([svg], { type: "image/svg+xml" });
+  return URL.createObjectURL(svgBlob);
+};

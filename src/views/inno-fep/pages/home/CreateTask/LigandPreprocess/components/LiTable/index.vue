@@ -7,6 +7,7 @@ import EditPen from "~icons/ep/edit-pen";
 import Check from "~icons/ep/check";
 const tableRef = ref();
 const ligandStr = inject<any>("ligandStr");
+import { svgToDataUrl } from "@/utils/common.js";
 
 interface IProps {
   data?: any[];
@@ -113,7 +114,7 @@ const emptyText = ref("暂无数据");
         <el-tag v-else type="danger" effect="plain">失败</el-tag>
       </template>
       <template #2dStructure="{ row }">
-        <div v-if="row.structure" class="structure-container w-[42px] h-[42px]" v-html="row.structure" />
+        <el-image :src="svgToDataUrl(row.structure)" :preview-src-list="[svgToDataUrl(row.structure)]" fit="contain" class="structure-img w-[42px] h-[42px]" :preview-teleported="true" />
       </template>
       <template #operation="{ row }">
         <el-button link type="primary" size="small" @click="handleDelete(row)">删除</el-button>
