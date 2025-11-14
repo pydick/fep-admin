@@ -308,6 +308,7 @@ const initGraph = () => {
 
     currentHighlightedNode.value = nodeId;
     graph.draw();
+    emit("edgeChange", "");
   });
 
   // 添加边点击事件
@@ -386,7 +387,6 @@ const propertyValue = ref("Similarity score");
 const propertyOptions = [
   { label: "Mapping score", value: "Mapping score" },
   { label: "Similarity score", value: "Similarity score" },
-  { label: "Experimental ddG", value: "Experimental ddG" },
   { label: "Protocol", value: "Protocol" }
 ];
 
@@ -452,7 +452,6 @@ onUnmounted(() => {
     position: absolute;
     bottom: 20px;
     left: 0;
-    width: 50%;
     height: 30px;
     background-color: #fff;
     padding: 0 0 0 20px;
@@ -460,8 +459,7 @@ onUnmounted(() => {
   .property-container {
     position: absolute;
     bottom: 20px;
-    right: 0;
-    width: 50%;
+    right: 10px;
     height: 30px;
     background-color: #fff;
     padding: 0 0 0 20px;
