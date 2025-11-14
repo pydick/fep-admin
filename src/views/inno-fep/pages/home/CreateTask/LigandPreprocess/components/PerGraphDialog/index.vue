@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<Props>(), {
   visible: false
 });
 
-const edgeId = ref<string | null>(null);
+const edgeData = ref<any>(null);
 const emit = defineEmits<{
   (e: "update:visible", value: boolean): void;
 }>();
@@ -23,8 +23,8 @@ const handleSure = () => {
 const handleCancel = () => {
   emit("update:visible", false);
 };
-const handleEdgeChange = (value: string) => {
-  edgeId.value = value;
+const handleEdgeChange = (value: any) => {
+  edgeData.value = value;
 };
 watch(
   () => props.visible,
@@ -48,7 +48,7 @@ watch(
       </el-col>
       <el-col :span="12" class="h-full">
         <BlcokTitle title="映射图" class="pb-[15px]" />
-        <MappingGraph :edgeId="edgeId" />
+        <MappingGraph :edgeData="edgeData" />
       </el-col>
     </el-row>
     <template #footer>

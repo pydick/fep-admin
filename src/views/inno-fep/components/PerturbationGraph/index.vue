@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<Iprops>(), {
 });
 
 const emit = defineEmits<{
-  (e: "edgeChange", value: string): void;
+  (e: "edgeChange", value: any): void;
 }>();
 
 const unitRadius = ref(0);
@@ -308,7 +308,7 @@ const initGraph = () => {
 
     currentHighlightedNode.value = nodeId;
     graph.draw();
-    emit("edgeChange", "");
+    emit("edgeChange", null);
   });
 
   // 添加边点击事件
@@ -324,7 +324,15 @@ const initGraph = () => {
       }
     ]);
     graph.draw();
-    emit("edgeChange", edgeId);
+    const edgeData = graph.getEdgeData(edgeId);
+    const sourceNodeData = graph.getNodeData(edgeData.source);
+    const targetNodeData = graph.getNodeData(edgeData.target);
+    const finalEdgeData = {
+      ...edgeData,
+      sourceData: sourceNodeData,
+      targetData: targetNodeData
+    };
+    emit("edgeChange", finalEdgeData);
   });
 };
 const handleResize = throttle(() => {
@@ -363,7 +371,12 @@ const handleEdges = edges => {
       id: `${edge.source}-${edge.target}`,
       source: edge.source,
       target: edge.target,
-      label: `${edge.ecr}`
+      label: `${edge.ecr}`,
+      data: {
+        ecr: edge.ecr,
+        mncar: edge.mncar,
+        weight: edge.weight
+      }
     };
   });
   graphData.edges = finalEdges;
