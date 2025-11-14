@@ -7,10 +7,10 @@ export default {
   children: [
     {
       path: "/inno-fep/index",
-      name: "Inno-Fep",
+      name: "Inno-FEP",
       component: () => import("@/views/inno-fep/pages/home/index.vue"),
       meta: {
-        title: "inno-fep"
+        title: "Inno-FEP"
       }
     },
     {
@@ -18,7 +18,7 @@ export default {
       name: "Inno-Fep-Detail",
       component: () => import("@/views/inno-fep/pages/detail/index.vue"),
       meta: {
-        title: "inno-fep-detail",
+        title: "Inno-Fep-detail",
         showLink: false
       }
     },
@@ -27,7 +27,7 @@ export default {
       name: "Inno-Fep-Analysis-Detail",
       component: () => import("@/views/inno-fep/pages/analysis-detail/index.vue"),
       meta: {
-        title: "inno-fep-analysis-detail",
+        title: "Inno-Fep-analysis-detail",
         showLink: false
       }
     }

@@ -3,8 +3,8 @@ defineOptions({
   name: "Fepheader"
 });
 const cardHeader = {
-  title: "Inno-Fep",
-  description: "Inno-Fep模块主要用于XXXXXXXXXXXXXXXX。",
+  title: "Inno-FEP",
+  description: "Inno-FEP是一个专注于相对结合自由能预测的计算模块。它通过精确计算同系物之间结合自由能的差异，直接评估化学修饰的利弊，从而将先导化合物优化从“试错”转变为数据驱动的“设计”过程，大幅提升研发效率。",
   link: "https://www.baidu.com"
 };
 </script>

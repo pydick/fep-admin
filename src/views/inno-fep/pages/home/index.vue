@@ -10,7 +10,7 @@ import { initTask } from "@/api/fep";
 import { useTaskStoreHook } from "@/store/modules/task";
 
 defineOptions({
-  name: "Inno-Fep"
+  name: "Inno-FEP"
 });
 
 const taskStore = useTaskStoreHook();
