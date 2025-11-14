@@ -12,12 +12,12 @@ let chartInstance: echarts.ECharts | null = null;
 // 根据图片描述的数据点（6个 Retrospective 数据点）
 // 数据格式: [x, y, xError?, yError?]
 const retrospectiveData = [
-  [-14.5, -15.5, 0.3, 0], // 有水平误差条
-  [-13.8, -15.8, 0.3, 0], // 有水平误差条
-  [-12.0, -12.8, 0, 0.3], // 有垂直误差条
-  [-11.0, -11.0, 0, 0.2], // 有垂直误差条
-  [-10.5, -9.5, 0, 0.3], // 有垂直误差条
-  [-10.0, -9.0, 0, 0.3] // 有垂直误差条
+  [-14.5, -15.5, 0.15, 0], // 有水平误差条
+  [-13.8, -15.8, 0.15, 0], // 有水平误差条
+  [-12.0, -12.8, 0, 0.15], // 有垂直误差条
+  [-11.0, -11.0, 0, 0.15], // 有垂直误差条
+  [-10.5, -9.5, 0, 0.15], // 有垂直误差条
+  [-10.0, -9.0, 0, 0.15] // 有垂直误差条
 ];
 
 // 根据原图设置固定的坐标轴范围
@@ -30,15 +30,16 @@ const yMax = -8.2;
 const confidenceBandWidthOuter = 1.5; // 外层较宽的置信带
 const confidenceBandWidthInner = 0.8; // 内层较窄的置信带
 
-// 构建置信带数据（围绕 y=x 线的带状区域）
+// 构建置信带数据（围绕 y=x 线的带状区域，覆盖数据范围）
 const buildConfidenceBand = (width: number) => {
-  // 计算置信带需要覆盖的范围（考虑坐标轴范围）
-  const min = Math.min(xMin, yMin);
-  const max = Math.max(xMax, yMax);
+  // 覆盖整个数据范围（从最小值到最大值）
+  const min = Math.min(xMin, yMin); // -16.3
+  const max = Math.max(xMax, yMax); // -8.2
   const step = 0.05; // 更小的步长以获得更平滑的曲线
   const upper: number[][] = [];
   const lower: number[][] = [];
 
+  // 从最小值到最大值，沿着 y=x 线生成置信带
   for (let x = min; x <= max; x += step) {
     const y = x; // y = x 线
     upper.push([x, y + width]);
@@ -130,7 +131,7 @@ const initChart = () => {
           ],
           lineStyle: {
             color: "#1f77b4",
-            width: 0.1
+            width: 1
           },
           showSymbol: false,
           z: 2,
@@ -147,7 +148,7 @@ const initChart = () => {
           ],
           lineStyle: {
             color: "#1f77b4",
-            width: 0.1,
+            width: 1,
             type: "solid"
           },
           showSymbol: false,
@@ -164,7 +165,7 @@ const initChart = () => {
           ],
           lineStyle: {
             color: "#1f77b4",
-            width: 0.1,
+            width: 1,
             type: "solid"
           },
           showSymbol: false,
@@ -295,7 +296,7 @@ const initChart = () => {
         silent: true
       },
       // 误差条
-      // ...errorBarSeries,
+      ...errorBarSeries,
       // Retrospective 散点
       {
         name: "Retrospective",
