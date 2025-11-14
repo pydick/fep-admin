@@ -396,11 +396,26 @@ const handleFirstEdgeClick = () => {
   }
 };
 
+const handlePropertyChange = (val: string) => {
+  const edges = graph.getEdgeData();
+  const updatedEdges = edges.map(e => {
+    let raw = e.data?.[val];
+    let label = raw !== undefined && raw !== null ? String(raw) : "";
+    return {
+      id: e.id,
+      label: label
+    };
+  });
+
+  graph.updateEdgeData(updatedEdges);
+  graph.draw();
+};
+
 const propertyValue = ref("Similarity score");
 const propertyOptions = [
-  { label: "Mapping score", value: "Mapping score" },
-  { label: "Similarity score", value: "Similarity score" },
-  { label: "Protocol", value: "Protocol" }
+  { label: "Mapping score", value: "ecr" },
+  { label: "Similarity score", value: "mncar" },
+  { label: "Protocol", value: "weight" }
 ];
 
 onMounted(async () => {
@@ -443,7 +458,7 @@ onUnmounted(() => {
     </div>
     <div class="property-container">
       <span>微扰属性：</span>
-      <el-select v-model="propertyValue" placeholder="选择微扰属性" class="w-[160px]! inline-block mr-[10px]">
+      <el-select v-model="propertyValue" placeholder="选择微扰属性" class="w-[160px]! inline-block mr-[10px]" @change="handlePropertyChange">
         <el-option v-for="item in propertyOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
     </div>
