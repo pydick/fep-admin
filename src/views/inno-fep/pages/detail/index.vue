@@ -13,6 +13,8 @@ import FilterColumn from "./FilterColumn/index.vue";
 import CarbonTextLinkAnalysis from "~icons/carbon/text-link-analysis";
 import StreamlineCodeAnalysis from "~icons/streamline/code-analysis";
 import FileRow from "@/views/inno-fep/components/FileRow/index.vue";
+import Csdialog from "@/components/Csdialog/index.vue";
+import CorrelationEcharts from "./CorrelationEcharts/index.vue";
 defineOptions({
   name: "Inno-Fep-Detail"
 });
@@ -46,12 +48,19 @@ const change_table_filter = dict => {
 };
 
 const correlationAnalysis = () => {
+  analysisShow.value = true;
   console.log("相关性分析");
 };
 const resultAnalysis = () => {
   console.log("结果分析");
 };
 
+const analysisShow = ref(false);
+const analysisConfig = reactive({
+  title: "相关性分析",
+  width: "40%",
+  height: "40%"
+});
 onMounted(() => {
   histogram_data_all.value = mockData1.compute.aggregations.histogram;
   for (let i = 0; i < mockData1.compute.aggregations.histogram?.residues.length; i++) {
@@ -151,6 +160,9 @@ onMounted(() => {
       </el-col>
     </el-row>
     <FilterDrawer v-model:if_show="if_show_filter" :array="histogram_data_all" :cascadOptions="cascadOptions" :need_cascad="false" :default_list="default_list" :residue_list="residue_list" data_type="docking" @change_table_for_filter="change_table_filter" />
+    <Csdialog v-model:visible="analysisShow" :config="analysisConfig">
+      <CorrelationEcharts />
+    </Csdialog>
   </div>
 </template>
 

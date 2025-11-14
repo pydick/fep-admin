@@ -56,7 +56,7 @@ const step1Form = reactive({
   ph: 7.4,
   opt_hydrogen: true,
   energy_min: true,
-  force_field: "amber14/protein.ff14SB",
+  force_field: "AMBER99SB",
   box_changed_by_user: false,
   box_ligand: "default",
   pdb_dataset_id: "",
