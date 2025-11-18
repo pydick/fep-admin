@@ -174,7 +174,9 @@ const initChart = () => {
 
   // 监听点击事件
   chartInstance.on("click", (params: any) => {
+    console.log("饼图点击事件:", params);
     if (params.data?._id && props.onSectorClick) {
+      console.log("触发 onSectorClick:", params.data._id, params.data._data);
       props.onSectorClick(params.data._id, params.data._data);
     }
   });
@@ -241,6 +243,16 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .normal-node {
