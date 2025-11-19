@@ -153,3 +153,15 @@ export function validateProtein(data) {
     }
   );
 }
+export function alignLigand(data) {
+  return request.post(
+    `${apiV1}/ligand/align`,
+    { data },
+    {
+      headers: { "content-type": "multipart/form-data" }
+    }
+  );
+}
+export function prepareLigand(data) {
+  return request.post(`${apiV1}/ligand/prepare`, { data });
+}

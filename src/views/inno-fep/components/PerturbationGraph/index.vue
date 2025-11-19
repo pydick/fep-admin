@@ -10,11 +10,14 @@ import { getPerturbationGraphData } from "@/api/fep";
 
 import { register, ExtensionCategory } from "@antv/g6";
 import { CustomToolbarPlugin } from "./plugins/CustomToolbarPlugin/index";
+import { useTaskStoreHook } from "@/store/modules/task";
 register(ExtensionCategory.PLUGIN, "custom-toolbar", CustomToolbarPlugin);
 defineOptions({
   name: "PerturbationGraph"
 });
 let graph: Graph | null = null;
+
+const taskStore = useTaskStoreHook();
 
 const containerRef = ref<HTMLElement>();
 
@@ -423,7 +426,8 @@ onMounted(async () => {
     await nextTick();
   }
   const data = {
-    smiles: "CC(=O)O"
+    type: "json",
+    task_id: taskStore.taskId
   };
   const res = await getPerturbationGraphData(data);
   if (res.success) {

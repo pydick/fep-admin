@@ -5,10 +5,12 @@ import LiTable from "./components/LiTable/index.vue";
 import Upload from "./components/Upload/index.vue";
 import PerturbationGraphDialog from "./components/PerGraphDialog/index.vue";
 import Data_select from "../components/DataSelect/index.vue";
-import { ossList, selectLigandExample } from "@/api/fep";
+import { ossList, selectLigandExample, alignLigand, prepareLigand } from "@/api/fep";
 import { ElMessage } from "element-plus";
 import { mockrow1, mockrow2, mockrow3 } from "@/views/inno-fep/pages/home/mockdata/otherdata.js";
 import { distribute_data } from "@/views/inno-fep/pages/home/mockdata/table_getdata_distribute.js";
+import { useTaskStoreHook } from "@/store/modules/task";
+const taskStore = useTaskStoreHook();
 const data_list = ref([]);
 defineOptions({
   name: "LigandPreprocess"
@@ -136,16 +138,37 @@ const exampleChoose = async value => {
 const liTableRef = ref();
 const isAlign = ref(false);
 
-const handleAlign = () => {
+const handleAlign = async () => {
   isAlign.value = true;
   liTableRef.value.toggleAllSelection();
+  // const formData = new FormData();
+  // formData.append("task_id", taskStore.taskId);
+  // formData.append("number", "123");
+  // const res = await alignLigand(formData);
+  // if (res.success) {
+  //   ElMessage.success("叠合成功");
+  //   isAlign.value = true;
+  //   liTableRef.value.toggleAllSelection();
+  // } else {
+  //   ElMessage.error("叠合失败");
+  // }
 };
 
 const isGernerate = ref(false);
 
-const handleGenerateMap = () => {
-  console.log("生成映射图");
-  isGernerate.value = true;
+const handleGenerateMap = async () => {
+  const params = {
+    task_id: taskStore.taskId,
+    step: 1,
+    use_user_defined_map_flag: false,
+    user_pair_list: []
+  };
+  const res = await prepareLigand(params);
+  if (res.success) {
+    isGernerate.value = true;
+  } else {
+    ElMessage.error(res.message);
+  }
 };
 const addUploadRef = ref();
 const addNewLigand = () => {
@@ -153,7 +176,7 @@ const addNewLigand = () => {
   addUploadRef.value.triggerClick();
 };
 
-const perturbationGraphVisible = ref(false);
+const perturbationGraphVisible = ref(true);
 const perturbationGraphShow = () => {
   perturbationGraphVisible.value = true;
 };
