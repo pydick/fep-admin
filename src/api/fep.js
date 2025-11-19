@@ -135,3 +135,12 @@ export function selectLigandExample(data) {
 export function initTask() {
   return request.post(`${apiV1}/task/init`);
 }
+export function getLigandFromProtein(data) {
+  return request.post(
+    `${apiV1}/ligand/extract-from-protein`,
+    { data },
+    {
+      headers: { "content-type": "multipart/form-data" }
+    }
+  );
+}

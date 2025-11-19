@@ -8,6 +8,10 @@ import ProteinPreprocess from "./ProteinPreprocess/index.vue";
 import LigandPreprocess from "./LigandPreprocess/index.vue";
 import CalculationParameters from "./CalculationParameters/index.vue";
 import CSstep from "@/components/CSstep/index.vue";
+import { getLigandFromProtein } from "@/api/fep";
+import { useTaskStoreHook } from "@/store/modules/task";
+
+const taskStore = useTaskStoreHook();
 
 defineOptions({
   name: "CreateTask"
@@ -32,6 +36,7 @@ const taskFormData = reactive<TaskFormData>({
 });
 
 const ligandStr = ref("[]");
+const ligandData = ref({});
 
 const handleNext = () => {
   stepRef.value?.next();
@@ -59,17 +64,22 @@ const handleSubmit = () => {
   ElMessage.success("任务提交成功");
 };
 
-const graphType = ref("protein");
-const handleCheckAndNext = () => {
-  graphType.value = "ligand";
-  stepRef.value?.next();
-  console.log("检测并下一步");
+const handleCheckAndNext = async () => {
+  const res = await getLigandFromProtein({ task_id: taskStore.taskId });
+  if (res.success) {
+    console.log(res.data);
+    ligandData.value = res.data;
+    stepRef.value?.next();
+  } else {
+    ElMessage.error(res.message);
+  }
 };
 
 // 提供任务表单数据和验证器
 provide("protein3dRef", protein3dRef);
 provide("taskFormData", taskFormData);
 provide("ligandStr", ligandStr);
+provide("ligandData", ligandData);
 </script>
 
 <template>

@@ -16,9 +16,10 @@ import { mockSmiles } from "@/views/inno-fep/pages/home/mockdata/otherdata.js";
 // 定义 props
 const props = defineProps({
   // 任务ID
-  job_id: { type: String, default: "" },
+  // job_id: { type: String, default: "" },
   // SMILES ID列表字符串
-  smiles_id_list_str: { type: String, default: "" }
+  smiles_id_list_str: { type: String, default: "" },
+  ligandData: { type: Object, default: () => ({}) }
 });
 
 // Molstar组件引用
@@ -52,8 +53,8 @@ const draw = async () => {
       //   ligand_view_dict.value.refer_pdb_string = res.pdb;
       // }
       ligand_view_dict.value.has_refer = true;
-      ligand_view_dict.value.refer_smiles = mockSmiles;
-      ligand_view_dict.value.refer_pdb_string = originData;
+      ligand_view_dict.value.refer_smiles = props.ligandData.smiles;
+      ligand_view_dict.value.refer_pdb_string = props.ligandData.pdb_file;
       first_draw.value = true;
     }
 
