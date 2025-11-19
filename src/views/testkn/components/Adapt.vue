@@ -209,7 +209,7 @@ defineExpose({
       <!-- 底部 -->
       <div class="dialog-footer">
         <div class="footer-left">
-          <span class="selected-count">已选择适应症: {{ selectedCount }}/{{ maxSelect }}</span>
+          <span class="selected-count">已选择适应症: {{ selectedCount }}/{{ totalCount }}</span>
         </div>
         <div class="footer-right">
           <el-button @click="closeDialog">取消</el-button>
