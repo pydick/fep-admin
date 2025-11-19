@@ -1,5 +1,5 @@
 <template>
-  <el-upload ref="upload_ref" :auto-upload="false" :on-change="file_on_change" :show-file-list="true" :accept="file_accept" style="width: 100%">
+  <el-upload ref="upload_ref" :auto-upload="false" :on-change="file_on_change" :show-file-list="false" :accept="file_accept" style="width: 100%">
     <template #trigger>
       <el-input :modelValue="file_name" :input-style="{ textAlign: 'center' }" :placeholder="inp_placeholder" readonly style="width: 100%; cursor: pointer">
         <template v-if="is_slot" #append>
@@ -74,12 +74,11 @@ export default {
       if (fileList.length) {
         const formData = new FormData();
         formData.append("file", file.raw);
-        console.log(file);
         const checkRes = await checkProtein(formData);
         if (checkRes.success) {
           const res = await ossUpload(formData);
           if (res.success) {
-            this.$emit("uploadSuc", res.data.key, file);
+            this.$emit("uploadSuc", res.data, file);
           } else {
             ElMessage.error("上传失败");
           }

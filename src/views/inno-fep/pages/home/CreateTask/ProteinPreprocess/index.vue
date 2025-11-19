@@ -140,9 +140,14 @@ const show_dialog = async () => {
     show_data_list.value = true;
   }
 };
-const handleCustomEvent = ({ id }) => {
+const handleCustomEvent = ({ id, name }) => {
+  dataCenterTextValue.value = name;
   getPdbById(id);
 };
+
+const uploadTextValue = ref("上传");
+
+const dataCenterTextValue = ref("数据中心导入pdb");
 
 const check_box_ligand = (rule, value, callback) => {
   if (step1Form.need_prot_process) {
@@ -327,7 +332,8 @@ const single_het_click = data => {
   protein3dRef.value.select_and_focus(data);
 };
 
-const uploadSuc = (id, file) => {
+const uploadSuc = ({ key: id, filename }, file) => {
+  uploadTextValue.value = filename;
   step1Form.disclose_file = file;
   getPdbById(id);
 };
@@ -524,13 +530,13 @@ const handlePreprocess = async () => {
         </div>
         <div v-show="step1Form.input_tab === '上传文件'" class="">
           <el-form-item prop="protein_file" :rules="[{ required: true, message: '请上传蛋白pdb文件', trigger: 'submit' }]">
-            <Upload inp_placeholder="上传" file_accept=".pdb" :is_slot="false" @uploadSuc="uploadSuc" />
+            <Upload :inp_placeholder="uploadTextValue" file_accept=".pdb" :is_slot="false" @uploadSuc="uploadSuc" />
           </el-form-item>
         </div>
         <div v-show="step1Form.input_tab === '数据中心'" class="">
           <el-form-item :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="protein_data">
             <el-button class="w-full w_100" @click="show_dialog()">
-              <el-input v-model="step1Form.protein_data" :input-style="{ textAlign: 'center' }" class="w-full!" placeholder="数据中心导入pdb" readonly />
+              <el-input v-model="step1Form.protein_data" :input-style="{ textAlign: 'center' }" class="w-full!" :placeholder="dataCenterTextValue" readonly />
             </el-button>
           </el-form-item>
         </div>
