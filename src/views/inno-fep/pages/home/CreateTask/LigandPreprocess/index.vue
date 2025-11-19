@@ -180,7 +180,11 @@ const perturbationGraphVisible = ref(true);
 const perturbationGraphShow = () => {
   perturbationGraphVisible.value = true;
 };
-const uploadSuc = data => {
+
+const uploadTextVal = ref("上传");
+
+const uploadSuc = (data, filename) => {
+  uploadTextVal.value = filename;
   ligandList.value = mockLigandData(data.molecules);
 };
 
@@ -234,13 +238,14 @@ const buildDisabled = computed(() => {
   }
 });
 
-const sucessSure = async ({ id }) => {
-  console.log(id);
+const sucessSure = async ({ id, name }) => {
+  dataCenterTextValue.value = name;
   const res = await selectLigandExample({ oss_key: id });
   if (res.success) {
     ligandList.value = mockLigandData(res.data.molecules);
   }
 };
+const dataCenterTextValue = ref("数据中心导入ligand");
 
 const show_dialog = async () => {
   const res = await ossList({ ...ossListCommomParams });
@@ -274,7 +279,7 @@ onMounted(async () => {
       </el-radio-group>
       <div v-show="tab === tab_list[0]" class="dbid_input_box">
         <el-form-item ref="pdbid_url_ref" label-width="0px" prop="ligandId">
-          <Upload inp_placeholder="上传" file_accept=".csv,.sdf" :is_slot="false" @uploadSuc="uploadSuc" />
+          <Upload :inp_placeholder="uploadTextVal" file_accept=".csv,.sdf" :is_slot="false" @uploadSuc="uploadSuc" />
         </el-form-item>
         <el-form-item prop="pdbid_select" label-width="0px" class="w-[120px]!">
           <el-select v-model="step2Form.example" placeholder="选择示例" @change="exampleChoose">
@@ -289,7 +294,7 @@ onMounted(async () => {
       <div v-show="tab === tab_list[1]" class="w-full">
         <el-form-item label-width="0px" :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="ligandData">
           <el-button class="w-full w_100" @click="show_dialog()">
-            <el-input v-model="step2Form.ligandData" :input-style="{ textAlign: 'center' }" class="w-full" placeholder="数据中心导入ligand" readonly />
+            <el-input v-model="step2Form.ligandData" :input-style="{ textAlign: 'center' }" class="w-full" :placeholder="dataCenterTextValue" readonly />
           </el-button>
         </el-form-item>
       </div>

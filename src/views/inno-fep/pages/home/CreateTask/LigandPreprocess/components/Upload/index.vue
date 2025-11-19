@@ -89,7 +89,7 @@ export default {
         formData.append("file", file.raw);
         const res = await ligandUpload(formData);
         if (res.success) {
-          this.$emit("uploadSuc", res.data);
+          this.$emit("uploadSuc", res.data, file.name);
         } else {
           ElMessage.error("上传失败");
         }
