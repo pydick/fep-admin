@@ -144,3 +144,12 @@ export function getLigandFromProtein(data) {
     }
   );
 }
+export function validateProtein(data) {
+  return request.post(
+    `${apiV1}/protein/validate`,
+    { data },
+    {
+      headers: { "content-type": "multipart/form-data" }
+    }
+  );
+}
