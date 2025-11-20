@@ -25,6 +25,12 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
       },
       // 本地跨域代理 https://cn.vitejs.dev/config/server-options.html#server-proxy
       proxy: {
+        "/ws": {
+          target: "wss://echo.websocket.org",
+          ws: true,
+          changeOrigin: true,
+          secure: true
+        },
         "/api/v1": {
           target: "http://82.157.191.16:8690",
           // target: targetUlr,
