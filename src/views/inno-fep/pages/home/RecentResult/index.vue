@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, reactive } from "vue";
 import { useRouter } from "vue-router";
 import ParameterDialog from "./components/ParameterDialog/index.vue";
 import { Delete, InfoFilled, RefreshRight, WarningFilled, Close, Position } from "@element-plus/icons-vue";
 import { tabListEnum } from "@/views/inno-fep/const/index";
 import { ElMessage } from "element-plus";
+import useWebSocket from "./websocket";
+
 defineOptions({
   name: "RecentResult"
 });
@@ -20,14 +22,7 @@ const emit = defineEmits<{
 
 const router = useRouter();
 // 蛋白数据
-const taskData = ref([
-  {
-    time: "2025-09-17 10:00:00",
-    name: "Docking Task 2900",
-    type: "Semi-Docking",
-    status: 0
-  }
-]);
+const taskData = ref([]);
 
 const taskColumns = [
   {
@@ -36,8 +31,8 @@ const taskColumns = [
     align: "center"
   },
   {
-    label: "创建时间",
-    prop: "time",
+    label: "任务编号",
+    prop: "id",
     minWidth: 150,
     align: "center"
   },
@@ -48,14 +43,15 @@ const taskColumns = [
     align: "center"
   },
   {
-    label: "任务类别",
-    prop: "type",
-    minWidth: 150,
-    align: "center"
-  },
-  {
     label: "运行状态",
     prop: "status",
+    minWidth: 150,
+    align: "center",
+    slot: "status"
+  },
+  {
+    label: "创建时间",
+    prop: "time",
     minWidth: 150,
     align: "center"
   },
@@ -68,12 +64,25 @@ const taskColumns = [
   }
 ];
 
-const current_page = ref(1);
-const page_size = ref(10);
-const task_count = ref(50);
+const pagination = reactive({
+  page: 1,
+  pageSize: 10,
+  total: 0
+});
+
+// 发送分页查询请求
+const queryPageData = (params: { page: number; pageSize?: number }) => {
+  const queryParams = {
+    action: "query",
+    page: params.page,
+    pageSize: params.pageSize ?? 10
+  };
+  sendMessage(queryParams);
+};
+
 const handleCurrentChange = (page: number) => {
-  current_page.value = page;
-  console.log(page);
+  pagination.page = page;
+  queryPageData({ page, pageSize: pagination.pageSize });
 };
 const gotoDetail = (type: string, id: string) => {
   console.log(type, id);
@@ -98,7 +107,6 @@ const showExceptionReason = (id: string) => {
 };
 
 const exceptionReasonClose = () => {
-  console.log("11111111111111");
   exceptionReasonVisible.value = false;
 };
 
@@ -111,11 +119,44 @@ const dialogOptions = ref({
     type: "docking"
   }
 });
+
+const { connectWebSocket, sendMessage } = useWebSocket({
+  wsUrl: `wss://echo.websocket.org`,
+  onMessage: message => {
+    const tableData = message;
+    const { page, pageSize, total, data } = tableData;
+    taskData.value = data;
+    pagination.total = total || 0;
+    pagination.page = page || 1;
+    pagination.pageSize = pageSize || 10;
+  },
+  onConnected: () => {
+    // 连接成功后自动查询第一页数据
+    queryPageData({ page: 1, pageSize: pagination.pageSize });
+  }
+});
+
+const statusTypeMap = {
+  processing: "primary",
+  finished: "success",
+  error: "danger"
+};
+const statusTextMap = {
+  processing: "进行中",
+  finished: "已完成",
+  error: "失败"
+};
+onMounted(() => {
+  connectWebSocket();
+});
 </script>
 
 <template>
   <div class="recentresult-container">
     <pure-table :data="taskData" :columns="taskColumns" class="m-pure-table-fit flex-1" cell-class-name="h-[60px]">
+      <template #status="{ row }">
+        <el-tag :type="statusTypeMap[row.status]">{{ statusTextMap[row.status] }}</el-tag>
+      </template>
       <template #opreate="{ row }">
         <el-tooltip content="去创建任务" placement="top">
           <el-button :icon="RefreshRight" circle plain @click="gotoCreateTask" />
@@ -157,7 +198,7 @@ const dialogOptions = ref({
       </template>
     </pure-table>
     <div class="pt-[15px]">
-      <el-pagination align="center" :current-page="current_page" :page-size="page_size" layout="total, prev, pager, next, jumper" :total="task_count" @current-change="handleCurrentChange" />
+      <el-pagination align="center" :current-page="pagination.page" :page-size="pagination.pageSize" layout="total, prev, pager, next, jumper" :total="pagination.total" @current-change="handleCurrentChange" />
     </div>
     <ParameterDialog v-model:visible="showParameterDialog" :options="dialogOptions" />
   </div>
