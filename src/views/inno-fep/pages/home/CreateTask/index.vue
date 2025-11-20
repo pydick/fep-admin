@@ -11,6 +11,7 @@ import CSstep from "@/components/CSstep/index.vue";
 import { getLigandFromProtein } from "@/api/fep";
 import { useTaskStoreHook } from "@/store/modules/task";
 import { validateProtein } from "@/api/fep";
+import { ElLoading } from "element-plus";
 
 const taskStore = useTaskStoreHook();
 
@@ -66,19 +67,28 @@ const handleSubmit = () => {
 };
 
 const handleCheckAndNext = async () => {
-  const checkRes = await validateProtein({ task_id: taskStore.taskId });
-  if (checkRes.success) {
-    console.log(checkRes.data);
-    const res = await getLigandFromProtein({ task_id: taskStore.taskId });
-    if (res.success) {
-      console.log(res.data);
-      ligandData.value = res.data;
-      stepRef.value?.next();
+  const loading = ElLoading.service({
+    lock: true,
+    text: "加载中",
+    target: "#createTaskContainer"
+  });
+  try {
+    const checkRes = await validateProtein({ task_id: taskStore.taskId });
+    if (checkRes.success) {
+      console.log(checkRes.data);
+      const res = await getLigandFromProtein({ task_id: taskStore.taskId });
+      if (res.success) {
+        console.log(res.data);
+        ligandData.value = res.data;
+        stepRef.value?.next();
+      } else {
+        ElMessage.error(res.message);
+      }
     } else {
-      ElMessage.error(res.message);
+      ElMessage.error(checkRes.message);
     }
-  } else {
-    ElMessage.error(checkRes.message);
+  } finally {
+    loading.close();
   }
 };
 
