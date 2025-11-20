@@ -23,6 +23,8 @@ const emit = defineEmits<{
 const router = useRouter();
 // 蛋白数据
 const taskData = ref([]);
+// loading 状态
+const loading = ref(false);
 
 const taskColumns = [
   {
@@ -81,7 +83,7 @@ const queryPageData = (params: { page: number; pageSize?: number }) => {
 };
 
 const handleCurrentChange = (page: number) => {
-  pagination.page = page;
+  loading.value = true;
   queryPageData({ page, pageSize: pagination.pageSize });
 };
 const gotoDetail = (type: string, id: string) => {
@@ -129,10 +131,13 @@ const { connectWebSocket, sendMessage } = useWebSocket({
     pagination.total = total || 0;
     pagination.page = page || 1;
     pagination.pageSize = pageSize || 10;
+    loading.value = false;
   },
   onConnected: () => {
-    // 连接成功后自动查询第一页数据
     queryPageData({ page: 1, pageSize: pagination.pageSize });
+  },
+  onError: () => {
+    loading.value = false;
   }
 });
 
@@ -147,12 +152,13 @@ const statusTextMap = {
   error: "失败"
 };
 onMounted(() => {
+  loading.value = true;
   connectWebSocket();
 });
 </script>
 
 <template>
-  <div class="recentresult-container">
+  <div v-loading="loading" element-loading-text="加载中..." class="recentresult-container">
     <pure-table :data="taskData" :columns="taskColumns" class="m-pure-table-fit flex-1" cell-class-name="h-[60px]">
       <template #status="{ row }">
         <el-tag :type="statusTypeMap[row.status]">{{ statusTextMap[row.status] }}</el-tag>

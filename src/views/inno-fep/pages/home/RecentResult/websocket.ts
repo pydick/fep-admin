@@ -8,9 +8,10 @@ import { websocketData } from "./websocketdata";
  * @param options.wsUrl WebSocket服务器地址
  * @param options.onMessage 消息接收回调函数
  * @param options.onConnected 连接成功回调函数
+ * @param options.onError 连接错误回调函数
  * @returns 返回WebSocket实例和操作方法
  */
-const useWebSocket = function (options?: { onMessage?: (message: any) => void; wsUrl: string; onConnected?: () => void }) {
+const useWebSocket = function (options?: { onMessage?: (message: any) => void; wsUrl: string; onConnected?: () => void; onError?: () => void }) {
   const ws = ref<WebSocket | null>(null);
 
   // 重连配置
@@ -141,6 +142,10 @@ const useWebSocket = function (options?: { onMessage?: (message: any) => void; w
     // 连接错误事件
     ws.value.onerror = function (error) {
       console.error("WebSocket连接错误:", error);
+      // 触发错误回调
+      if (options?.onError) {
+        options.onError();
+      }
       // 错误事件后通常会触发 onclose，在 onclose 中处理重连
     };
 
