@@ -10,6 +10,7 @@ import { ElMessage } from "element-plus";
 import { mockrow1, mockrow2, mockrow3 } from "@/views/inno-fep/pages/home/mockdata/otherdata.js";
 import { distribute_data } from "@/views/inno-fep/pages/home/mockdata/table_getdata_distribute.js";
 import { useTaskStoreHook } from "@/store/modules/task";
+const ligand3dData = inject<any>("ligandData");
 const taskStore = useTaskStoreHook();
 const data_list = ref([]);
 defineOptions({
@@ -66,7 +67,7 @@ const step2Form = reactive({
   ligandData: "",
   showLigandOverlay: true,
   showExperimentData: true,
-  referenceLigand: "-1",
+  referenceLigand: ligand3dData.value.ligand_number,
   experimentMethod: "IC50",
   experimentUnit: "nM",
   mapType: "Star map",
@@ -86,8 +87,8 @@ const centralMoleculeOptions = computed(() => {
 const referenceLigand = computed(() => {
   const options = [
     {
-      label: "参考配体",
-      value: "-1"
+      label: ligand3dData.value.ligand_name,
+      value: ligand3dData.value.ligand_number
     }
   ];
   options.push(
