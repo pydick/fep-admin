@@ -15,7 +15,7 @@
           <!-- 参考配体颜色标识 -->
           <div style="width: 14px; height: 14px; margin-right: 0.6rem; background: red; border: 1px solid #33333340" />
           <!-- 参考配体标签 -->
-          <div style="font-size: 12px">参考配体</div>
+          <div style="font-size: 12px">{{ refer_smiles_name }}</div>
         </div>
         <!-- 参考配体SMILES结构图 -->
         <SvgBox :smiles="refer_smiles" width="100" height="80" />
@@ -59,6 +59,8 @@ export default {
     refer_pdb_string: { type: String, default: "" },
     // 参考配体的SMILES字符串
     refer_smiles: { type: String, default: "" },
+    refer_smiles_id: { type: Number, default: 0 },
+    refer_smiles_name: { type: String, default: "" },
     // 配体列表数据
     ligands_list: {
       type: Array,

@@ -31,7 +31,9 @@ const ligand_view_dict = ref({
   has_refer: false, // 是否有参考配体
   refer_smiles: "", // 参考配体的SMILES
   refer_pdb_string: "", // 参考配体的PDB字符串
-  ligands_list: [] // 配体列表
+  ligands_list: [], // 配体列表
+  refer_smiles_name: "", // 参考配体的SMILES名称
+  refer_smiles_id: "" // 参考配体的SMILES ID
 });
 // 是否首次绘制
 const first_draw = ref(false);
@@ -55,6 +57,9 @@ const draw = async () => {
       ligand_view_dict.value.has_refer = true;
       ligand_view_dict.value.refer_smiles = props.ligandData.smiles;
       ligand_view_dict.value.refer_pdb_string = props.ligandData.pdb_file;
+      ligand_view_dict.value.refer_smiles_name = props.ligandData.ligand_name;
+      ligand_view_dict.value.refer_smiles_id = props.ligandData.ligand_number;
+      console.log(666, ligand_view_dict.value);
       first_draw.value = true;
     }
 
