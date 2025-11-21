@@ -374,7 +374,7 @@ const handleEdges = edges => {
       id: `${edge.source}-${edge.target}`,
       source: edge.source,
       target: edge.target,
-      label: `${edge.ecr}`,
+      label: `${edge.label}`,
       data: {
         ecr: edge.ecr,
         mncar: edge.mncar,
@@ -432,8 +432,8 @@ onMounted(async () => {
   const res = await getPerturbationGraphData(data);
   if (res.success) {
     handleNodes(res.data.nodes);
-    handleEdges(res.data.links);
-    edgeCount.value = res.data.links.length;
+    handleEdges(res.data.edges);
+    edgeCount.value = res.data.edges.length;
     Object.assign(initialGraphData, cloneDeep(graphData));
     if (containerRef.value) {
       initGraph();

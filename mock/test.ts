@@ -284,5 +284,48 @@ export default defineFakeRoute([
         }
       };
     }
+  },
+  {
+    url: "/api/v1/ligand/perturbation-graph",
+    method: "post",
+    response: ({ body }) => {
+      return {
+        success: true,
+        message: "成功获取配体微扰图数据，包含 3 个节点和 3 条边",
+        data: {
+          nodes: [
+            {
+              id: "ejm_31"
+            },
+            {
+              id: "jmc_30"
+            },
+            {
+              id: "ejm_50"
+            }
+          ],
+          edges: [
+            {
+              id: "ejm_31_to_ejm_50",
+              source: "ejm_31",
+              target: "ejm_50",
+              label: 0.8995
+            },
+            {
+              id: "ejm_31_to_jmc_30",
+              source: "ejm_31",
+              target: "jmc_30",
+              label: 0.5488
+            },
+            {
+              id: "ejm_50_to_jmc_30",
+              source: "ejm_50",
+              target: "jmc_30",
+              label: 0.4966
+            }
+          ]
+        }
+      };
+    }
   }
 ]);
