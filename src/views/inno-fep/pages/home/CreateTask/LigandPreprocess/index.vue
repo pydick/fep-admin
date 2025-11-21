@@ -185,13 +185,15 @@ const perturbationGraphShow = () => {
 const uploadTextVal = ref("上传");
 
 const uploadSuc = (data, filename) => {
+  console.log(111, data);
   uploadTextVal.value = filename;
-  ligandList.value = mockLigandData(data.molecules);
+  ligandList.value = data.molecules;
+  // ligandList.value = mockLigandData(data.molecules);
 };
 
 const addNewLigandSuc = data => {
   ligandList.value = data.molecules;
-  ligandList.value = mockLigandData(ligandList.value);
+  // ligandList.value = mockLigandData(ligandList.value);
 };
 
 const mockLigandData = data => {
@@ -243,7 +245,8 @@ const sucessSure = async ({ id, name }) => {
   dataCenterTextValue.value = name;
   const res = await selectLigandExample({ oss_key: id });
   if (res.success) {
-    ligandList.value = mockLigandData(res.data.molecules);
+    // ligandList.value = mockLigandData(res.data.molecules);
+    ligandList.value = res.data.molecules;
   }
 };
 const dataCenterTextValue = ref("数据中心导入ligand");

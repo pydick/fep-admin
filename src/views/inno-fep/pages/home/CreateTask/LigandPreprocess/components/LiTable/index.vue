@@ -30,7 +30,8 @@ const toggleAllSelection = () => {
 const multipleSelection = ref([]);
 const handleSelectionChange = selectedArr => {
   multipleSelection.value = selectedArr;
-  const data = selectedArr.map(item => item.ligandData);
+  // const data = selectedArr.map(item => item.ligandData);
+  const data = selectedArr.map(item => item.id);
   ligandStr.value = JSON.stringify(data);
 };
 
