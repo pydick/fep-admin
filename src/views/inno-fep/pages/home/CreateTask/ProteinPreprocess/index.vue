@@ -9,7 +9,7 @@ import { binaryToUploadFile } from "@/utils/common";
 import { ElLoading, ElMessage } from "element-plus";
 import BlockTitle from "@/views/inno-fep/components/BlcokTitle/index.vue";
 import { clone } from "@pureadmin/utils";
-
+import { useTaskStoreHook } from "@/store/modules/task";
 import { debounce } from "@pureadmin/utils";
 defineOptions({
   name: "ProteinPreprocess"
@@ -18,6 +18,8 @@ const protein3dRef = inject<any>("protein3dRef");
 
 // 注入父组件提供的任务表单数据对象
 const taskFormData = inject<any>("taskFormData");
+
+const taskStore = useTaskStoreHook();
 
 const el_form_first = ref();
 const if_have_protein = ref(false);
@@ -400,6 +402,7 @@ const getPdbById = async id => {
       const file = binaryToUploadFile(res.data, filename);
       const formData = new FormData();
       formData.append("file", file.raw);
+      formData.append("task_id", taskStore.taskId);
       const proteinRes = await proteinInfo(formData);
       if (proteinRes.success) {
         step1Form.protein_chain = proteinRes.data.chains.map(item => ({ if_checked: true, ...item }));
@@ -475,6 +478,7 @@ const handlePreprocess = async () => {
                 const fixFile2 = binaryToUploadFile(pdb_string).raw;
                 const formData = new FormData();
                 formData.append("file", fixFile2);
+                formData.append("task_id", taskStore.taskId);
                 const proteinRes = await proteinInfo(formData);
                 if (proteinRes.success) {
                   step1Form.protein_chain = proteinRes.data.chains.map(item => ({ if_checked: true, ...item }));

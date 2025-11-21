@@ -162,6 +162,16 @@ export function alignLigand(data) {
     }
   );
 }
+
+export function appendMolecules(data) {
+  return request.post(
+    `${apiV1}/ligand/append-molecules`,
+    { data },
+    {
+      headers: { "content-type": "multipart/form-data" }
+    }
+  );
+}
 export function prepareLigand(data) {
   return request.post(`${apiV1}/ligand/prepare`, { data });
 }

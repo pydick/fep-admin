@@ -12,14 +12,22 @@
 
 <script>
 import { useI18n } from "vue-i18n";
-import { ligandUpload } from "@/api/fep";
+import { ligandUpload, appendMolecules } from "@/api/fep";
 import { ref } from "vue";
 
 export default {
   name: "upload",
   components: {},
   props: {
+    uploadType: {
+      type: String,
+      default: "add"
+    },
     file_name: {
+      type: String,
+      default: ""
+    },
+    taskId: {
       type: String,
       default: ""
     },
@@ -85,13 +93,25 @@ export default {
         fileList.slice(0, 1);
       }
       if (fileList.length) {
-        const formData = new FormData();
-        formData.append("file", file.raw);
-        const res = await ligandUpload(formData);
-        if (res.success) {
-          this.$emit("uploadSuc", res.data, file.name);
-        } else {
-          ElMessage.error("上传失败");
+        if (this.uploadType === "add") {
+          const formData = new FormData();
+          formData.append("file", file.raw);
+          const res = await ligandUpload(formData);
+          if (res.success) {
+            this.$emit("uploadSuc", res.data, file.name);
+          } else {
+            ElMessage.error("上传失败");
+          }
+        } else if (this.uploadType === "append") {
+          const formData = new FormData();
+          formData.append("task_id", this.taskId);
+          formData.append("file", file.raw);
+          const res = await appendMolecules(formData);
+          if (res.success) {
+            this.$emit("uploadSuc", res.data, file.name);
+          } else {
+            ElMessage.error("上传失败");
+          }
         }
       }
     }

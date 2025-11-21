@@ -5,7 +5,7 @@ import LiTable from "./components/LiTable/index.vue";
 import Upload from "./components/Upload/index.vue";
 import PerturbationGraphDialog from "./components/PerGraphDialog/index.vue";
 import Data_select from "../components/DataSelect/index.vue";
-import { ossList, selectLigandExample, alignLigand, prepareLigand } from "@/api/fep";
+import { ossList, selectLigandExample, alignLigand, prepareLigand, appendMolecules } from "@/api/fep";
 import { ElMessage } from "element-plus";
 import { mockrow1, mockrow2, mockrow3 } from "@/views/inno-fep/pages/home/mockdata/otherdata.js";
 import { distribute_data } from "@/views/inno-fep/pages/home/mockdata/table_getdata_distribute.js";
@@ -190,7 +190,7 @@ const uploadSuc = (data, filename) => {
 };
 
 const addNewLigandSuc = data => {
-  ligandList.value.push(...data.molecules);
+  ligandList.value = data.molecules;
   ligandList.value = mockLigandData(ligandList.value);
 };
 
@@ -289,7 +289,7 @@ onMounted(async () => {
         </el-form-item>
         <div class="pt-[15px] inline-block ml-[15px] relative">
           <el-button type="primary" @click="addNewLigand()">添加新分子</el-button>
-          <Upload ref="addUploadRef" class="add-upload" inp_placeholder="上传" file_accept=".csv,.sdf" :is_slot="false" @uploadSuc="addNewLigandSuc" />
+          <Upload ref="addUploadRef" class="add-upload" inp_placeholder="上传" uploadType="append" :taskId="taskStore.taskId" file_accept=".csv,.sdf" :is_slot="false" @uploadSuc="addNewLigandSuc" />
         </div>
       </div>
       <div v-show="tab === tab_list[1]" class="w-full">
