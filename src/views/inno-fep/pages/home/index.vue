@@ -8,6 +8,9 @@ import { tabListEnum } from "@/views/inno-fep/const";
 import { ref, reactive, onMounted } from "vue";
 import { initTask } from "@/api/fep";
 import { useTaskStoreHook } from "@/store/modules/task";
+import { storageLocal } from "@/store/utils";
+import { taskIdKey } from "@/store/modules/task";
+import { ElMessage } from "element-plus";
 
 defineOptions({
   name: "Inno-FEP"
@@ -22,6 +25,9 @@ onMounted(async () => {
   const res = await initTask();
   if (res.success) {
     taskStore.SET_TASK_ID(res.data.task_id);
+  } else {
+    ElMessage.error(res.message);
+    storageLocal().removeItem(taskIdKey);
   }
 });
 </script>

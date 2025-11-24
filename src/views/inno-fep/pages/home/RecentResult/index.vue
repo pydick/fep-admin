@@ -123,7 +123,7 @@ const dialogOptions = ref({
 });
 
 const { connectWebSocket, sendMessage } = useWebSocket({
-  wsUrl: "/ws",
+  wsUrl: "wss://echo.websocket.org",
   onMessage: message => {
     const tableData = message;
     const { page, pageSize, total, data } = tableData;

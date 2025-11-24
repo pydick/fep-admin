@@ -33,7 +33,7 @@ const ossListCommomParams = { prefix: "proteins" };
 
 const step1Form = reactive({
   input_tab: "数据库导入",
-  need_prot_process: true,
+  need_prot_process: false,
   pdbfile_validate_status: "",
   pdbid_input: "",
   pdbid_select: "",

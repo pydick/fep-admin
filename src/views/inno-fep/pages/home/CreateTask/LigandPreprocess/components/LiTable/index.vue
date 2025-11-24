@@ -18,16 +18,16 @@ const props = withDefaults(defineProps<IProps>(), {
 const emit = defineEmits<{
   "update:data": [value: any[]];
 }>();
-
-defineExpose({
-  toggleAllSelection: () => toggleAllSelection()
-});
+const multipleSelection = ref([]);
 const toggleAllSelection = () => {
   const elTable = tableRef.value.getTableRef();
   elTable.toggleAllSelection();
 };
+defineExpose({
+  toggleAllSelection: () => toggleAllSelection(),
+  multipleSelection
+});
 
-const multipleSelection = ref([]);
 const handleSelectionChange = selectedArr => {
   multipleSelection.value = selectedArr;
   // const data = selectedArr.map(item => item.ligandData);

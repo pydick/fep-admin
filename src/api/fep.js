@@ -130,7 +130,7 @@ export function refresh_task() {
 }
 
 export function selectLigandExample(data) {
-  return request.post(`${apiV1}/ligand/select-example`, { data });
+  return request.post(`${apiV1}/ligand/select-example`, { data: { ...data, task_id: taskStore.taskId } });
 }
 export function initTask() {
   return request.post(`${apiV1}/task/init`);
@@ -166,6 +166,15 @@ export function alignLigand(data) {
 export function appendMolecules(data) {
   return request.post(
     `${apiV1}/ligand/append-molecules`,
+    { data },
+    {
+      headers: { "content-type": "multipart/form-data" }
+    }
+  );
+}
+export function validateLigand(data) {
+  return request.post(
+    `${apiV1}/ligand/validate`,
     { data },
     {
       headers: { "content-type": "multipart/form-data" }

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { store, storageLocal } from "../utils";
 
-const taskIdKey = "task-id";
+export const taskIdKey = "task-id";
 
 export const useTaskStore = defineStore("task", {
   state: () => ({

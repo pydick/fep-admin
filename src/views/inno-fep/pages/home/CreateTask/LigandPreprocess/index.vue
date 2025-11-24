@@ -5,7 +5,7 @@ import LiTable from "./components/LiTable/index.vue";
 import Upload from "./components/Upload/index.vue";
 import PerturbationGraphDialog from "./components/PerGraphDialog/index.vue";
 import Data_select from "../components/DataSelect/index.vue";
-import { ossList, selectLigandExample, alignLigand, prepareLigand, appendMolecules } from "@/api/fep";
+import { ossList, selectLigandExample, alignLigand, prepareLigand, appendMolecules, validateLigand } from "@/api/fep";
 import { ElMessage } from "element-plus";
 import { mockrow1, mockrow2, mockrow3 } from "@/views/inno-fep/pages/home/mockdata/otherdata.js";
 import { distribute_data } from "@/views/inno-fep/pages/home/mockdata/table_getdata_distribute.js";
@@ -65,7 +65,7 @@ const step2Form = reactive({
   ligandId: "",
   example: "",
   ligandData: "",
-  showLigandOverlay: true,
+  showLigandOverlay: false,
   showExperimentData: true,
   referenceLigand: ligand3dData.value.ligand_number,
   experimentMethod: "IC50",
@@ -158,17 +158,24 @@ const handleAlign = async () => {
 const isGernerate = ref(false);
 
 const handleGenerateMap = async () => {
-  const params = {
-    task_id: taskStore.taskId,
-    step: 1,
-    use_user_defined_map_flag: false,
-    user_pair_list: []
-  };
-  const res = await prepareLigand(params);
-  if (res.success) {
-    isGernerate.value = true;
+  const formData = new FormData();
+  formData.append("task_id", taskStore.taskId);
+  const validateRes = await validateLigand(formData);
+  if (validateRes.success) {
+    const params = {
+      task_id: taskStore.taskId,
+      step: 1,
+      use_user_defined_map_flag: false,
+      user_pair_list: []
+    };
+    const res = await prepareLigand(params);
+    if (res.success) {
+      isGernerate.value = true;
+    } else {
+      ElMessage.error(res.message);
+    }
   } else {
-    ElMessage.error(res.message);
+    ElMessage.error(validateRes.message);
   }
 };
 const addUploadRef = ref();
@@ -231,7 +238,10 @@ const mockLigandData = data => {
 let exampleList = reactive<{ name: string; value: string }[]>([]);
 
 const buildDisabled = computed(() => {
-  if (ligandList.value.length < 2) {
+  console.log(liTableRef.value);
+  const selectionCount = liTableRef.value?.multipleSelection.length ?? 0;
+  console.log(selectionCount);
+  if (selectionCount < 2) {
     return true;
   } else {
     if (isAlign.value || !step2Form.showLigandOverlay) {
@@ -360,7 +370,7 @@ onMounted(async () => {
         </el-tooltip>
       </div>
     </div>
-    <PerturbationGraphDialog v-model:visible="perturbationGraphVisible" />
+    <PerturbationGraphDialog v-if="perturbationGraphVisible" v-model:visible="perturbationGraphVisible" />
     <Data_select v-model:if_show="showDataCenter" :data_list="data_list" name="配体数据中心" @custom-event="sucessSure" />
   </el-form>
 </template>

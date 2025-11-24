@@ -3,6 +3,10 @@ import { ref, watch } from "vue";
 import PerturbationGraph from "@/views/inno-fep/components/PerturbationGraph/index.vue";
 import MappingGraph from "./MappingGraph/index.vue";
 import BlcokTitle from "@/views/inno-fep/components/BlcokTitle/index.vue";
+import { prepareLigand } from "@/api/fep";
+import { useTaskStoreHook } from "@/store/modules/task";
+import { ElMessage } from "element-plus";
+const taskStore = useTaskStoreHook();
 defineOptions({
   name: "PerturbationGraphDialog"
 });
@@ -14,11 +18,23 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const edgeData = ref<any>(null);
+const perturbationGraphRef = ref<any>(null);
 const emit = defineEmits<{
   (e: "update:visible", value: boolean): void;
 }>();
-const handleSure = () => {
-  emit("update:visible", false);
+const handleSure = async () => {
+  const params = {
+    task_id: taskStore.taskId,
+    step: 2,
+    use_user_defined_map_flag: true,
+    user_pair_list: perturbationGraphRef.value?.getAllEdgeData().map(item => [item.source, item.target]) ?? []
+  };
+  const res = await prepareLigand(params);
+  if (res.success) {
+    emit("update:visible", false);
+  } else {
+    ElMessage.error(res.message);
+  }
 };
 const handleCancel = () => {
   emit("update:visible", false);
@@ -43,7 +59,7 @@ watch(
       <el-col :span="12" class="h-full">
         <BlcokTitle title="微扰图" class="pb-[15px]" />
         <div class="perturbation-container h-full">
-          <PerturbationGraph class="pt-[15px] h-[600px]!" :isDialogEnter="true" :isSelectedFirstEdge="true" @edgeChange="handleEdgeChange" />
+          <PerturbationGraph ref="perturbationGraphRef" class="pt-[15px] h-[600px]!" :isDialogEnter="true" :isSelectedFirstEdge="true" @edgeChange="handleEdgeChange" />
         </div>
       </el-col>
       <el-col :span="12" class="h-full">

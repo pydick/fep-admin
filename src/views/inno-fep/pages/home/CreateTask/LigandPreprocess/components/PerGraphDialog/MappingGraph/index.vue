@@ -23,8 +23,8 @@ const mappingData = computed(() => {
     <el-row v-if="props.edgeData">
       <el-col :span="24">
         <div class="flex-bc px-[30px] pb-[15px]">
-          <el-text class="mx-1 flex-1 text-center" size="large">Mapping score：{{ mappingData.data.ecr || "-" }}</el-text>
-          <el-text class="mx-1 flex-1 text-center" size="large">Similarity score: {{ mappingData.data.mncar || "-" }}</el-text>
+          <el-text class="mx-1 flex-1 text-center" size="large">Mapping score：{{ mappingData.data.mappingScore || "-" }}</el-text>
+          <!-- <el-text class="mx-1 flex-1 text-center" size="large">Similarity score: {{ mappingData.data.mncar || "-" }}</el-text> -->
         </div>
       </el-col>
       <el-col :span="12">

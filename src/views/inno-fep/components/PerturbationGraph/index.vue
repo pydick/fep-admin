@@ -43,6 +43,10 @@ const emit = defineEmits<{
   (e: "edgeChange", value: any): void;
 }>();
 
+defineExpose({
+  getAllEdgeData: () => getAllEdgeData()
+});
+
 const unitRadius = ref(0);
 // 当前数据改为响应式
 const graphData = reactive({
@@ -338,6 +342,11 @@ const initGraph = () => {
     emit("edgeChange", finalEdgeData);
   });
 };
+
+const getAllEdgeData = () => {
+  return graph.getEdgeData();
+};
+
 const handleResize = throttle(() => {
   if (graph && containerRef.value) {
     const width = containerRef.value.clientWidth;
@@ -376,7 +385,7 @@ const handleEdges = edges => {
       target: edge.target,
       label: `${edge.label}`,
       data: {
-        ecr: edge.ecr,
+        mappingScore: edge.label,
         mncar: edge.mncar,
         weight: edge.weight
       }
@@ -460,7 +469,7 @@ onUnmounted(() => {
     <div class="count-container">
       <span>共{{ edgeCount }}对配体</span>
     </div>
-    <div class="property-container">
+    <div v-show="false" class="property-container">
       <span>微扰属性：</span>
       <el-select v-model="propertyValue" placeholder="选择微扰属性" class="w-[160px]! inline-block mr-[10px]" @change="handlePropertyChange">
         <el-option v-for="item in propertyOptions" :key="item.value" :label="item.label" :value="item.value" />
