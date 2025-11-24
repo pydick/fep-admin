@@ -188,6 +188,9 @@ export function appendProtein(data) {
   return request.post(`${apiV1}/ligand/append-to-protein`, { data });
 }
 // 提交计算任务
-export function submitTask(data) {
+export function submitCalculateTask(data) {
   return request.post(`${apiV1}/cal-analysis/run-calculate`, { data });
+}
+export function submitAnalyzeTask(data) {
+  return request.post(`${apiV1}/cal-analysis/run-analyze`, { data });
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, onUnmounted, reactive, h, nextTick, defineEmits } from "vue";
+import { onMounted, ref, onUnmounted, reactive, h, nextTick, defineEmits, computed } from "vue";
 import { Graph, GraphOptions, NodeOptions, EdgeOptions } from "@antv/g6";
 import GraphNode from "./components/GraphNode/index.vue";
 import { throttle } from "@pureadmin/utils";
@@ -29,6 +29,8 @@ interface Iprops {
   isSelectedFirstEdge?: boolean;
   width?: string;
   height?: string;
+  isEdit?: boolean;
+  hasEdit?: boolean;
 }
 
 const sourceNodeId = ref<string | null>(null);
@@ -36,12 +38,22 @@ const props = withDefaults(defineProps<Iprops>(), {
   isDialogEnter: false,
   isSelectedFirstEdge: false,
   width: "500px",
-  height: "500px"
+  height: "500px",
+  isEdit: true,
+  hasEdit: false
 });
 
 const emit = defineEmits<{
   (e: "edgeChange", value: any): void;
+  (e: "update:hasEdit", value: boolean): void;
 }>();
+
+const innerHasEdit = computed({
+  get: () => props.hasEdit,
+  set: (value: boolean) => {
+    emit("update:hasEdit", value);
+  }
+});
 
 defineExpose({
   getAllEdgeData: () => getAllEdgeData()
@@ -61,7 +73,7 @@ let initialGraphData = {
 
 const edgeCount = ref(0);
 
-const plugins = reactive([
+let plugins = reactive([
   {
     type: "toolbar",
     getItems: () => [
@@ -123,95 +135,102 @@ const plugins = reactive([
         edgeCount.value = initialGraphData.edges.length;
       }
     }
-  },
-  {
-    type: "contextmenu",
-    enable: e => e.targetType === "edge",
-    getItems: () => {
-      return [{ name: "断开连接", value: "disconnect" }];
-    },
-    onClick: (value, target, current) => {
-      if (!graph || !target || !current) return;
-      if (value === "disconnect") {
-        const edgeId = current.id;
-        if (currentHighlightedEdge.value === edgeId) {
-          currentHighlightedEdge.value = null;
-        }
-        graph.removeEdgeData([edgeId]);
-        graph.draw();
-        edgeCount.value = graph.getEdgeData()?.length || 0;
-      }
-
-      if (sourceNodeId.value) {
-        sourceNodeId.value = null;
-      }
-    }
-  },
-  {
-    type: "contextmenu",
-    enable: e => e.targetType === "node",
-    getItems: e => {
-      const nodeId = e.target.id;
-      return [{ name: sourceNodeId.value ? "选择目标节点" : "选择源节点", value: "selectNode", nodeId }];
-    },
-    onClick: (value, target, current) => {
-      if (!graph || !target || !current) return;
-      clearAllHighlight();
-      const nodeId = current.id;
-
-      if (value === "selectNode") {
-        // 第一次点击
-        if (!sourceNodeId.value) {
-          sourceNodeId.value = nodeId;
-          graph.updateNodeData([
-            {
-              id: nodeId,
-              style: { fill: "#FF5733" }
-            }
-          ]);
-          console.log(`Source node selected: ${nodeId}`);
-        } else {
-          if (sourceNodeId.value === nodeId) {
-            ElMessage.warning("源节点和目标节点不能相同！");
-            if (sourceNodeId.value) sourceNodeId.value = null;
-            return;
-          }
-          const edgeData = graph.getEdgeData();
-          // 检查源节点和目标节点之间是否已有边
-          const existingEdge = edgeData.find(edge => (edge.source === sourceNodeId.value && edge.target === nodeId) || (edge.source === nodeId && edge.target === sourceNodeId.value));
-          if (existingEdge) {
-            ElMessage.warning("源节点和目标节点之间已有边！");
-            if (sourceNodeId.value) sourceNodeId.value = null;
-            return;
-          }
-          // 第二次点击，设置目标节点，添加边
-          const edgeId = `edge${edgeData.length + 1}-${Date.now()}`;
-          const newEdge = {
-            id: edgeId,
-            source: sourceNodeId.value,
-            target: nodeId,
-            label: "0.01"
-          };
-
-          // 添加新边到图形
-          edgeData.push(newEdge);
-          graph.addEdgeData([newEdge]);
-          edgeCount.value = edgeData.length;
-          // 清除源节点高亮，并重置源节点
-          graph.updateNodeData([
-            {
-              id: graph.getNodeData(sourceNodeId.value).id,
-              style: { fill: "#ffffff" }
-            }
-          ]);
-          sourceNodeId.value = null;
-          console.log(`Edge added: ${sourceNodeId.value} -> ${nodeId}`);
-        }
-        graph.draw();
-      }
-    }
   }
 ]);
+
+if (props.isEdit) {
+  plugins.push(
+    {
+      type: "contextmenu",
+      enable: e => e.targetType === "edge",
+      getItems: () => {
+        return [{ name: "断开连接", value: "disconnect" }];
+      },
+      onClick: (value, target, current) => {
+        if (!graph || !target || !current) return;
+        if (value === "disconnect") {
+          const edgeId = current.id;
+          if (currentHighlightedEdge.value === edgeId) {
+            currentHighlightedEdge.value = null;
+          }
+          graph.removeEdgeData([edgeId]);
+          graph.draw();
+          edgeCount.value = graph.getEdgeData()?.length || 0;
+          innerHasEdit.value = true;
+        }
+
+        if (sourceNodeId.value) {
+          sourceNodeId.value = null;
+        }
+      }
+    },
+    {
+      type: "contextmenu",
+      enable: e => e.targetType === "node",
+      getItems: e => {
+        const nodeId = e.target.id;
+        return [{ name: sourceNodeId.value ? "选择目标节点" : "选择源节点", value: "selectNode", nodeId }];
+      },
+      onClick: (value, target, current) => {
+        if (!graph || !target || !current) return;
+        clearAllHighlight();
+        const nodeId = current.id;
+
+        if (value === "selectNode") {
+          // 第一次点击
+          if (!sourceNodeId.value) {
+            sourceNodeId.value = nodeId;
+            graph.updateNodeData([
+              {
+                id: nodeId,
+                style: { fill: "#FF5733" }
+              }
+            ]);
+            console.log(`Source node selected: ${nodeId}`);
+          } else {
+            if (sourceNodeId.value === nodeId) {
+              ElMessage.warning("源节点和目标节点不能相同！");
+              if (sourceNodeId.value) sourceNodeId.value = null;
+              return;
+            }
+            const edgeData = graph.getEdgeData();
+            // 检查源节点和目标节点之间是否已有边
+            const existingEdge = edgeData.find(edge => (edge.source === sourceNodeId.value && edge.target === nodeId) || (edge.source === nodeId && edge.target === sourceNodeId.value));
+            if (existingEdge) {
+              ElMessage.warning("源节点和目标节点之间已有边！");
+              if (sourceNodeId.value) sourceNodeId.value = null;
+              return;
+            }
+            // 第二次点击，设置目标节点，添加边
+            const edgeId = `edge${edgeData.length + 1}-${Date.now()}`;
+            const newEdge = {
+              id: edgeId,
+              source: sourceNodeId.value,
+              target: nodeId,
+              label: "0.01"
+            };
+
+            // 添加新边到图形
+            edgeData.push(newEdge);
+            graph.addEdgeData([newEdge]);
+            edgeCount.value = edgeData.length;
+            // 清除源节点高亮，并重置源节点
+            graph.updateNodeData([
+              {
+                id: graph.getNodeData(sourceNodeId.value).id,
+                style: { fill: "#ffffff" }
+              }
+            ]);
+            sourceNodeId.value = null;
+            innerHasEdit.value = true;
+            console.log(`Edge added: ${sourceNodeId.value} -> ${nodeId}`);
+          }
+          graph.draw();
+        }
+      }
+    }
+  );
+}
 const nodeConfig = reactive({
   style: {
     radius: 8,

@@ -79,11 +79,6 @@ const ligandForceFields = ref([
 // 蛋白表格列配置
 const proteinColumns = [
   {
-    type: "selection",
-    align: "left",
-    width: 50
-  },
-  {
     label: "名称",
     prop: "name",
     minWidth: 150,
@@ -99,11 +94,6 @@ const proteinColumns = [
 
 // 配体对表格列配置
 const ligandPairColumns = [
-  {
-    type: "selection",
-    align: "left",
-    width: 50
-  },
   {
     label: "配体对",
     prop: "ligandPair",

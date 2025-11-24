@@ -21,6 +21,10 @@ const taskStore = useTaskStoreHook();
 const tabList = reactive<{ label: string; name: string }[]>(tabListEnum);
 const activeName = ref(tabList[0].name);
 
+const recentResultJump = () => {
+  activeName.value = tabListEnum[1].name;
+};
+
 onMounted(async () => {
   const res = await initTask();
   if (res.success) {
@@ -40,7 +44,7 @@ onMounted(async () => {
     <template #content>
       <CStab v-model:activeName="activeName" :tabList="tabList">
         <template #createTask>
-          <CreateTask v-if="activeName === tabListEnum[0].name" />
+          <CreateTask v-if="activeName === tabListEnum[0].name" @recentResultJump="recentResultJump" />
         </template>
         <template #recentResult>
           <RecentResult v-if="activeName === tabListEnum[1].name" v-model:activeName="activeName" />

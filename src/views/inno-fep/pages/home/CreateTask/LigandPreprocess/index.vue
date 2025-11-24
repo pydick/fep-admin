@@ -17,6 +17,23 @@ defineOptions({
   name: "LigandPreprocess"
 });
 
+interface IProps {
+  step2Disalbed?: boolean;
+}
+const props = withDefaults(defineProps<IProps>(), {
+  step2Disalbed: true
+});
+const emit = defineEmits<{
+  (e: "update:step2Disalbed", value: boolean): void;
+}>();
+
+const innerStep2Disalbed = computed({
+  get: () => props.step2Disalbed,
+  set: (value: boolean) => {
+    emit("update:step2Disalbed", value);
+  }
+});
+
 const num_poses = ref(distribute_data.args.docking.num_poses);
 
 const preprocess_data = data => {
@@ -118,8 +135,7 @@ const experimentUnits = ref([
 
 const mapTypes = ref([
   { label: "Star map", value: "Star map" },
-  { label: "Circle map", value: "Circle map" },
-  { label: "Tree map", value: "Tree map" }
+  { label: "OPtimal map", value: "OPtimal map" }
 ]);
 
 const tab_list = ref<string[]>(["本地文件", "数据中心"]);
@@ -171,6 +187,7 @@ const handleGenerateMap = async () => {
     const res = await prepareLigand(params);
     if (res.success) {
       isGernerate.value = true;
+      innerStep2Disalbed.value = false;
     } else {
       ElMessage.error(res.message);
     }
