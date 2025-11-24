@@ -305,12 +305,16 @@ onMounted(async () => {
           <Upload ref="addUploadRef" class="add-upload" inp_placeholder="上传" uploadType="append" :taskId="taskStore.taskId" file_accept=".csv,.sdf" :is_slot="false" @uploadSuc="addNewLigandSuc" />
         </div>
       </div>
-      <div v-show="tab === tab_list[1]" class="w-full">
+      <div v-show="tab === tab_list[1]" class="w-full dbid_input_box">
         <el-form-item label-width="0px" :rules="[{ required: true, message: '请选择蛋白pdb文件', trigger: 'submit' }]" prop="ligandData">
           <el-button class="w-full w_100" @click="show_dialog()">
             <el-input v-model="step2Form.ligandData" :input-style="{ textAlign: 'center' }" class="w-full" :placeholder="dataCenterTextValue" readonly />
           </el-button>
         </el-form-item>
+        <div class="pt-[15px] inline-block ml-[15px] relative">
+          <el-button type="primary" @click="addNewLigand()">添加新分子</el-button>
+          <Upload ref="addUploadRef" class="add-upload" inp_placeholder="上传" uploadType="append" :taskId="taskStore.taskId" file_accept=".csv,.sdf" :is_slot="false" @uploadSuc="addNewLigandSuc" />
+        </div>
       </div>
     </el-card>
     <BlcokTitle title="配体列表" />
