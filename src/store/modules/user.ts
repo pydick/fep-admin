@@ -9,6 +9,8 @@ export const useUserStore = defineStore("pure-user", {
   state: (): userType => ({
     // 头像
     avatar: storageLocal().getItem<DataInfo<number>>(userKey)?.avatar ?? "",
+    // 用户id
+    userId: storageLocal().getItem<DataInfo<number>>(userKey)?.userId ?? "",
     // 用户名
     username: storageLocal().getItem<DataInfo<number>>(userKey)?.username ?? "",
     // 昵称
@@ -23,6 +25,10 @@ export const useUserStore = defineStore("pure-user", {
     loginDay: 7
   }),
   actions: {
+    /** 存储用户id */
+    SET_USERID(userId: string) {
+      this.userId = userId;
+    },
     /** 存储头像 */
     SET_AVATAR(avatar: string) {
       this.avatar = avatar;

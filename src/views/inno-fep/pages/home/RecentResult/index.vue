@@ -6,6 +6,7 @@ import { Delete, InfoFilled, RefreshRight, WarningFilled, Close, Position } from
 import { tabListEnum } from "@/views/inno-fep/const/index";
 import { ElMessage } from "element-plus";
 import useWebSocket from "./websocket";
+import { useUserStoreHook } from "@/store/modules/user";
 
 defineOptions({
   name: "RecentResult"
@@ -122,8 +123,11 @@ const dialogOptions = ref({
   }
 });
 
+const userId = useUserStoreHook().userId;
+const wsBaseUrl = import.meta.env.VITE_WS_URL;
 const { connectWebSocket, sendMessage } = useWebSocket({
-  wsUrl: "wss://echo.websocket.org",
+  wsUrl: `${wsBaseUrl}/ws/tasks?user_id=${userId}`,
+  // wsUrl: `/ws/tasks?user_id=${userId}`,
   onMessage: message => {
     const tableData = message;
     const { page, pageSize, total, data } = tableData;
