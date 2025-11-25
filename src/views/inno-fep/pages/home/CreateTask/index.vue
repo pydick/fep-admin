@@ -51,6 +51,14 @@ const perGraphParams = ref({
   user_pair_list: []
 });
 
+const handleGraphReady = () => {
+  perGraphPairList.value =
+    perturbationGraphRef.value?.getAllEdgeData().map(item => ({
+      ligandPair: `${item.source} → ${item.target}`,
+      similarity: item.data.mappingScore
+    })) ?? [];
+};
+
 const handleNext = async () => {
   const loading = ElLoading.service({
     lock: true,
@@ -61,13 +69,6 @@ const handleNext = async () => {
     const res = await prepareLigand(perGraphParams.value);
     if (res.success) {
       stepRef.value?.next();
-      console.log(222, perturbationGraphRef.value?.getAllEdgeData());
-      perGraphPairList.value =
-        perturbationGraphRef.value?.getAllEdgeData().map(item => ({
-          ligandPair: `${item.source} → ${item.target}`,
-          similarity: item.data.mappingScore
-        })) ?? [];
-      console.log(222, perGraphPairList.value);
     } else {
       ElMessage.error(res.message);
     }
@@ -164,7 +165,7 @@ provide("proteinFileName", proteinFileName);
     <el-col :span="12" :gutter="15" class="h-full min-width">
       <Protein3d v-if="activeStep === 1" ref="protein3dRef" class="h-full" />
       <Ligand3d v-if="activeStep === 2" ref="ligand3dRef" class="h-full" />
-      <PerturbationGraph v-if="activeStep === 3" ref="perturbationGraphRef" :isEdit="false" class="h-full" />
+      <PerturbationGraph v-if="activeStep === 3" ref="perturbationGraphRef" :isEdit="false" class="h-full" @graphReady="handleGraphReady" />
     </el-col>
     <el-col :span="12" class="h-full min-width">
       <div class="h-full flex flex-col border border-[var(--el-card-border-color)] pt-[15px] pr-[15px] pb-[15px] pl-[15px]">

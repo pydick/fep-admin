@@ -46,6 +46,7 @@ const props = withDefaults(defineProps<Iprops>(), {
 const emit = defineEmits<{
   (e: "edgeChange", value: any): void;
   (e: "update:hasEdit", value: boolean): void;
+  (e: "graphReady"): void; // 新增事件
 }>();
 
 const innerHasEdit = computed({
@@ -467,6 +468,7 @@ onMounted(async () => {
       initGraph();
       handleFirstEdgeClick();
       window.addEventListener("resize", handleResize);
+      emit("graphReady");
     }
   } else {
     ElMessage.error(res.message);
