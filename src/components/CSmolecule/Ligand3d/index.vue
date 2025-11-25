@@ -85,13 +85,20 @@ const draw = async () => {
       // 为每个新配体创建PDB数据请求Promise
       const pdbPromises = newLigands.map(
         id =>
-          appendProtein({ task_id: props.task_id, molecule_index: id }).then(res => ({
-            id: id,
-            smiles: res.data.smiles,
-            showId: id,
-            residueFullInfo: [],
-            pdbData: res.data.pdb_file
-          }))
+          appendProtein({ task_id: props.task_id, molecule_index: id }).then(res => {
+            if (res.success) {
+              return {
+                id: id,
+                smiles: res.data.smiles,
+                showId: id,
+                residueFullInfo: [],
+                pdbData: res.data.pdb_file
+              };
+            } else {
+              ElMessage.error(res.message);
+              return null;
+            }
+          })
 
         // {
         //   let pdbData = "";

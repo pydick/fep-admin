@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, onUnmounted, reactive, h, nextTick, defineEmits, computed } from "vue";
+import { onMounted, ref, onUnmounted, reactive, h, watch, nextTick, defineEmits, computed } from "vue";
 import { Graph, GraphOptions, NodeOptions, EdgeOptions } from "@antv/g6";
 import GraphNode from "./components/GraphNode/index.vue";
 import { throttle } from "@pureadmin/utils";
@@ -31,6 +31,7 @@ interface Iprops {
   height?: string;
   isEdit?: boolean;
   hasEdit?: boolean;
+  visible?: boolean;
 }
 
 const sourceNodeId = ref<string | null>(null);
@@ -40,8 +41,19 @@ const props = withDefaults(defineProps<Iprops>(), {
   width: "500px",
   height: "500px",
   isEdit: true,
-  hasEdit: false
+  hasEdit: false,
+  visible: true
 });
+
+watch(
+  () => props.visible,
+  async newVal => {
+    if (newVal) {
+      await nextTick();
+      init();
+    }
+  }
+);
 
 const emit = defineEmits<{
   (e: "edgeChange", value: any): void;
@@ -450,7 +462,8 @@ const propertyOptions = [
   { label: "Protocol", value: "weight" }
 ];
 
-onMounted(async () => {
+const init = async () => {
+  if (!props.visible) return;
   if (props.isDialogEnter) {
     await nextTick();
   }
@@ -473,6 +486,10 @@ onMounted(async () => {
   } else {
     ElMessage.error(res.message);
   }
+};
+
+onMounted(() => {
+  init();
 });
 
 onUnmounted(() => {

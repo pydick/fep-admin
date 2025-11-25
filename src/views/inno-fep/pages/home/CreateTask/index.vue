@@ -162,7 +162,7 @@ provide("proteinFileName", proteinFileName);
     <el-col :span="12" :gutter="15" class="h-full min-width">
       <Protein3d v-show="activeStep === 1" ref="protein3dRef" class="h-full" />
       <Ligand3d v-show="activeStep === 2" ref="ligand3dRef" class="h-full" />
-      <PerturbationGraph v-if="activeStep === 3" ref="perturbationGraphRef" :isEdit="false" class="h-full" @graphReady="handleGraphReady" />
+      <PerturbationGraph v-show="activeStep === 3" ref="perturbationGraphRef" :visible="activeStep === 3" :isEdit="false" class="h-full" @graphReady="handleGraphReady" />
     </el-col>
     <el-col :span="12" class="h-full min-width">
       <div class="h-full flex flex-col border border-[var(--el-card-border-color)] pt-[15px] pr-[15px] pb-[15px] pl-[15px]">

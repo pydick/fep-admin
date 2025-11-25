@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BlcokTitle from "@/views/inno-fep/components/BlcokTitle/index.vue";
-import { ref, reactive, h, inject } from "vue";
+import { ref, reactive, h, inject, computed } from "vue";
 import { ElTag } from "element-plus";
 
 defineOptions({
@@ -19,13 +19,15 @@ const props = withDefaults(defineProps<IProps>(), {
 });
 
 // 蛋白数据
-const proteinData = ref([
-  {
-    id: 1,
-    name: proteinFileName.value,
-    createTime: "-"
-  }
-]);
+const proteinData = computed(() => {
+  return [
+    {
+      id: 1,
+      name: proteinFileName.value,
+      createTime: "-"
+    }
+  ];
+});
 
 // 模拟参数表单
 const step3Form = reactive({
