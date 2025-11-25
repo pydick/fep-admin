@@ -10,7 +10,7 @@ import { initTask } from "@/api/fep";
 import { useTaskStoreHook } from "@/store/modules/task";
 import { storageLocal } from "@/store/utils";
 import { taskIdKey } from "@/store/modules/task";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElLoading } from "element-plus";
 
 defineOptions({
   name: "Inno-FEP"
@@ -26,18 +26,27 @@ const recentResultJump = () => {
 };
 
 onMounted(async () => {
-  const res = await initTask();
-  if (res.success) {
-    taskStore.SET_TASK_ID(res.data.task_id);
-  } else {
-    ElMessage.error(res.message);
-    storageLocal().removeItem(taskIdKey);
+  const loading = ElLoading.service({
+    lock: true,
+    text: "任务加载中",
+    target: "#fepCard"
+  });
+  try {
+    const res = await initTask();
+    if (res.success) {
+      taskStore.SET_TASK_ID(res.data.task_id);
+    } else {
+      ElMessage.error(res.message);
+      storageLocal().removeItem(taskIdKey);
+    }
+  } finally {
+    loading.close();
   }
 });
 </script>
 
 <template>
-  <CScard body-class="flex-1 pt-0!" header-class="border-b-0! pt-0">
+  <CScard id="fepCard" body-class="flex-1 pt-0!" header-class="border-b-0! pt-0">
     <template #header>
       <FepHeader />
     </template>
