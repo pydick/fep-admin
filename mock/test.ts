@@ -286,7 +286,7 @@ export default defineFakeRoute([
     }
   },
   {
-    url: "/api/v1/ligand/perturbation-graph",
+    url: "/api/v1/ligand/perturbation-graph1",
     method: "post",
     response: ({ body }) => {
       return {

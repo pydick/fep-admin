@@ -117,15 +117,9 @@ const handleSubmit = async () => {
   } else {
     ElMessage.error(calculateRes.message);
   }
-
-  // TODO: 调用提交 API
-  // await submitTask({ step1: step1Data, step2: step2Data, step3: step3Data });
-
-  ElMessage.success("任务提交成功");
 };
 
 const handleCheckAndNext = async () => {
-  // stepRef.value?.next();
   const loading = ElLoading.service({
     lock: true,
     text: "加载中",
@@ -163,7 +157,7 @@ provide("proteinFileName", proteinFileName);
 <template>
   <el-row id="createTaskContainer" :gutter="15" class="h-full flex-nowrap! overflow-auto">
     <el-col :span="12" :gutter="15" class="h-full min-width">
-      <Protein3d v-if="activeStep === 1" ref="protein3dRef" class="h-full" />
+      <Protein3d v-show="activeStep === 1" ref="protein3dRef" class="h-full" />
       <Ligand3d v-if="activeStep === 2" ref="ligand3dRef" class="h-full" />
       <PerturbationGraph v-if="activeStep === 3" ref="perturbationGraphRef" :isEdit="false" class="h-full" @graphReady="handleGraphReady" />
     </el-col>
@@ -171,9 +165,9 @@ provide("proteinFileName", proteinFileName);
       <div class="h-full flex flex-col border border-[var(--el-card-border-color)] pt-[15px] pr-[15px] pb-[15px] pl-[15px]">
         <CSstep ref="stepRef" v-model:active="activeStep" class="max-w-full! pt-[15px] pb-[15px] bg-[var(--el-fill-color-light)]" :titleList="stepList" />
         <div class="flex-1 basis-0 overflow-y-auto">
-          <ProteinPreprocess v-if="activeStep === 1" />
-          <LigandPreprocess v-if="activeStep === 2" v-model:step2Disalbed="step2Disalbed" />
-          <CalculationParameters v-if="activeStep === 3" :pairList="perGraphPairList" />
+          <ProteinPreprocess v-show="activeStep === 1" />
+          <LigandPreprocess v-show="activeStep === 2" v-model:step2Disalbed="step2Disalbed" />
+          <CalculationParameters v-show="activeStep === 3" :pairList="perGraphPairList" />
         </div>
         <div class="pt-[15px]">
           <el-button v-show="activeStep !== 1" @click="handlePrev">上一步</el-button>

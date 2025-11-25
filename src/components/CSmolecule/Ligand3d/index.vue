@@ -43,6 +43,7 @@ const first_draw = ref(false);
 
 // 绘制分子结构的主要方法
 const draw = async () => {
+  if (JSON.stringify(props.ligandData) === "{}") return;
   try {
     // 打开加载状态
     molstar_ref.value.open_loading();
@@ -131,8 +132,7 @@ const draw = async () => {
     // 标记Molstar已初始化
     init_molstar.value = true;
     // 使用 nextTick 等待 props 更新完成后再调用 draw
-    await nextTick();
-
+    // await nextTick();
     // 调用Molstar组件绘制方法
     molstar_ref.value.draw();
   } catch (err) {
@@ -142,6 +142,13 @@ const draw = async () => {
     molstar_ref.value.close_loading(false);
   }
 };
+watch(
+  () => props.ligandData,
+  async () => {
+    await nextTick();
+    draw();
+  }
+);
 
 // 监听SMILES ID列表变化
 watch(
