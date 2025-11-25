@@ -1,6 +1,6 @@
 <template>
   <!-- 多配体分子可视化组件 -->
-  <multi_ligand_view_molstar ref="molstar_ref" v-bind="ligand_view_dict" render_time="wait" />
+  <multi_ligand_view_molstar v-if="Object.keys(ligandData).length > 0" ref="molstar_ref" v-bind="ligand_view_dict" render_time="wait" />
 </template>
 
 <script setup>
@@ -142,21 +142,12 @@ const draw = async () => {
     molstar_ref.value.close_loading(false);
   }
 };
-watch(
-  () => props.ligandData,
-  async () => {
-    await nextTick();
-    draw();
-  }
-);
 
 // 监听SMILES ID列表变化
-watch(
-  () => props.smiles_id_list_str,
-  () => {
-    draw();
-  }
-);
+watch([() => props.smiles_id_list_str, () => props.ligandData], async () => {
+  await nextTick();
+  draw();
+});
 
 // 组件挂载后初始化
 onMounted(() => {

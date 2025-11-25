@@ -28,7 +28,6 @@ const hasEdit = ref(false);
 
 const handleSure = async () => {
   perGraphParams.value = {
-    task_id: taskStore.taskId,
     step: 2,
     use_user_defined_map_flag: hasEdit.value,
     user_pair_list: hasEdit.value ? (perturbationGraphRef.value?.getAllEdgeData().map(item => [item.source, item.target]) ?? []) : []

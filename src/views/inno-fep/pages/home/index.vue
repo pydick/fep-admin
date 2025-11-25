@@ -24,20 +24,16 @@ const activeName = ref(tabList[0].name);
 const recentResultJump = () => {
   activeName.value = tabListEnum[1].name;
 };
-const initTaskFlag = ref(false);
 
 onMounted(async () => {
-  initTaskFlag.value = false;
   const loading = ElLoading.service({
-    lock: true,
     text: "任务加载中",
-    target: "#fepCard"
+    target: "#fepTab"
   });
   try {
     const res = await initTask();
     if (res.success) {
       taskStore.SET_TASK_ID(res.data.task_id);
-      initTaskFlag.value = true;
     } else {
       ElMessage.error(res.message);
       storageLocal().removeItem(taskIdKey);
@@ -49,12 +45,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <CScard v-if="initTaskFlag" id="fepCard" body-class="flex-1 pt-0!" header-class="border-b-0! pt-0">
+  <CScard body-class="flex-1 pt-0!" header-class="border-b-0! pt-0">
     <template #header>
       <FepHeader />
     </template>
     <template #content>
-      <CStab v-model:activeName="activeName" :tabList="tabList">
+      <CStab id="fepTab" v-model:activeName="activeName" :tabList="tabList">
         <template #createTask>
           <CreateTask v-if="activeName === tabListEnum[0].name" @recentResultJump="recentResultJump" />
         </template>

@@ -45,7 +45,6 @@ const ligandStr = ref("[]");
 const ligandData = ref({});
 const proteinFileName = ref("");
 const perGraphParams = ref({
-  task_id: taskStore.taskId,
   step: 2,
   use_user_defined_map_flag: false,
   user_pair_list: []
@@ -66,7 +65,11 @@ const handleNext = async () => {
     target: "#createTaskContainer"
   });
   try {
-    const res = await prepareLigand(perGraphParams.value);
+    const params = {
+      task_id: taskStore.taskId,
+      ...perGraphParams.value
+    };
+    const res = await prepareLigand(params);
     if (res.success) {
       stepRef.value?.next();
     } else {
@@ -158,7 +161,7 @@ provide("proteinFileName", proteinFileName);
   <el-row id="createTaskContainer" :gutter="15" class="h-full flex-nowrap! overflow-auto">
     <el-col :span="12" :gutter="15" class="h-full min-width">
       <Protein3d v-show="activeStep === 1" ref="protein3dRef" class="h-full" />
-      <Ligand3d v-if="activeStep === 2" ref="ligand3dRef" class="h-full" />
+      <Ligand3d v-show="activeStep === 2" ref="ligand3dRef" class="h-full" />
       <PerturbationGraph v-if="activeStep === 3" ref="perturbationGraphRef" :isEdit="false" class="h-full" @graphReady="handleGraphReady" />
     </el-col>
     <el-col :span="12" class="h-full min-width">
