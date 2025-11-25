@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ElMessage } from "element-plus";
-import { ref, provide, reactive, inject } from "vue";
+import { ref, provide, reactive, inject, nextTick } from "vue";
 import Protein3d from "@/views/inno-fep/components/Protein3d/index.vue";
 import Ligand3d from "@/views/inno-fep/components/Ligand3d/index.vue";
 import PerturbationGraph from "@/views/inno-fep/components/PerturbationGraph/index.vue";
@@ -40,8 +40,10 @@ const taskFormData = reactive<TaskFormData>({
   step3Form: null
 });
 
+const perGraphPairList = ref([]);
 const ligandStr = ref("[]");
 const ligandData = ref({});
+const proteinFileName = ref("");
 const perGraphParams = ref({
   task_id: taskStore.taskId,
   step: 2,
@@ -59,6 +61,13 @@ const handleNext = async () => {
     const res = await prepareLigand(perGraphParams.value);
     if (res.success) {
       stepRef.value?.next();
+      console.log(222, perturbationGraphRef.value?.getAllEdgeData());
+      perGraphPairList.value =
+        perturbationGraphRef.value?.getAllEdgeData().map(item => ({
+          ligandPair: `${item.source} → ${item.target}`,
+          similarity: item.data.mappingScore
+        })) ?? [];
+      console.log(222, perGraphPairList.value);
     } else {
       ElMessage.error(res.message);
     }
@@ -147,6 +156,7 @@ provide("taskFormData", taskFormData);
 provide("ligandStr", ligandStr);
 provide("ligandData", ligandData);
 provide("perGraphParams", perGraphParams);
+provide("proteinFileName", proteinFileName);
 </script>
 
 <template>
@@ -162,7 +172,7 @@ provide("perGraphParams", perGraphParams);
         <div class="flex-1 basis-0 overflow-y-auto">
           <ProteinPreprocess v-if="activeStep === 1" />
           <LigandPreprocess v-if="activeStep === 2" v-model:step2Disalbed="step2Disalbed" />
-          <CalculationParameters v-if="activeStep === 3" />
+          <CalculationParameters v-if="activeStep === 3" :pairList="perGraphPairList" />
         </div>
         <div class="pt-[15px]">
           <el-button v-show="activeStep !== 1" @click="handlePrev">上一步</el-button>

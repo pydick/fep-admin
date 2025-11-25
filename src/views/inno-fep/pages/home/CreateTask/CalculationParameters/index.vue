@@ -9,48 +9,21 @@ defineOptions({
 
 // 注入父组件提供的任务表单数据对象
 const taskFormData = inject<any>("taskFormData");
+const proteinFileName = inject<any>("proteinFileName");
+
+interface IProps {
+  pairList?: any[];
+}
+const props = withDefaults(defineProps<IProps>(), {
+  pairList: () => []
+});
 
 // 蛋白数据
 const proteinData = ref([
   {
     id: 1,
-    name: "1.pdb",
-    createTime: "2025-09-17",
-    selected: true
-  }
-]);
-
-// 配体对数据
-const ligandPairData = ref([
-  {
-    id: 1,
-    ligandPair: "cpd1 → cpd2",
-    similarity: 0.891,
-    selected: true
-  },
-  {
-    id: 2,
-    ligandPair: "cpd3 → cpd5",
-    similarity: 0.96,
-    selected: true
-  },
-  {
-    id: 3,
-    ligandPair: "cpd3 → cpd4",
-    similarity: 0.991,
-    selected: true
-  },
-  {
-    id: 4,
-    ligandPair: "cpd3 → cpd4",
-    similarity: 0.991,
-    selected: true
-  },
-  {
-    id: 5,
-    ligandPair: "cpd3 → cpd4",
-    similarity: 0.991,
-    selected: true
+    name: proteinFileName.value,
+    createTime: "-"
   }
 ]);
 
@@ -148,7 +121,7 @@ const handleSubmit = () => {
     <!-- 用于计算的配体对 -->
     <BlcokTitle title="用于计算的配体对" />
     <div class="pt-[15px]">
-      <pure-table :data="ligandPairData" :columns="ligandPairColumns" @selection-change="handleLigandPairSelectionChange" />
+      <pure-table :data="props.pairList" :columns="ligandPairColumns" @selection-change="handleLigandPairSelectionChange" />
     </div>
 
     <!-- 模拟参数 -->

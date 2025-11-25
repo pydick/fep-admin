@@ -6,7 +6,7 @@ import Upload from "./components/Upload/index.vue";
 import PerturbationGraphDialog from "./components/PerGraphDialog/index.vue";
 import Data_select from "../components/DataSelect/index.vue";
 import { ossList, selectLigandExample, alignLigand, prepareLigand, appendMolecules, validateLigand } from "@/api/fep";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElLoading } from "element-plus";
 import { mockrow1, mockrow2, mockrow3 } from "@/views/inno-fep/pages/home/mockdata/otherdata.js";
 import { distribute_data } from "@/views/inno-fep/pages/home/mockdata/table_getdata_distribute.js";
 import { useTaskStoreHook } from "@/store/modules/task";
@@ -174,25 +174,34 @@ const handleAlign = async () => {
 const isGernerate = ref(false);
 
 const handleGenerateMap = async () => {
-  const formData = new FormData();
-  formData.append("task_id", taskStore.taskId);
-  const validateRes = await validateLigand(formData);
-  if (validateRes.success) {
-    const params = {
-      task_id: taskStore.taskId,
-      step: 1,
-      use_user_defined_map_flag: false,
-      user_pair_list: []
-    };
-    const res = await prepareLigand(params);
-    if (res.success) {
-      isGernerate.value = true;
-      innerStep2Disalbed.value = false;
+  const loading = ElLoading.service({
+    lock: true,
+    text: "加载中",
+    target: "#createTaskContainer"
+  });
+  try {
+    const formData = new FormData();
+    formData.append("task_id", taskStore.taskId);
+    const validateRes = await validateLigand(formData);
+    if (validateRes.success) {
+      const params = {
+        task_id: taskStore.taskId,
+        step: 1,
+        use_user_defined_map_flag: false,
+        user_pair_list: []
+      };
+      const res = await prepareLigand(params);
+      if (res.success) {
+        isGernerate.value = true;
+        innerStep2Disalbed.value = false;
+      } else {
+        ElMessage.error(res.message);
+      }
     } else {
-      ElMessage.error(res.message);
+      ElMessage.error(validateRes.message);
     }
-  } else {
-    ElMessage.error(validateRes.message);
+  } finally {
+    loading.close();
   }
 };
 const addUploadRef = ref();

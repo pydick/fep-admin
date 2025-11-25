@@ -15,6 +15,7 @@ defineOptions({
   name: "ProteinPreprocess"
 });
 const protein3dRef = inject<any>("protein3dRef");
+const proteinFileName = inject<any>("proteinFileName");
 
 // 注入父组件提供的任务表单数据对象
 const taskFormData = inject<any>("taskFormData");
@@ -143,6 +144,7 @@ const show_dialog = async () => {
   }
 };
 const handleCustomEvent = ({ id, name }) => {
+  proteinFileName.value = name;
   dataCenterTextValue.value = name;
   getPdbById(id);
 };
@@ -335,12 +337,14 @@ const single_het_click = data => {
 };
 
 const uploadSuc = ({ key: id, filename }, file) => {
+  proteinFileName.value = filename;
   uploadTextValue.value = filename;
   step1Form.disclose_file = file;
   getPdbById(id);
 };
 const pdbidInput = debounce(value => {
   const id = `proteins/${value}.pdb`;
+  proteinFileName.value = `${value}.pdb`;
   getPdbById(id);
 }, 1000);
 
@@ -386,6 +390,7 @@ const het_change = async (data, value) => {
 };
 
 const exampleChoose = async id => {
+  proteinFileName.value = exampleList.find(item => item.value === id)?.name;
   await getPdbById(id);
 };
 const getPdbById = async id => {
