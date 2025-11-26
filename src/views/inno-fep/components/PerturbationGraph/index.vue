@@ -170,6 +170,7 @@ if (props.isEdit) {
           graph.draw();
           edgeCount.value = graph.getEdgeData()?.length || 0;
           innerHasEdit.value = true;
+          emit("edgeChange", null);
         }
 
         if (sourceNodeId.value) {
@@ -238,16 +239,17 @@ if (props.isEdit) {
                 edgeData.push(newEdge);
                 graph.addEdgeData([newEdge]);
                 edgeCount.value = edgeData.length;
-                // 清除源节点高亮，并重置源节点
-                graph.updateNodeData([
-                  {
-                    id: graph.getNodeData(sourceNodeId.value).id,
-                    style: { fill: "#ffffff" }
-                  }
-                ]);
                 sourceNodeId.value = null;
                 innerHasEdit.value = true;
+                clearAllHighlight();
+                graph.updateEdgeData([
+                  {
+                    id: newEdge.id,
+                    style: highlightEdgeStyle
+                  }
+                ]);
                 graph.draw();
+                edgeChange(newEdge.id);
               } else {
                 ElMessage.error("不存在");
               }
@@ -380,16 +382,20 @@ const initGraph = () => {
       }
     ]);
     graph.draw();
-    const edgeData = graph.getEdgeData(edgeId);
-    const sourceNodeData = graph.getNodeData(edgeData.source);
-    const targetNodeData = graph.getNodeData(edgeData.target);
-    const finalEdgeData = {
-      ...edgeData,
-      sourceData: sourceNodeData,
-      targetData: targetNodeData
-    };
-    emit("edgeChange", finalEdgeData);
+    edgeChange(edgeId);
   });
+};
+
+const edgeChange = edgeId => {
+  const edgeData = graph.getEdgeData(edgeId);
+  const sourceNodeData = graph.getNodeData(edgeData.source);
+  const targetNodeData = graph.getNodeData(edgeData.target);
+  const finalEdgeData = {
+    ...edgeData,
+    sourceData: sourceNodeData,
+    targetData: targetNodeData
+  };
+  emit("edgeChange", finalEdgeData);
 };
 
 const getAllEdgeData = () => {
