@@ -120,9 +120,9 @@ const emptyText = ref("暂无数据");
   <div class="li-table-wrapper">
     <pure-table ref="tableRef" :data="props.data" :columns="columns" border :empty-text="emptyText" cell-class-name="h-[60px]" @selection-change="handleSelectionChange">
       <template #status="{ row }">
-        <el-tag v-if="row.status === 'success'" type="success" effect="plain">成功</el-tag>
+        <el-tag v-if="row.status === 'valid'" type="success" effect="plain">有效</el-tag>
         <el-tag v-else-if="row.status === 'warning'" type="warning" effect="plain">警告</el-tag>
-        <el-tag v-else type="danger" effect="plain">失败</el-tag>
+        <el-tag v-else type="danger" effect="plain">无效</el-tag>
       </template>
       <template #2dStructure="{ row }">
         <el-image :src="svgToDataUrl(row.structure)" :preview-src-list="[svgToDataUrl(row.structure)]" fit="contain" class="structure-img w-[42px] h-[42px]" :preview-teleported="true" />
