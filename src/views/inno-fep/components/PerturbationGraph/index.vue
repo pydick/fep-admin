@@ -6,7 +6,7 @@ import { throttle } from "@pureadmin/utils";
 import { pxToRemPx } from "@/utils/rem";
 import { cloneDeep } from "@pureadmin/utils";
 import { ElMessage } from "element-plus";
-import { getPerturbationGraphData } from "@/api/fep";
+import { getPerturbationGraphData, addEdges } from "@/api/fep";
 
 import { register, ExtensionCategory } from "@antv/g6";
 import { CustomToolbarPlugin } from "./plugins/CustomToolbarPlugin/index";
@@ -184,14 +184,14 @@ if (props.isEdit) {
         const nodeId = e.target.id;
         return [{ name: sourceNodeId.value ? "选择目标节点" : "选择源节点", value: "selectNode", nodeId }];
       },
-      onClick: (value, target, current) => {
-        if (!graph || !target || !current) return;
+      onClick: async (value, target, current) => {
+        if (!target || !current) return;
         clearAllHighlight();
         const nodeId = current.id;
 
         if (value === "selectNode") {
-          // 第一次点击
           if (!sourceNodeId.value) {
+            // 点击源节点
             sourceNodeId.value = nodeId;
             graph.updateNodeData([
               {
@@ -201,6 +201,7 @@ if (props.isEdit) {
             ]);
             console.log(`Source node selected: ${nodeId}`);
           } else {
+            // 点击目标节点
             if (sourceNodeId.value === nodeId) {
               ElMessage.warning("源节点和目标节点不能相同！");
               if (sourceNodeId.value) sourceNodeId.value = null;
@@ -214,31 +215,47 @@ if (props.isEdit) {
               if (sourceNodeId.value) sourceNodeId.value = null;
               return;
             }
-            // 第二次点击，设置目标节点，添加边
-            const edgeId = `edge${edgeData.length + 1}-${Date.now()}`;
-            const newEdge = {
-              id: edgeId,
-              source: sourceNodeId.value,
-              target: nodeId,
-              label: "0.01"
+            const params = {
+              task_id: taskStore.taskId,
+              edges: [[sourceNodeId.value, nodeId]]
             };
+            const res = await addEdges(params);
+            if (res.success) {
+              const edgeRes = res.data?.results?.[0];
+              if (edgeRes?.exists) {
+                const edgeId = `${sourceNodeId.value}_to_${nodeId}`;
+                const newEdge = {
+                  id: edgeId,
+                  source: sourceNodeId.value,
+                  target: nodeId,
+                  label: `${edgeRes.similarity}`,
+                  data: {
+                    mappingScore: edgeRes.similarity
+                  }
+                };
 
-            // 添加新边到图形
-            edgeData.push(newEdge);
-            graph.addEdgeData([newEdge]);
-            edgeCount.value = edgeData.length;
-            // 清除源节点高亮，并重置源节点
-            graph.updateNodeData([
-              {
-                id: graph.getNodeData(sourceNodeId.value).id,
-                style: { fill: "#ffffff" }
+                // 添加新边到图形
+                edgeData.push(newEdge);
+                graph.addEdgeData([newEdge]);
+                edgeCount.value = edgeData.length;
+                // 清除源节点高亮，并重置源节点
+                graph.updateNodeData([
+                  {
+                    id: graph.getNodeData(sourceNodeId.value).id,
+                    style: { fill: "#ffffff" }
+                  }
+                ]);
+                sourceNodeId.value = null;
+                innerHasEdit.value = true;
+                graph.draw();
+              } else {
+                ElMessage.error("不存在");
               }
-            ]);
-            sourceNodeId.value = null;
-            innerHasEdit.value = true;
-            console.log(`Edge added: ${sourceNodeId.value} -> ${nodeId}`);
+            } else {
+              ElMessage.error(res.message);
+            }
           }
-          graph.draw();
+          // graph.draw();
         }
       }
     }
@@ -412,14 +429,12 @@ const handleEdges = edges => {
   console.log(edges);
   const finalEdges = edges.map((edge, index) => {
     return {
-      id: `${edge.source}-${edge.target}`,
+      id: `${edge.source}_to_${edge.target}`,
       source: edge.source,
       target: edge.target,
-      label: `${edge.label}`,
+      label: `${edge.similarity || "-"}`,
       data: {
-        mappingScore: edge.label,
-        mncar: edge.mncar,
-        weight: edge.weight
+        mappingScore: edge.similarity
       }
     };
   });

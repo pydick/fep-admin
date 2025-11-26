@@ -197,3 +197,6 @@ export function submitAnalyzeTask(data) {
 export function renameMolecule(data) {
   return request.post(`${apiV1}/ligand/rename-molecule`, { data });
 }
+export function addEdges(data) {
+  return request.post(`${apiV1}/ligand/try-add-edges`, { data });
+}
