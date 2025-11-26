@@ -7,6 +7,7 @@ import { tabListEnum } from "@/views/inno-fep/const/index";
 import { ElMessage } from "element-plus";
 import useWebSocket from "./websocket";
 import { useUserStoreHook } from "@/store/modules/user";
+import { apiV1 } from "@/config/api";
 
 defineOptions({
   name: "RecentResult"
@@ -35,7 +36,7 @@ const taskColumns = [
   },
   {
     label: "任务编号",
-    prop: "id",
+    prop: "task_id",
     minWidth: 150,
     align: "center"
   },
@@ -126,8 +127,7 @@ const dialogOptions = ref({
 const userId = useUserStoreHook().userId;
 const wsBaseUrl = import.meta.env.VITE_WS_URL;
 const { connectWebSocket, sendMessage } = useWebSocket({
-  wsUrl: `${wsBaseUrl}/api/v1/cal-analysis/ws/tasks?user_id=${userId}`,
-  // wsUrl: `/ws/tasks?user_id=${userId}`,
+  wsUrl: `${apiV1}/cal-analysis/ws/tasks?user_id=${userId}`,
   onMessage: message => {
     const tableData = message;
     const { page, pageSize, total, data } = tableData;
@@ -145,15 +145,23 @@ const { connectWebSocket, sendMessage } = useWebSocket({
   }
 });
 
+const handleSizeChange = (pageSize: number) => {
+  pagination.pageSize = pageSize;
+  queryPageData({ page: 1, pageSize: pagination.pageSize });
+};
 const statusTypeMap = {
-  processing: "primary",
-  finished: "success",
-  error: "danger"
+  COMMITTED: "primary",
+  PENDING: "primary",
+  STARTED: "primary",
+  SUCCESS: "success",
+  FAIL: "danger"
 };
 const statusTextMap = {
-  processing: "进行中",
-  finished: "已完成",
-  error: "失败"
+  COMMITTED: "已提交",
+  PENDING: "队列中",
+  STARTED: "执行中",
+  SUCCESS: "成功",
+  FAIL: "失败"
 };
 onMounted(() => {
   loading.value = true;
@@ -208,7 +216,7 @@ onMounted(() => {
       </template>
     </pure-table>
     <div class="pt-[15px]">
-      <el-pagination align="center" :current-page="pagination.page" :page-size="pagination.pageSize" layout="total, prev, pager, next, jumper" :total="pagination.total" @current-change="handleCurrentChange" />
+      <el-pagination v-model:page-size="pagination.pageSize" align="center" :current-page="pagination.page" layout="total, sizes, prev, pager, next" :page-sizes="[2, 5, 10, 20]" :total="pagination.total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
     <ParameterDialog v-model:visible="showParameterDialog" :options="dialogOptions" />
   </div>

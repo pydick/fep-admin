@@ -50,9 +50,11 @@ onMounted(async () => {
       <FepHeader />
     </template>
     <template #content>
-      <CStab id="fepTab" v-model:activeName="activeName" :tabList="tabList">
+      <CStab v-model:activeName="activeName" :tabList="tabList">
         <template #createTask>
-          <CreateTask v-if="activeName === tabListEnum[0].name" @recentResultJump="recentResultJump" />
+          <div id="fepTab" class="h-full">
+            <CreateTask v-if="activeName === tabListEnum[0].name" @recentResultJump="recentResultJump" />
+          </div>
         </template>
         <template #recentResult>
           <RecentResult v-if="activeName === tabListEnum[1].name" v-model:activeName="activeName" />

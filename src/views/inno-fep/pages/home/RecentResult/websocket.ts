@@ -73,7 +73,7 @@ const useWebSocket = function (options?: { onMessage?: (message: any) => void; w
   const resetReconnect = function () {
     reconnectAttempts.value = 0;
     clearReconnectTimer();
-    console.log("重置重连状态成功");
+    console.log("连接状态成功");
   };
 
   /**
@@ -117,23 +117,25 @@ const useWebSocket = function (options?: { onMessage?: (message: any) => void; w
           return;
         }
         const message = JSON.parse(event.data);
-        if (message.page === 1) {
-          const data = {
-            data: websocketData.data.slice(0, 10),
-            page: 1,
-            pageSize: websocketData.pageSize,
-            total: websocketData.total
-          };
-          options.onMessage(data);
-        } else {
-          const data = {
-            data: websocketData.data.slice(10),
-            page: 2,
-            pageSize: websocketData.pageSize,
-            total: websocketData.total
-          };
-          options.onMessage(data);
-        }
+        console.log(555, message);
+        options.onMessage(message);
+        // if (message.page === 1) {
+        //   const data = {
+        //     data: websocketData.data.slice(0, 10),
+        //     page: 1,
+        //     pageSize: websocketData.pageSize,
+        //     total: websocketData.total
+        //   };
+        //   options.onMessage(data);
+        // } else {
+        //   const data = {
+        //     data: websocketData.data.slice(10),
+        //     page: 2,
+        //     pageSize: websocketData.pageSize,
+        //     total: websocketData.total
+        //   };
+        //   options.onMessage(data);
+        // }
       } catch (error) {
         console.error("解析WebSocket消息失败:", error);
       }
