@@ -102,16 +102,19 @@ const gotoCreateTask = () => {
   emit("update:activeName", tabListEnum[0].name);
 };
 
-const exceptionReason = ref("");
-const exceptionReasonVisible = ref(false);
-const showExceptionReason = (id: string) => {
+const exceptionReason = ref<Record<string, string>>({});
+const exceptionReasonVisible = ref<Record<string, boolean>>({});
+const showExceptionReason = (id: string, taskId: string) => {
   console.log(id);
-  exceptionReason.value = "该任务异常原因";
-  exceptionReasonVisible.value = true;
+  exceptionReason.value[taskId] = "该任务异常原因";
+  Object.keys(exceptionReasonVisible.value).forEach(key => {
+    exceptionReasonVisible.value[key] = false;
+  });
+  exceptionReasonVisible.value[taskId] = true;
 };
 
-const exceptionReasonClose = () => {
-  exceptionReasonVisible.value = false;
+const exceptionReasonClose = (taskId: string) => {
+  exceptionReasonVisible.value[taskId] = false;
 };
 
 const deleteTask = (id: string) => {
@@ -196,15 +199,15 @@ onMounted(() => {
 
         <el-tooltip content="任务异常" placement="top">
           <span class="inline-block mx-[8px]">
-            <el-popover ref="popover" :visible="exceptionReasonVisible" popper-class="relative" placement="bottom" title="异常原因" trigger="focus">
+            <el-popover :ref="'popover' + row.task_id" :visible="exceptionReasonVisible[row.task_id]" popper-class="relative" placement="bottom" title="异常原因" trigger="focus">
               <template #default>
-                <el-icon class="cursor-pointer text-gray-400 hover:text-gray-600 exception-close-icon" @click="exceptionReasonClose">
+                <el-icon class="cursor-pointer text-gray-400 hover:text-gray-600 exception-close-icon" @click="exceptionReasonClose(row.task_id)">
                   <Close />
                 </el-icon>
-                {{ exceptionReason }}
+                {{ exceptionReason[row.task_id] }}
               </template>
               <template #reference>
-                <el-button :icon="WarningFilled" circle plain @click="showExceptionReason(row.id)" />
+                <el-button :icon="WarningFilled" circle plain @click="showExceptionReason(row.id, row.task_id)" />
               </template>
             </el-popover>
           </span>
