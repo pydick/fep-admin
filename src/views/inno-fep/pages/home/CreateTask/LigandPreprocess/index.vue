@@ -420,7 +420,7 @@ onMounted(async () => {
           <el-option v-for="item in mapTypes" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="中心分子" prop="centerMolecule" label-position="right" label-width="70px">
+      <el-form-item v-show="step2Form.mapType === 'Star map'" label="中心分子" prop="centerMolecule" label-position="right" label-width="70px">
         <el-select v-model="step2Form.centerMolecule" placeholder="选择中心分子" class="select-w-responsive mr-[10px]">
           <el-option v-for="item in centralMoleculeOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
