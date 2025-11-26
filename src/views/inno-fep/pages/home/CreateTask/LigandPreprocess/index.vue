@@ -96,7 +96,7 @@ const step2FormInitialValues = {
   example: "",
   ligandData: "",
   showLigandOverlay: false,
-  showExperimentData: true,
+  showExperimentData: false,
   experimentMethod: "IC50",
   experimentUnit: "nM",
   mapType: "Star map",
