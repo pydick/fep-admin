@@ -150,7 +150,7 @@ export default {
       this.drawed_refer = true;
       if (this.refer_pdb_string) {
         const color = this.color_list_ori_pdb[0].color;
-        await this.add_ligand_view(this.refer_pdb_string, undefined, 0, true, "ref", color, []);
+        await this.add_ligand_view(this.refer_pdb_string, undefined, 0, true, "ref", color, [], "default");
       }
     },
     // 主要绘制方法：管理配体的添加、移除和更新
@@ -245,8 +245,9 @@ export default {
      * @param {string} ligand_name - 配体的显示名称，用于标识和显示
      * @param {string} color - 配体的颜色名称（如"red", "blue", "green"等），用于在3D视图中渲染配体颜色
      * @param {Array} residue_full_info - 残基的完整信息数组，包含配体周围残基的详细信息
+     * @param {string} render_type - 渲染类型，默认"ligand_view"，可选"default"
      */
-    async add_ligand_view(pdb_input_string, ligand_hex_id, ligand_cnt_id, is_refer_ligand, ligand_name, color, residue_full_info) {
+    async add_ligand_view(pdb_input_string, ligand_hex_id, ligand_cnt_id, is_refer_ligand, ligand_name, color, residue_full_info, render_type = "ligand_view") {
       this.open_loading();
 
       // 设置渲染参数
@@ -264,7 +265,7 @@ export default {
         is_binary: false,
         input: pdb_input_string,
         if_render: true,
-        render_type: "ligand_view",
+        render_type,
         render_id: render_id,
         carbon_color: color,
         if_clean: if_clean,
