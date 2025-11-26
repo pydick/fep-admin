@@ -29,13 +29,23 @@ const proteinData = computed(() => {
   ];
 });
 
-// 模拟参数表单
-const step3Form = reactive({
+defineExpose({
+  clearData: () => clearData()
+});
+
+const step3FormInitialValues = {
   proteinForceField: "力场3",
   ligandForceField: "力场2",
   simulationTime: 2,
   selectedProteins: [],
   selectedLigandPairs: []
+};
+const clearData = () => {
+  Object.assign(step3Form, step3FormInitialValues);
+};
+
+const step3Form = reactive({
+  ...step3FormInitialValues
 });
 
 // 力场选项
@@ -100,15 +110,6 @@ const handleProteinSelectionChange = val => {
 const handleLigandPairSelectionChange = val => {
   ligandPairSelection.value = val;
   step3Form.selectedLigandPairs = val;
-};
-
-// 提交任务
-const handleSubmit = () => {
-  console.log("提交计算任务", {
-    proteins: step3Form.selectedProteins,
-    ligandPairs: step3Form.selectedLigandPairs,
-    simulationParams: step3Form
-  });
 };
 </script>
 

@@ -74,6 +74,7 @@ const handleNext = async () => {
     };
     const res = await prepareLigand(params);
     if (res.success) {
+      calculationParametersRef.value.clearData();
       stepRef.value?.next();
     } else {
       ElMessage.error(res.message);
