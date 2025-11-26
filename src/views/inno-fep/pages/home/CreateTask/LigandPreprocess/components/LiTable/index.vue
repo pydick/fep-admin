@@ -17,6 +17,7 @@ const props = withDefaults(defineProps<IProps>(), {
 });
 const emit = defineEmits<{
   "update:data": [value: any[]];
+  nameChange: [value: any];
 }>();
 const multipleSelection = ref([]);
 const toggleAllSelection = () => {
@@ -107,8 +108,9 @@ const onMouseleave = index => {
   editing.value[index] ? (activeIndex.value = index) : (activeIndex.value = -1);
 };
 
-const onSave = function (index) {
+const onSave = function (row, index) {
   editMap.value[index].editing = false;
+  emit("nameChange", row);
 };
 
 const emptyText = ref("暂无数据");
@@ -133,7 +135,7 @@ const emptyText = ref("暂无数据");
           <p v-if="!editing(index)" class="w-[calc(100%-25px)]">{{ row.name }}</p>
           <div v-else class="flex-bc">
             <el-input v-model="row.name" />
-            <iconify-icon-offline :icon="Check" :class="iconClass(index)" @click="onSave(index)" />
+            <iconify-icon-offline :icon="Check" :class="iconClass(index)" @click="onSave(row, index)" />
           </div>
           <iconifyIconOffline v-show="activeIndex === index && !editing(index)" :icon="EditPen" :class="iconClass(index, true)" @click="onEdit(row, index)" />
         </div>

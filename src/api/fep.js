@@ -194,3 +194,6 @@ export function submitCalculateTask(data) {
 export function submitAnalyzeTask(data) {
   return request.post(`${apiV1}/cal-analysis/run-analyze`, { data });
 }
+export function renameMolecule(data) {
+  return request.post(`${apiV1}/ligand/rename-molecule`, { data });
+}

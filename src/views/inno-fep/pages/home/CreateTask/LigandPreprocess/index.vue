@@ -5,7 +5,7 @@ import LiTable from "./components/LiTable/index.vue";
 import Upload from "./components/Upload/index.vue";
 import PerturbationGraphDialog from "./components/PerGraphDialog/index.vue";
 import Data_select from "../components/DataSelect/index.vue";
-import { ossList, selectLigandExample, alignLigand, prepareLigand, appendMolecules, validateLigand } from "@/api/fep";
+import { ossList, selectLigandExample, alignLigand, prepareLigand, appendMolecules, validateLigand, renameMolecule } from "@/api/fep";
 import { ElMessage, ElLoading } from "element-plus";
 import { mockrow1, mockrow2, mockrow3 } from "@/views/inno-fep/pages/home/mockdata/otherdata.js";
 import { distribute_data } from "@/views/inno-fep/pages/home/mockdata/table_getdata_distribute.js";
@@ -33,6 +33,20 @@ const innerStep2Disalbed = computed({
     emit("update:step2Disalbed", value);
   }
 });
+
+defineExpose({
+  clearData: () => clearData()
+});
+
+const clearData = () => {
+  ligandList.value = [];
+  Object.assign(step2Form, {
+    ...step2FormInitialValues,
+    referenceLigand: ligand3dData.value.ligand_number
+  });
+  uploadTextVal.value = uploadTextDefaultVal;
+  dataCenterTextValue.value = dataCenterTextdefaultValue;
+};
 
 const num_poses = ref(distribute_data.args.docking.num_poses);
 
@@ -77,18 +91,22 @@ const taskFormData = inject<any>("taskFormData");
 
 const ossListCommomParams = { prefix: "ligands" };
 
-const el_form_second = ref();
-const step2Form = reactive({
+const step2FormInitialValues = {
   ligandId: "",
   example: "",
   ligandData: "",
   showLigandOverlay: false,
   showExperimentData: true,
-  referenceLigand: ligand3dData.value.ligand_number,
   experimentMethod: "IC50",
   experimentUnit: "nM",
   mapType: "Star map",
   centerMolecule: ""
+};
+
+const el_form_second = ref();
+const step2Form = reactive({
+  ...step2FormInitialValues,
+  referenceLigand: ligand3dData.value.ligand_number
 });
 const showDataCenter = ref(false);
 
@@ -215,10 +233,11 @@ const perturbationGraphShow = () => {
   perturbationGraphVisible.value = true;
 };
 
-const uploadTextVal = ref("上传");
+const uploadTextDefaultVal = "上传";
+
+const uploadTextVal = ref(uploadTextDefaultVal);
 
 const uploadSuc = (data, filename) => {
-  console.log(111, data);
   uploadTextVal.value = filename;
   ligandList.value = data.molecules;
   // ligandList.value = mockLigandData(data.molecules);
@@ -285,7 +304,24 @@ const sucessSure = async ({ id, name }) => {
     ligandList.value = res.data.molecules;
   }
 };
-const dataCenterTextValue = ref("数据中心导入ligand");
+
+const handleNameChange = async row => {
+  const params = {
+    task_id: taskStore.taskId,
+    molecule_index: row.id,
+    new_name: row.name
+  };
+  const res = await renameMolecule(params);
+  if (res.success) {
+    ligandList.value = res.data.molecules;
+  } else {
+    ElMessage.error(res.message);
+  }
+};
+
+const dataCenterTextdefaultValue = "数据中心导入ligand";
+
+const dataCenterTextValue = ref(dataCenterTextdefaultValue);
 
 const show_dialog = async () => {
   const res = await ossList({ ...ossListCommomParams });
@@ -344,7 +380,7 @@ onMounted(async () => {
       </div>
     </el-card>
     <BlcokTitle title="配体列表" />
-    <LiTable ref="liTableRef" v-model:data="ligandList" class="mt-[15px]" />
+    <LiTable ref="liTableRef" v-model:data="ligandList" class="mt-[15px]" @nameChange="handleNameChange" />
 
     <BlcokTitle title="分子叠合">
       <el-switch v-model="step2Form.showLigandOverlay" class="ml-[10px]" />
