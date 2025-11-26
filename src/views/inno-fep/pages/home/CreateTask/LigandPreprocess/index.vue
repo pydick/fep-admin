@@ -284,9 +284,9 @@ let exampleList = reactive<{ name: string; value: string }[]>([]);
 
 const buildDisabled = computed(() => {
   console.log(liTableRef.value);
-  const selectionCount = liTableRef.value?.multipleSelection.length ?? 0;
-  console.log(selectionCount);
-  if (selectionCount < 2) {
+  const len = ligandList.value.length;
+  console.log(len);
+  if (len < 2) {
     return true;
   } else {
     if (isAlign.value || !step2Form.showLigandOverlay) {
