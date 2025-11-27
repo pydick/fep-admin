@@ -11,6 +11,7 @@ import { mockrow1, mockrow2, mockrow3 } from "@/views/inno-fep/pages/home/mockda
 import { distribute_data } from "@/views/inno-fep/pages/home/mockdata/table_getdata_distribute.js";
 import { useTaskStoreHook } from "@/store/modules/task";
 const ligand3dData = inject<any>("ligandData");
+const centerMolecule = inject<any>("centerMolecule");
 const taskStore = useTaskStoreHook();
 const data_list = ref([]);
 defineOptions({
@@ -108,6 +109,11 @@ const step2Form = reactive({
   ...step2FormInitialValues,
   referenceLigand: ligand3dData.value.ligand_number
 });
+const mapTypesEnum = [
+  { label: "Star map", value: "Star map" },
+  { label: "OPtimal map", value: "OPtimal map" }
+];
+centerMolecule.value.hasCenterMolecule = step2Form.mapType === mapTypesEnum[0].value;
 const showDataCenter = ref(false);
 
 taskFormData.step2Form = step2Form;
@@ -151,10 +157,7 @@ const experimentUnits = ref([
   { label: "kcal/mol", value: "kcal/mol" }
 ]);
 
-const mapTypes = ref([
-  { label: "Star map", value: "Star map" },
-  { label: "OPtimal map", value: "OPtimal map" }
-]);
+const mapTypes = ref([...mapTypesEnum]);
 
 const tab_list = ref<string[]>(["本地文件", "数据中心"]);
 const tab = ref<string>(tab_list.value[0]);
@@ -230,6 +233,10 @@ const addNewLigand = () => {
 
 const perturbationGraphVisible = ref(false);
 const perturbationGraphShow = () => {
+  if (step2Form.mapType === mapTypesEnum[0].value && !step2Form.centerMolecule) {
+    ElMessage.error("请先选择映射图方式为Star map，并选择中心分子");
+    return;
+  }
   perturbationGraphVisible.value = true;
 };
 
@@ -334,6 +341,18 @@ const show_dialog = async () => {
   }
 };
 
+const handleMapTypeChange = value => {
+  if (value === mapTypesEnum[0].value) {
+    centerMolecule.value.hasCenterMolecule = true;
+  } else {
+    centerMolecule.value.hasCenterMolecule = false;
+  }
+};
+const handleCenterMoleculeChange = value => {
+  centerMolecule.value.data = {
+    name: centralMoleculeOptions.value.find(item => item.value === value)?.label
+  };
+};
 onMounted(async () => {
   const res = await ossList({ ...ossListCommomParams, max_keys: 1 });
   if (res.success) {
@@ -416,12 +435,12 @@ onMounted(async () => {
     <BlcokTitle title="创建映射图" class="mt-[15px]" />
     <div class="map-section flex flex-wrap">
       <el-form-item label="映射图方式" prop="mapType" label-position="right">
-        <el-select v-model="step2Form.mapType" placeholder="选择映射图方式" class="select-w-responsive mr-[15px]">
+        <el-select v-model="step2Form.mapType" placeholder="选择映射图方式" class="select-w-responsive mr-[15px]" @change="handleMapTypeChange">
           <el-option v-for="item in mapTypes" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      <el-form-item v-show="step2Form.mapType === 'Star map'" label="中心分子" prop="centerMolecule" label-position="right" label-width="70px">
-        <el-select v-model="step2Form.centerMolecule" placeholder="选择中心分子" class="select-w-responsive mr-[10px]">
+      <el-form-item v-show="step2Form.mapType === mapTypes[0].value" label="中心分子" prop="centerMolecule" label-position="right" label-width="70px">
+        <el-select v-model="step2Form.centerMolecule" placeholder="选择中心分子" class="select-w-responsive mr-[10px]" @change="handleCenterMoleculeChange">
           <el-option v-for="item in centralMoleculeOptions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>

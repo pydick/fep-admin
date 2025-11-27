@@ -21,7 +21,8 @@ defineOptions({
 const stepList = ref<string[]>(["蛋白预处理", "配体预处理", "计算参数"]);
 const activeStep = ref(1);
 const protein3dRef = ref();
-
+const ligand3dRef = ref();
+const centerMolecule = ref({});
 const emit = defineEmits<{
   (e: "recentResultJump"): void;
 }>();
@@ -133,6 +134,7 @@ const handleCheckAndNext = async () => {
     target: "#createTaskContainer"
   });
   try {
+    await ligand3dRef.value.remove_all_ligands();
     const checkRes = await validateProtein({ task_id: taskStore.taskId });
     if (checkRes.success) {
       console.log(checkRes.data);
@@ -160,6 +162,7 @@ provide("ligandStr", ligandStr);
 provide("ligandData", ligandData);
 provide("perGraphParams", perGraphParams);
 provide("proteinFileName", proteinFileName);
+provide("centerMolecule", centerMolecule);
 </script>
 
 <template>

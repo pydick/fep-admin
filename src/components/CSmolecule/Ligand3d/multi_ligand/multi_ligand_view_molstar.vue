@@ -137,6 +137,10 @@ export default {
   onBeforeUnmount() {},
   unmounted() {},
   methods: {
+    clear_own_ligands_list() {
+      this.own_ligands_list = [];
+      this.own_ligands_hex_id_list = [];
+    },
     // Molstar初始化完成后的回调函数
     init_draw() {
       this.init_molstar = true;

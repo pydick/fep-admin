@@ -40,15 +40,6 @@ const handleCancel = () => {
 const handleEdgeChange = (value: any) => {
   edgeData.value = value;
 };
-watch(
-  () => props.visible,
-  newVal => {
-    console.log(newVal);
-  },
-  {
-    immediate: true
-  }
-);
 </script>
 
 <template>

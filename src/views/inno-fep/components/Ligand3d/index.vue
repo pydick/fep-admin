@@ -8,8 +8,12 @@ const taskStore = useTaskStoreHook();
 defineOptions({
   name: "Ligand3d"
 });
-
+const ngl_ref = ref();
 const task_id = ref(taskStore.taskId);
+
+defineExpose({
+  remove_all_ligands: () => ngl_ref.value.remove_all_ligands()
+});
 </script>
 
 <template>

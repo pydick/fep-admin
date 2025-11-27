@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, onUnmounted, reactive, h, watch, nextTick, defineEmits, computed } from "vue";
+import { onMounted, ref, onUnmounted, reactive, h, watch, nextTick, defineEmits, computed, inject } from "vue";
 import { Graph, GraphOptions, NodeOptions, EdgeOptions } from "@antv/g6";
 import GraphNode from "./components/GraphNode/index.vue";
 import { throttle } from "@pureadmin/utils";
@@ -7,10 +7,11 @@ import { pxToRemPx } from "@/utils/rem";
 import { cloneDeep } from "@pureadmin/utils";
 import { ElMessage } from "element-plus";
 import { getPerturbationGraphData, addEdges } from "@/api/fep";
-
 import { register, ExtensionCategory } from "@antv/g6";
 import { CustomToolbarPlugin } from "./plugins/CustomToolbarPlugin/index";
 import { useTaskStoreHook } from "@/store/modules/task";
+const centerMolecule = inject<any>("centerMolecule");
+
 register(ExtensionCategory.PLUGIN, "custom-toolbar", CustomToolbarPlugin);
 defineOptions({
   name: "PerturbationGraph"
@@ -490,7 +491,8 @@ const init = async () => {
   }
   const data = {
     type: "json",
-    task_id: taskStore.taskId
+    task_id: taskStore.taskId,
+    center_molecule: centerMolecule.value.hasCenterMolecule ? centerMolecule.value.data.name : ""
   };
   const res = await getPerturbationGraphData(data);
   if (res.success) {

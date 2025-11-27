@@ -37,9 +37,28 @@ const ligand_view_dict = ref({
   refer_smiles_name: "", // 参考配体的SMILES名称
   refer_smiles_id: "" // 参考配体的SMILES ID
 });
+
 // 是否首次绘制
 const first_draw = ref(false);
 // 已删除：不再需要单独的 ligands_id_list
+
+const remove_all_ligands = async () => {
+  // 清除所有已渲染的配体视图
+  if (molstar_ref.value && molstar_ref.value.molstar_ref) {
+    molstar_ref.value.clear_own_ligands_list();
+    const ligandsToRemove = [...ligand_view_dict.value.ligands_list];
+    for (const ligand of ligandsToRemove) {
+      await molstar_ref.value.molstar_ref.remove_ligand_view_pdb(ligand.ligand_hex_id);
+    }
+  }
+  // 清空配体列表
+  ligand_view_dict.value.ligands_list = [];
+  // 重置首次绘制标志，以便下次重新初始化参考配体
+  first_draw.value = false;
+};
+defineExpose({
+  remove_all_ligands
+});
 
 // 绘制分子结构的主要方法
 const draw = async () => {
