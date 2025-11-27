@@ -492,7 +492,7 @@ const init = async () => {
   const data = {
     type: "json",
     task_id: taskStore.taskId,
-    center_molecule: centerMolecule.value.hasCenterMolecule ? centerMolecule.value.data.name : ""
+    center_molecule: centerMolecule.value.hasCenterMolecule ? centerMolecule.value?.data?.name : ""
   };
   const res = await getPerturbationGraphData(data);
   if (res.success) {

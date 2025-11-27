@@ -50,6 +50,7 @@ const remove_all_ligands = async () => {
     for (const ligand of ligandsToRemove) {
       await molstar_ref.value.molstar_ref.remove_ligand_view_pdb(ligand.ligand_hex_id);
     }
+    molstar_ref.value.molstar_ref.reset_camera();
   }
   // 清空配体列表
   ligand_view_dict.value.ligands_list = [];
