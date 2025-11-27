@@ -159,7 +159,7 @@ const draw = async () => {
     // 标记Molstar已初始化
     init_molstar.value = true;
     // 使用 nextTick 等待 props 更新完成后再调用 draw
-    // await nextTick();
+    await nextTick();
     // 调用Molstar组件绘制方法
     molstar_ref.value.draw();
   } catch (err) {
