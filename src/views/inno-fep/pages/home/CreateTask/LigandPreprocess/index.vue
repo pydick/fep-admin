@@ -5,7 +5,7 @@ import LiTable from "./components/LiTable/index.vue";
 import Upload from "./components/Upload/index.vue";
 import PerturbationGraphDialog from "./components/PerGraphDialog/index.vue";
 import Data_select from "../components/DataSelect/index.vue";
-import { ossList, selectLigandExample, alignLigand, prepareLigand, appendMolecules, validateLigand, renameMolecule } from "@/api/fep";
+import { ossList, selectLigandExample, alignLigand, prepareLigand, appendMolecules, validateLigand, renameMolecule, setPrepareParams } from "@/api/fep";
 import { ElMessage, ElLoading } from "element-plus";
 import { mockrow1, mockrow2, mockrow3 } from "@/views/inno-fep/pages/home/mockdata/otherdata.js";
 import { distribute_data } from "@/views/inno-fep/pages/home/mockdata/table_getdata_distribute.js";
@@ -111,9 +111,10 @@ const step2Form = reactive({
 });
 const mapTypesEnum = [
   { label: "Star map", value: "Star map" },
-  { label: "OPtimal map", value: "OPtimal map" }
+  { label: "Optimal map", value: "Optimal map" }
 ];
 centerMolecule.value.hasCenterMolecule = step2Form.mapType === mapTypesEnum[0].value;
+centerMolecule.value.data.map_type = step2Form.mapType;
 const showDataCenter = ref(false);
 
 taskFormData.step2Form = step2Form;
@@ -195,6 +196,10 @@ const handleAlign = async () => {
 const isGernerate = ref(false);
 
 const handleGenerateMap = async () => {
+  if (step2Form.mapType === mapTypesEnum[0].value && !step2Form.centerMolecule) {
+    ElMessage.warning("请先选择映射图方式为Star map，并选择中心分子");
+    return;
+  }
   const loading = ElLoading.service({
     lock: true,
     text: "加载中",
@@ -205,18 +210,27 @@ const handleGenerateMap = async () => {
     formData.append("task_id", taskStore.taskId);
     const validateRes = await validateLigand(formData);
     if (validateRes.success) {
-      const params = {
+      const seParamsRes = await setPrepareParams({
         task_id: taskStore.taskId,
-        step: 1,
-        use_user_defined_map_flag: false,
-        user_pair_list: []
-      };
-      const res = await prepareLigand(params);
-      if (res.success) {
-        isGernerate.value = true;
-        innerStep2Disalbed.value = false;
+        graph_topology: step2Form.mapType === mapTypesEnum[0].value ? "star" : "normal",
+        bias_nodes: [centralMoleculeOptions.value.find(item => item.value == step2Form.centerMolecule).label]
+      });
+      if (seParamsRes.success) {
+        const params = {
+          task_id: taskStore.taskId,
+          step: 1,
+          use_user_defined_map_flag: false,
+          user_pair_list: []
+        };
+        const res = await prepareLigand(params);
+        if (res.success) {
+          isGernerate.value = true;
+          innerStep2Disalbed.value = false;
+        } else {
+          ElMessage.error(res.message);
+        }
       } else {
-        ElMessage.error(res.message);
+        ElMessage.error(seParamsRes.message);
       }
     } else {
       ElMessage.error(validateRes.message);
@@ -234,7 +248,7 @@ const addNewLigand = () => {
 const perturbationGraphVisible = ref(false);
 const perturbationGraphShow = () => {
   if (step2Form.mapType === mapTypesEnum[0].value && !step2Form.centerMolecule) {
-    ElMessage.error("请先选择映射图方式为Star map，并选择中心分子");
+    ElMessage.warning("请先选择映射图方式为Star map，并选择中心分子");
     return;
   }
   perturbationGraphVisible.value = true;
@@ -342,16 +356,11 @@ const show_dialog = async () => {
 };
 
 const handleMapTypeChange = value => {
-  if (value === mapTypesEnum[0].value) {
-    centerMolecule.value.hasCenterMolecule = true;
-  } else {
-    centerMolecule.value.hasCenterMolecule = false;
-  }
+  centerMolecule.value.hasCenterMolecule = value === mapTypesEnum[0].value;
+  centerMolecule.value.data.map_type = value;
 };
 const handleCenterMoleculeChange = value => {
-  centerMolecule.value.data = {
-    name: centralMoleculeOptions.value.find(item => item.value === value)?.label
-  };
+  centerMolecule.value.data.center_molecule = centralMoleculeOptions.value.find(item => item.value === value)?.label;
 };
 onMounted(async () => {
   const res = await ossList({ ...ossListCommomParams, max_keys: 1 });

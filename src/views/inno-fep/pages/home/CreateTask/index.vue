@@ -22,7 +22,13 @@ const stepList = ref<string[]>(["蛋白预处理", "配体预处理", "计算参
 const activeStep = ref(1);
 const protein3dRef = ref();
 const ligand3dRef = ref();
-const centerMolecule = ref({});
+const centerMolecule = ref({
+  hasCenterMolecule: false,
+  data: {
+    map_type: "",
+    center_molecule: ""
+  }
+});
 const emit = defineEmits<{
   (e: "recentResultJump"): void;
 }>();

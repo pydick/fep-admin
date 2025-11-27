@@ -200,3 +200,6 @@ export function renameMolecule(data) {
 export function addEdges(data) {
   return request.post(`${apiV1}/ligand/try-add-edges`, { data });
 }
+export function setPrepareParams(data) {
+  return request.post(`${apiV1}/ligand/set-prepare-params`, { data });
+}

@@ -489,10 +489,15 @@ const init = async () => {
   if (props.isDialogEnter) {
     await nextTick();
   }
+  if (centerMolecule.value.hasCenterMolecule && !centerMolecule.value.data.center_molecule) {
+    return;
+  }
+
   const data = {
     type: "json",
     task_id: taskStore.taskId,
-    center_molecule: centerMolecule.value.hasCenterMolecule ? centerMolecule.value?.data?.name : ""
+    map_type: centerMolecule.value.data.map_type,
+    center_molecule: centerMolecule.value.hasCenterMolecule ? centerMolecule.value.data.center_molecule : ""
   };
   const res = await getPerturbationGraphData(data);
   if (res.success) {
