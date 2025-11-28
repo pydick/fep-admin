@@ -6,7 +6,7 @@ import BlcokTitle from "@/views/inno-fep/components/BlcokTitle/index.vue";
 import { prepareLigand } from "@/api/fep";
 import { useTaskStoreHook } from "@/store/modules/task";
 import { ElMessage, ElLoading } from "element-plus";
-const taskStore = useTaskStoreHook();
+const excludeEdges = inject<any>("excludeEdges");
 defineOptions({
   name: "PerturbationGraphDialog"
 });
@@ -32,9 +32,11 @@ const handleSure = async () => {
     use_user_defined_map_flag: hasEdit.value,
     user_pair_list: hasEdit.value ? (perturbationGraphRef.value?.getAllEdgeData().map(item => [item.source, item.target]) ?? []) : []
   };
+  excludeEdges.value.isNeedRemind = true;
   emit("update:visible", false);
 };
 const handleCancel = () => {
+  excludeEdges.value.isNeedRemind = true;
   emit("update:visible", false);
 };
 const handleEdgeChange = (value: any) => {
@@ -48,7 +50,7 @@ const handleEdgeChange = (value: any) => {
       <el-col :span="12" class="h-full">
         <BlcokTitle title="微扰图" class="pb-[15px]" />
         <div class="perturbation-container h-full">
-          <PerturbationGraph ref="perturbationGraphRef" v-model:hasEdit="hasEdit" class="pt-[15px] h-[600px]!" :isDialogEnter="true" :isSelectedFirstEdge="true" @edgeChange="handleEdgeChange" />
+          <PerturbationGraph ref="perturbationGraphRef" v-model:hasEdit="hasEdit" class="pt-[15px] h-[600px]!" :isSelectedFirstEdge="true" @edgeChange="handleEdgeChange" />
         </div>
       </el-col>
       <el-col :span="12" class="h-full">

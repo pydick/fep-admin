@@ -11,6 +11,7 @@ import { register, ExtensionCategory } from "@antv/g6";
 import { CustomToolbarPlugin } from "./plugins/CustomToolbarPlugin/index";
 import { useTaskStoreHook } from "@/store/modules/task";
 const centerMolecule = inject<any>("centerMolecule");
+const excludeEdges = inject<any>("excludeEdges");
 
 register(ExtensionCategory.PLUGIN, "custom-toolbar", CustomToolbarPlugin);
 defineOptions({
@@ -26,7 +27,6 @@ const currentHighlightedEdge = ref<string | null>(null);
 const currentHighlightedNode = ref<string | null>(null);
 
 interface Iprops {
-  isDialogEnter?: boolean;
   isSelectedFirstEdge?: boolean;
   width?: string;
   height?: string;
@@ -37,7 +37,6 @@ interface Iprops {
 
 const sourceNodeId = ref<string | null>(null);
 const props = withDefaults(defineProps<Iprops>(), {
-  isDialogEnter: false,
   isSelectedFirstEdge: false,
   width: "500px",
   height: "500px",
@@ -52,6 +51,11 @@ watch(
     if (newVal) {
       await nextTick();
       init();
+    } else {
+      if (graph) {
+        graph.destroy();
+        graph = null;
+      }
     }
   }
 );
@@ -168,6 +172,8 @@ if (props.isEdit) {
             currentHighlightedEdge.value = null;
           }
           graph.removeEdgeData([edgeId]);
+          const edgeData = graph.getEdgeData();
+          excludeEdges.value.data = edgeData.map(item => [item.source, item.target]);
           graph.draw();
           edgeCount.value = graph.getEdgeData()?.length || 0;
           innerHasEdit.value = true;
@@ -237,10 +243,10 @@ if (props.isEdit) {
                 };
 
                 // 添加新边到图形
+                excludeEdges.value.data = edgeData.map(item => [item.source, item.target]);
                 edgeData.push(newEdge);
                 graph.addEdgeData([newEdge]);
                 edgeCount.value = edgeData.length;
-                sourceNodeId.value = null;
                 innerHasEdit.value = true;
                 clearAllHighlight();
                 graph.updateEdgeData([
@@ -254,6 +260,7 @@ if (props.isEdit) {
               } else {
                 ElMessage.error("不存在");
               }
+              sourceNodeId.value = null;
             } else {
               ElMessage.error(res.message);
             }
@@ -486,9 +493,6 @@ const propertyOptions = [
 
 const init = async () => {
   if (!props.visible) return;
-  if (props.isDialogEnter) {
-    await nextTick();
-  }
   if (centerMolecule.value.hasCenterMolecule && !centerMolecule.value.data.center_molecule) {
     return;
   }
@@ -497,7 +501,9 @@ const init = async () => {
     type: "json",
     task_id: taskStore.taskId,
     map_type: centerMolecule.value.data.map_type,
-    center_molecule: centerMolecule.value.hasCenterMolecule ? centerMolecule.value.data.center_molecule : ""
+    center_molecule: centerMolecule.value.hasCenterMolecule ? centerMolecule.value.data.center_molecule : "",
+    include_edges: excludeEdges.value.data,
+    if_filter_edges: excludeEdges.value.isNeedRemind
   };
   const res = await getPerturbationGraphData(data);
   if (res.success) {

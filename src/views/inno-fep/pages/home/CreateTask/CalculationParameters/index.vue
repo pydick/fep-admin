@@ -33,9 +33,18 @@ defineExpose({
   clearData: () => clearData()
 });
 
+const proteinForceFieldsEnum = [
+  { label: "AMBER99SB", value: "amber99sb" },
+  { label: "AMBER03", value: "amber03" }
+];
+
+const ligandForceFieldsEnum = [
+  { label: "GAFF", value: "gaff" },
+  { label: "GAFF2", value: "gaff2" }
+];
 const step3FormInitialValues = {
-  proteinForceField: "力场3",
-  ligandForceField: "力场2",
+  proteinForceField: proteinForceFieldsEnum[0].value,
+  ligandForceField: ligandForceFieldsEnum[0].value,
   simulationTime: 2,
   selectedProteins: [],
   selectedLigandPairs: []
@@ -49,17 +58,9 @@ const step3Form = reactive({
 });
 
 // 力场选项
-const proteinForceFields = ref([
-  { label: "力场1", value: "力场1" },
-  { label: "力场2", value: "力场2" },
-  { label: "力场3", value: "力场3" }
-]);
+const proteinForceFields = ref([...proteinForceFieldsEnum]);
 
-const ligandForceFields = ref([
-  { label: "力场1", value: "力场1" },
-  { label: "力场2", value: "力场2" },
-  { label: "力场3", value: "力场3" }
-]);
+const ligandForceFields = ref([...ligandForceFieldsEnum]);
 
 // 蛋白表格列配置
 const proteinColumns = [

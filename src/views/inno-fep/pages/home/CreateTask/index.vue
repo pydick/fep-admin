@@ -10,8 +10,9 @@ import CalculationParameters from "./CalculationParameters/index.vue";
 import CSstep from "@/components/CSstep/index.vue";
 import { getLigandFromProtein } from "@/api/fep";
 import { useTaskStoreHook } from "@/store/modules/task";
-import { validateProtein, submitCalculateTask, submitAnalyzeTask, prepareLigand } from "@/api/fep";
+import { validateProtein, submitCalculateTask, submitAnalyzeTask, prepareLigand, setPrepareParams } from "@/api/fep";
 import { ElLoading } from "element-plus";
+import { mapTypesEnum } from "@/views/inno-fep/pages/home/CreateTask/const";
 
 const taskStore = useTaskStoreHook();
 
@@ -33,6 +34,10 @@ const emit = defineEmits<{
   (e: "recentResultJump"): void;
 }>();
 const stepRef = ref();
+const excludeEdges = ref({
+  isNeedRemind: false,
+  data: []
+});
 
 // 创建一个响应式对象来存储所有步骤的表单数据
 interface TaskFormData {
@@ -69,26 +74,8 @@ const ligandPreprocessRef = ref();
 const calculationParametersRef = ref();
 
 const handleNext = async () => {
-  const loading = ElLoading.service({
-    lock: true,
-    text: "加载中",
-    target: "#createTaskContainer"
-  });
-  try {
-    const params = {
-      task_id: taskStore.taskId,
-      ...perGraphParams.value
-    };
-    const res = await prepareLigand(params);
-    if (res.success) {
-      calculationParametersRef.value.clearData();
-      stepRef.value?.next();
-    } else {
-      ElMessage.error(res.message);
-    }
-  } finally {
-    loading.close();
-  }
+  calculationParametersRef.value.clearData();
+  stepRef.value?.next();
 };
 
 const handlePrev = () => {
@@ -98,38 +85,59 @@ const perturbationGraphRef = ref();
 const step2Disalbed = ref(true);
 
 const handleSubmit = async () => {
-  // 获取所有表单数据
-  const step1Data = taskFormData.step1Form;
-  const step2Data = taskFormData.step2Form;
-  const step3Data = taskFormData.step3Form;
-
-  console.log("提交任务", {
-    step1: step1Data,
-    step2: step2Data,
-    step3: step3Data
+  const loading = ElLoading.service({
+    lock: true,
+    text: "加载中",
+    target: "#createTaskContainer"
   });
-  const calculateParams = {
-    task_id: taskStore.taskId,
-    edges: perturbationGraphRef.value?.getAllEdgeData().map(item => `${item.source}_to_{item.target}`) ?? []
-  };
-  const calculateRes = await submitCalculateTask(calculateParams);
-  if (calculateRes.success) {
-    const analyzeParams = {
+  try {
+    // 获取所有表单数据
+    const step1Data = taskFormData.step1Form;
+    const step2Data = taskFormData.step2Form;
+    const step3Data = taskFormData.step3Form;
+    const seParamsRes = await setPrepareParams({
       task_id: taskStore.taskId,
-      use_user_defined_map: false,
-      monitor: false,
-      poll_interval: 5,
-      max_attempts: 60
-    };
-    const analyzeRes = await submitAnalyzeTask(analyzeParams);
-    if (analyzeRes.success) {
-      ElMessage.success("任务提交成功");
-      emit("recentResultJump");
+      force_field_file: step3Data.ligandForceField,
+      protein_force_field: step3Data.proteinForceField
+    });
+    if (seParamsRes.success) {
+      const params = {
+        task_id: taskStore.taskId,
+        ...perGraphParams.value
+      };
+      const prepareRes = await prepareLigand(params);
+      if (prepareRes.success) {
+        const calculateParams = {
+          task_id: taskStore.taskId,
+          edges: perturbationGraphRef.value?.getAllEdgeData().map(item => `${item.source}_to_${item.target}`) ?? []
+        };
+        const calculateRes = await submitCalculateTask(calculateParams);
+        if (calculateRes.success) {
+          const analyzeParams = {
+            task_id: taskStore.taskId,
+            use_user_defined_map: false,
+            monitor: false,
+            poll_interval: 5,
+            max_attempts: 60
+          };
+          const analyzeRes = await submitAnalyzeTask(analyzeParams);
+          if (analyzeRes.success) {
+            ElMessage.success("任务提交成功");
+            emit("recentResultJump");
+          } else {
+            ElMessage.error(analyzeRes.message);
+          }
+        } else {
+          ElMessage.error(calculateRes.message);
+        }
+      } else {
+        ElMessage.error(prepareRes.message);
+      }
     } else {
-      ElMessage.error(analyzeRes.message);
+      ElMessage.error(seParamsRes.message);
     }
-  } else {
-    ElMessage.error(calculateRes.message);
+  } finally {
+    loading.close();
   }
 };
 
@@ -169,6 +177,7 @@ provide("ligandData", ligandData);
 provide("perGraphParams", perGraphParams);
 provide("proteinFileName", proteinFileName);
 provide("centerMolecule", centerMolecule);
+provide("excludeEdges", excludeEdges);
 </script>
 
 <template>

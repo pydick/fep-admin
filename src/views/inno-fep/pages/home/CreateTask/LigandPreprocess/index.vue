@@ -10,8 +10,10 @@ import { ElMessage, ElLoading } from "element-plus";
 import { mockrow1, mockrow2, mockrow3 } from "@/views/inno-fep/pages/home/mockdata/otherdata.js";
 import { distribute_data } from "@/views/inno-fep/pages/home/mockdata/table_getdata_distribute.js";
 import { useTaskStoreHook } from "@/store/modules/task";
+import { mapTypesEnum } from "@/views/inno-fep/pages/home/CreateTask/const";
 const ligand3dData = inject<any>("ligandData");
 const centerMolecule = inject<any>("centerMolecule");
+const excludeEdges = inject<any>("excludeEdges");
 const taskStore = useTaskStoreHook();
 const data_list = ref([]);
 defineOptions({
@@ -35,8 +37,19 @@ const innerStep2Disalbed = computed({
   }
 });
 
+const setPrepareParamsfn = async () => {
+  const centerMolecule = centralMoleculeOptions.value.find(item => item.value == step2Form.centerMolecule);
+  const bias_nodes = centerMolecule?.label ? [centerMolecule.label] : [];
+  return await setPrepareParams({
+    task_id: taskStore.taskId,
+    graph_topology: step2Form.mapType === mapTypesEnum[0].value ? "star" : "normal",
+    bias_nodes
+  });
+};
+
 defineExpose({
-  clearData: () => clearData()
+  clearData: () => clearData(),
+  setPrepareParamsfn
 });
 
 const clearData = () => {
@@ -109,10 +122,6 @@ const step2Form = reactive({
   ...step2FormInitialValues,
   referenceLigand: ligand3dData.value.ligand_number
 });
-const mapTypesEnum = [
-  { label: "Star map", value: "Star map" },
-  { label: "Optimal map", value: "Optimal map" }
-];
 centerMolecule.value.hasCenterMolecule = step2Form.mapType === mapTypesEnum[0].value;
 centerMolecule.value.data.map_type = step2Form.mapType;
 const showDataCenter = ref(false);
@@ -210,11 +219,7 @@ const handleGenerateMap = async () => {
     formData.append("task_id", taskStore.taskId);
     const validateRes = await validateLigand(formData);
     if (validateRes.success) {
-      const seParamsRes = await setPrepareParams({
-        task_id: taskStore.taskId,
-        graph_topology: step2Form.mapType === mapTypesEnum[0].value ? "star" : "normal",
-        bias_nodes: [centralMoleculeOptions.value.find(item => item.value == step2Form.centerMolecule).label]
-      });
+      const seParamsRes = await setPrepareParamsfn();
       if (seParamsRes.success) {
         const params = {
           task_id: taskStore.taskId,
@@ -224,6 +229,7 @@ const handleGenerateMap = async () => {
         };
         const res = await prepareLigand(params);
         if (res.success) {
+          excludeEdges.value.isNeedRemind = false;
           isGernerate.value = true;
           innerStep2Disalbed.value = false;
         } else {
@@ -358,9 +364,12 @@ const show_dialog = async () => {
 const handleMapTypeChange = value => {
   centerMolecule.value.hasCenterMolecule = value === mapTypesEnum[0].value;
   centerMolecule.value.data.map_type = value;
+  if (value === mapTypesEnum[1].value) {
+    centerMolecule.value.data.center_molecule = "";
+  }
 };
 const handleCenterMoleculeChange = value => {
-  centerMolecule.value.data.center_molecule = centralMoleculeOptions.value.find(item => item.value === value)?.label;
+  centerMolecule.value.data.center_molecule = centralMoleculeOptions.value.find(item => item.value === value).label;
 };
 onMounted(async () => {
   const res = await ossList({ ...ossListCommomParams, max_keys: 1 });
