@@ -188,7 +188,6 @@ const show_protein = (file_or_pdbid, format = "pdb") => {
       protein_ligand_content.value = res.protein_lig_content;
       if_have_protein.value = true;
       if_chain.value = true;
-      // this.draw_protein_content()
       draw_ligand_box_select();
       const formData = new FormData();
       formData.append("pdb", step1Form.protein_file);

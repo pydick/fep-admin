@@ -77,6 +77,7 @@ const draw = async () => {
       //   ligand_view_dict.value.refer_smiles = res.smiles;
       //   ligand_view_dict.value.refer_pdb_string = res.pdb;
       // }
+      // 获取接口放里边会好一些
       ligand_view_dict.value.has_refer = true;
       ligand_view_dict.value.refer_smiles = props.ligandData.smiles;
       ligand_view_dict.value.refer_pdb_string = props.ligandData.pdb_file;

@@ -39,7 +39,7 @@ const innerStep2Disalbed = computed({
 
 const setPrepareParamsfn = async () => {
   const centerMolecule = centralMoleculeOptions.value.find(item => item.value == step2Form.centerMolecule);
-  const bias_nodes = centerMolecule?.label ? [centerMolecule.label] : [];
+  const bias_nodes = step2Form.mapType === mapTypesEnum[0].value && centerMolecule?.label ? [centerMolecule.label] : [];
   return await setPrepareParams({
     task_id: taskStore.taskId,
     graph_topology: step2Form.mapType === mapTypesEnum[0].value ? "star" : "normal",
