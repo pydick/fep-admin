@@ -13,6 +13,8 @@ import { pdb_5940408 } from "@/views/inno-fep/pages/home/mockdata/pdb/5940408-pd
 import { pdb_5940409 } from "@/views/inno-fep/pages/home/mockdata/pdb/5940409-pdf.js";
 import { pdb_5940410 } from "@/views/inno-fep/pages/home/mockdata/pdb/5940410-pdf.js";
 import { mockSmiles } from "@/views/inno-fep/pages/home/mockdata/otherdata.js";
+import { useTaskStoreHook } from "@/store/modules/task";
+const taskStore = useTaskStoreHook();
 
 // 定义 props
 const props = defineProps({
@@ -20,8 +22,7 @@ const props = defineProps({
   // job_id: { type: String, default: "" },
   // SMILES ID列表字符串
   smiles_id_list_str: { type: String, default: "" },
-  ligandData: { type: Object, default: () => ({}) },
-  task_id: { type: String, default: "" }
+  ligandData: { type: Object, default: () => ({}) }
 });
 
 // Molstar组件引用
@@ -106,7 +107,7 @@ const draw = async () => {
       // 为每个新配体创建PDB数据请求Promise
       const pdbPromises = newLigands.map(
         id =>
-          appendProtein({ task_id: props.task_id, molecule_index: id }).then(res => {
+          appendProtein({ task_id: taskStore.taskId, molecule_index: id }).then(res => {
             if (res.success) {
               return {
                 id: id,
