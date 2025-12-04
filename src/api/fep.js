@@ -203,3 +203,6 @@ export function addEdges(data) {
 export function setPrepareParams(data) {
   return request.post(`${apiV1}/ligand/set-prepare-params`, { data });
 }
+export function runPipeline(data) {
+  return request.post(`${apiV1}/cal-analysis/run-pipeline`, { data });
+}

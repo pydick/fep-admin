@@ -154,17 +154,25 @@ const handleSizeChange = (pageSize: number) => {
 };
 const statusTypeMap = {
   COMMITTED: "primary",
-  PENDING: "primary",
-  STARTED: "primary",
-  SUCCESS: "success",
-  FAIL: "danger"
+  CAL_PENDING: "primary",
+  CAL_STARTED: "primary",
+  CALCULATED: "success",
+  CAL_FAIL: "danger",
+  ANALYZE_PENDING: "primary",
+  ANALYZE_STARTED: "primary",
+  ANALYZED: "success",
+  ANALYZE_FAIL: "danger"
 };
 const statusTextMap = {
-  COMMITTED: "已提交",
-  PENDING: "队列中",
-  STARTED: "执行中",
-  SUCCESS: "成功",
-  FAIL: "失败"
+  COMMITTED: "计算排队中",
+  CAL_PENDING: "计算排队中",
+  CAL_STARTED: "计算执行中",
+  CALCULATED: "计算完成",
+  CAL_FAIL: "CAL_FAIL",
+  ANALYZE_PENDING: "分析排队中",
+  ANALYZE_STARTED: "分析执行中",
+  ANALYZED: "分析完成",
+  ANALYZE_FAIL: "分析失败"
 };
 onMounted(() => {
   loading.value = true;
