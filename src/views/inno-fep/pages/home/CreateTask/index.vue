@@ -72,6 +72,7 @@ const handleGraphReady = () => {
 
 const ligandPreprocessRef = ref();
 const calculationParametersRef = ref();
+const step1Disabled = ref(true);
 
 const handleNext = async () => {
   calculationParametersRef.value.clearData();
@@ -83,6 +84,7 @@ const handlePrev = () => {
 };
 const perturbationGraphRef = ref();
 const step2Disalbed = ref(true);
+const tmpLigandData = ref({});
 
 const handleSubmit = async () => {
   const loading = ElLoading.service({
@@ -141,10 +143,15 @@ const handleSubmit = async () => {
   }
 };
 
-const handleCheckAndNext = async () => {
+const step1Next = () => {
+  ligandPreprocessRef.value.clearData();
+  ligandData.value = tmpLigandData.value;
+  stepRef.value?.next();
+};
+const handleCheck = async () => {
   const loading = ElLoading.service({
     lock: true,
-    text: "加载中",
+    text: "检测中",
     target: "#createTaskContainer"
   });
   try {
@@ -155,9 +162,8 @@ const handleCheckAndNext = async () => {
       const res = await getLigandFromProtein({ task_id: taskStore.taskId });
       if (res.success) {
         console.log(res.data);
-        ligandData.value = res.data;
-        ligandPreprocessRef.value.clearData();
-        stepRef.value?.next();
+        tmpLigandData.value = res.data;
+        step1Disabled.value = false;
       } else {
         ElMessage.error(res.message);
       }
@@ -197,7 +203,8 @@ provide("excludeEdges", excludeEdges);
         </div>
         <div class="pt-[15px]">
           <el-button v-show="activeStep !== 1" @click="handlePrev">上一步</el-button>
-          <el-button v-show="activeStep === 1" @click="handleCheckAndNext">检测并下一步</el-button>
+          <el-button v-show="activeStep === 1" @click="handleCheck">检测</el-button>
+          <el-button v-show="activeStep === 1" :disabled="step1Disabled" @click="step1Next">下一步</el-button>
           <el-button v-show="activeStep == 2" :disabled="step2Disalbed" @click="handleNext">下一步</el-button>
           <el-button v-show="activeStep === 3" type="primary" @click="handleSubmit">提交任务</el-button>
         </div>

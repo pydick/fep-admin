@@ -8,6 +8,8 @@ import Check from "~icons/ep/check";
 const tableRef = ref();
 const ligandStr = inject<any>("ligandStr");
 import { svgToDataUrl } from "@/utils/common.js";
+import VueMagnifier from "@websitebeaver/vue-magnifier";
+import "@websitebeaver/vue-magnifier/styles.css";
 
 interface IProps {
   data?: any[];
@@ -125,7 +127,14 @@ const emptyText = ref("暂无数据");
         <el-tag v-else type="danger" effect="plain">无效</el-tag>
       </template>
       <template #2dStructure="{ row }">
-        <el-image :src="svgToDataUrl(row.structure)" :preview-src-list="[svgToDataUrl(row.structure)]" fit="contain" class="structure-img w-[42px] h-[42px]" :preview-teleported="true" />
+        <el-popover placement="right" trigger="hover" width="250">
+          <template v-slot:reference>
+            <el-image :src="svgToDataUrl(row.structure)" class="structure-img w-[42px] h-[42px]" />
+          </template>
+          <el-image :src="svgToDataUrl(row.structure)" />
+        </el-popover>
+        <!-- <VueMagnifier :src="svgToDataUrl(row.structure)" :zoomFactor="3" class="structure-img" width="50px" height="50px" /> -->
+        <!-- <el-image :src="svgToDataUrl(row.structure)" :preview-src-list="[svgToDataUrl(row.structure)]" fit="contain" class="structure-img w-[42px] h-[42px]" :preview-teleported="true" /> -->
       </template>
       <template #operation="{ row }">
         <el-button link type="primary" size="small" @click="handleDelete(row)">删除</el-button>
