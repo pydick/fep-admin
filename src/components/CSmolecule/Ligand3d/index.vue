@@ -173,10 +173,32 @@ const draw = async () => {
 };
 
 // 监听SMILES ID列表变化
-watch([() => props.smiles_id_list_str, () => props.ligandData], async () => {
-  await nextTick();
-  draw();
-});
+watch(
+  () => props.smiles_id_list_str,
+  async () => {
+    await nextTick();
+    draw();
+  }
+);
+watch(
+  () => props.ligandData,
+  async () => {
+    first_draw.value = false;
+    // 重置子组件的参考配体绘制状态，以便重新绘制
+    if (molstar_ref.value && molstar_ref.value.drawed_refer !== undefined) {
+      molstar_ref.value.drawed_refer = false;
+    }
+    // 如果已经绘制过参考配体，先移除旧的参考配体
+    if (molstar_ref.value && molstar_ref.value.molstar_ref) {
+      await molstar_ref.value.molstar_ref.remove_ligand_view_pdb("0");
+    }
+    await nextTick();
+    draw();
+  },
+  {
+    deep: true
+  }
+);
 
 // 组件挂载后初始化
 onMounted(() => {

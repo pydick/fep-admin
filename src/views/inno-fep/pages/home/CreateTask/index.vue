@@ -213,6 +213,7 @@ const handleCheck = async () => {
 
 // 提供任务表单数据和验证器
 provide("protein3dRef", protein3dRef);
+provide("step1Disabled", step1Disabled);
 provide("taskFormData", taskFormData);
 provide("ligandStr", ligandStr);
 provide("ligandData", ligandData);

@@ -87,7 +87,7 @@ const ligandPairColumns = [
     align: "center"
   },
   {
-    label: "相似性",
+    label: "Mapping score",
     prop: "similarity",
     minWidth: 100,
     cellRenderer: ({ row }) => {

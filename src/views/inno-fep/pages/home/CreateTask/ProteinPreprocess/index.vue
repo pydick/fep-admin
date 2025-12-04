@@ -11,9 +11,11 @@ import BlockTitle from "@/views/inno-fep/components/BlcokTitle/index.vue";
 import { clone } from "@pureadmin/utils";
 import { useTaskStoreHook } from "@/store/modules/task";
 import { debounce } from "@pureadmin/utils";
+
 defineOptions({
   name: "ProteinPreprocess"
 });
+const step1Disabled = inject<any>("step1Disabled");
 const protein3dRef = inject<any>("protein3dRef");
 const proteinFileName = inject<any>("proteinFileName");
 
@@ -417,6 +419,7 @@ const getPdbById = async id => {
     }
   } finally {
     loading.close();
+    step1Disabled.value = true;
   }
 };
 
