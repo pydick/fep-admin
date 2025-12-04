@@ -40,7 +40,7 @@ const proteinForceFieldsEnum = [
 
 const ligandForceFieldsEnum = [
   { label: "InnoFF", value: "InnoFF" },
-  { label: "GAFF2", value: "gaff2" }
+  { label: "GAFF2", value: "GAFF2" }
 ];
 const step3FormInitialValues = {
   proteinForceField: proteinForceFieldsEnum[0].value,
