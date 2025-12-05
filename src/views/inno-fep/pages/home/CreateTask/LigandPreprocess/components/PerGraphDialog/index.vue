@@ -119,7 +119,7 @@ const handleEdgeChange = (value: any) => {
     <template #footer>
       <div>
         <!-- <el-button @click="handleCancel">取消</el-button> -->
-        <el-button type="primary" @click="handleSure">确定</el-button>
+        <el-button type="primary" @click="handleSure">校验</el-button>
       </div>
     </template>
   </el-dialog>
