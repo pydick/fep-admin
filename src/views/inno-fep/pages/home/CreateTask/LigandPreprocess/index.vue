@@ -213,7 +213,7 @@ const handleGenerateMap = async () => {
   }
   const loading = ElLoading.service({
     lock: true,
-    text: "加载中",
+    text: "build计算微扰图中，需要3-5分钟，请耐心等待",
     target: "#createTaskContainer"
   });
   try {

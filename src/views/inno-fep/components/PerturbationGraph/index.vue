@@ -45,6 +45,11 @@ const props = withDefaults(defineProps<Iprops>(), {
   visible: true
 });
 
+const animationConfig = {
+  duration: 100,
+  easing: "ease-in"
+};
+
 watch(
   () => props.visible,
   async newVal => {
@@ -145,13 +150,14 @@ let plugins = reactive([
           graph.zoomBy(targetZoom);
         }
       } else if (value === "auto-fit") {
-        graph.fitCenter();
+        graph.fitCenter(animationConfig);
       } else if (value === "reset") {
         currentHighlightedEdge.value = null;
         graph.setData(initialGraphData);
-        graph.zoomTo(1);
+        // graph.layout();
+        graph.zoomTo(1, false);
+        // graph.fitCenter(animationConfig);
         graph.render();
-        graph.fitCenter();
         edgeCount.value = initialGraphData.edges.length;
       }
     }
@@ -297,7 +303,8 @@ const edgeConfig = reactive({
 const layoutConfig = reactive({
   type: "radial",
   unitRadius: unitRadius.value,
-  linkDistance: 250
+  linkDistance: 250,
+  animation: false
 });
 const highlightEdgeStyle = {
   stroke: "#409EFF",
@@ -349,6 +356,8 @@ const initGraph = () => {
     edge: edgeConfig,
     layout: layoutConfig
   });
+  initialGraphData = cloneDeep(graph.getData());
+  // graph.fitCenter(animationConfig);
   graph.render();
 
   // 添加节点点击事件
@@ -508,7 +517,7 @@ const init = async () => {
     handleNodes(res.data.nodes);
     handleEdges(res.data.edges);
     edgeCount.value = res.data.edges.length;
-    Object.assign(initialGraphData, cloneDeep(graphData));
+    // Object.assign(initialGraphData, cloneDeep(graphData));
     if (containerRef.value) {
       initGraph();
       handleFirstEdgeClick();
