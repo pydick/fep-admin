@@ -13,7 +13,7 @@ import { apiV1 } from "@/config/api";
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
   // 请求超时时间
-  timeout: 600000,
+  timeout: 2400000,
   headers: {
     Accept: "application/json, text/plain, */*",
     "Content-Type": "application/json",
