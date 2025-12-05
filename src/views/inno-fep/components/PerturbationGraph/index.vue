@@ -151,6 +151,7 @@ let plugins = reactive([
         graph.setData(initialGraphData);
         graph.zoomTo(1);
         graph.render();
+        graph.fitCenter();
         edgeCount.value = initialGraphData.edges.length;
       }
     }
@@ -195,75 +196,71 @@ if (props.isEdit) {
       },
       onClick: async (value, target, current) => {
         if (!target || !current) return;
-        clearAllHighlight();
         const nodeId = current.id;
 
         if (value === "selectNode") {
           if (!sourceNodeId.value) {
             // 点击源节点
             sourceNodeId.value = nodeId;
-            graph.updateNodeData([
-              {
-                id: nodeId,
-                style: { fill: "#FF5733" }
-              }
-            ]);
             console.log(`Source node selected: ${nodeId}`);
           } else {
             // 点击目标节点
-            if (sourceNodeId.value === nodeId) {
-              ElMessage.warning("源节点和目标节点不能相同！");
-              if (sourceNodeId.value) sourceNodeId.value = null;
-              return;
-            }
-            const edgeData = graph.getEdgeData();
-            // 检查源节点和目标节点之间是否已有边
-            const existingEdge = edgeData.find(edge => (edge.source === sourceNodeId.value && edge.target === nodeId) || (edge.source === nodeId && edge.target === sourceNodeId.value));
-            if (existingEdge) {
-              ElMessage.warning("源节点和目标节点之间已有边！");
-              if (sourceNodeId.value) sourceNodeId.value = null;
-              return;
-            }
-            const params = {
-              task_id: taskStore.taskId,
-              edges: [[sourceNodeId.value, nodeId]]
-            };
-            const res = await addEdges(params);
-            if (res.success) {
-              const edgeRes = res.data?.results?.[0];
-              if (edgeRes?.exists) {
-                const edgeId = `${sourceNodeId.value}_to_${nodeId}`;
-                const newEdge = {
-                  id: edgeId,
-                  source: sourceNodeId.value,
-                  target: nodeId,
-                  label: `${edgeRes.similarity}`,
-                  data: {
-                    mappingScore: edgeRes.similarity
-                  }
-                };
-
-                // 添加新边到图形
-                excludeEdges.value.data = edgeData.map(item => [item.source, item.target]);
-                edgeData.push(newEdge);
-                graph.addEdgeData([newEdge]);
-                edgeCount.value = edgeData.length;
-                innerHasEdit.value = true;
-                clearAllHighlight();
-                graph.updateEdgeData([
-                  {
-                    id: newEdge.id,
-                    style: highlightEdgeStyle
-                  }
-                ]);
-                graph.draw();
-                edgeChange(newEdge.id);
-              } else {
-                ElMessage.error("不存在");
+            try {
+              if (sourceNodeId.value === nodeId) {
+                ElMessage.warning("源节点和目标节点不能相同！");
+                if (sourceNodeId.value) sourceNodeId.value = null;
+                return;
               }
+              const edgeData = graph.getEdgeData();
+              // 检查源节点和目标节点之间是否已有边
+              const existingEdge = edgeData.find(edge => (edge.source === sourceNodeId.value && edge.target === nodeId) || (edge.source === nodeId && edge.target === sourceNodeId.value));
+              if (existingEdge) {
+                ElMessage.warning("源节点和目标节点之间已有边！");
+                if (sourceNodeId.value) sourceNodeId.value = null;
+                return;
+              }
+              const params = {
+                task_id: taskStore.taskId,
+                edges: [[sourceNodeId.value, nodeId]]
+              };
+              const res = await addEdges(params);
+              if (res.success) {
+                const edgeRes = res.data?.results?.[0];
+                if (edgeRes?.exists) {
+                  const edgeId = `${sourceNodeId.value}_to_${nodeId}`;
+                  const newEdge = {
+                    id: edgeId,
+                    source: sourceNodeId.value,
+                    target: nodeId,
+                    label: `${edgeRes.similarity}`,
+                    data: {
+                      mappingScore: edgeRes.similarity
+                    }
+                  };
+
+                  // 添加新边到图形
+                  excludeEdges.value.data = edgeData.map(item => [item.source, item.target]);
+                  edgeData.push(newEdge);
+                  graph.addEdgeData([newEdge]);
+                  edgeCount.value = edgeData.length;
+                  innerHasEdit.value = true;
+                  clearAllHighlight();
+                  graph.updateEdgeData([
+                    {
+                      id: newEdge.id,
+                      style: highlightEdgeStyle
+                    }
+                  ]);
+                  graph.draw();
+                  edgeChange(newEdge.id);
+                } else {
+                  ElMessage.error("不存在");
+                }
+              } else {
+                ElMessage.error(res.message);
+              }
+            } finally {
               sourceNodeId.value = null;
-            } else {
-              ElMessage.error(res.message);
             }
           }
           // graph.draw();
