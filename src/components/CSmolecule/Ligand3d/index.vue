@@ -79,11 +79,20 @@ const draw = async () => {
       //   ligand_view_dict.value.refer_pdb_string = res.pdb;
       // }
       // 获取接口放里边会好一些
-      ligand_view_dict.value.has_refer = true;
-      ligand_view_dict.value.refer_smiles = props.ligandData.smiles;
-      ligand_view_dict.value.refer_pdb_string = props.ligandData.pdb_file;
-      ligand_view_dict.value.refer_smiles_name = props.ligandData.ligand_name;
-      ligand_view_dict.value.refer_smiles_id = props.ligandData.ligand_number;
+      if (props.ligandData.smiles) {
+        ligand_view_dict.value.has_refer = true;
+        ligand_view_dict.value.refer_smiles = props.ligandData.smiles;
+        ligand_view_dict.value.refer_pdb_string = props.ligandData.pdb_file;
+        ligand_view_dict.value.refer_smiles_name = props.ligandData.ligand_name;
+        ligand_view_dict.value.refer_smiles_id = props.ligandData.ligand_number;
+      } else {
+        ligand_view_dict.value.has_refer = false;
+        ligand_view_dict.value.refer_smiles = "";
+        ligand_view_dict.value.refer_pdb_string = props.ligandData.pdb_file;
+        ligand_view_dict.value.refer_smiles_name = "";
+        ligand_view_dict.value.refer_smiles_id = "";
+      }
+
       console.log(666, ligand_view_dict.value);
       first_draw.value = true;
     }

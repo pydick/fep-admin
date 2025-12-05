@@ -120,7 +120,7 @@ const step2FormInitialValues = {
 const el_form_second = ref();
 const step2Form = reactive({
   ...step2FormInitialValues,
-  referenceLigand: ligand3dData.value.ligand_number
+  referenceLigand: ligand3dData.value.ligand_name ? ligand3dData.value.ligand_number : ""
 });
 centerMolecule.value.hasCenterMolecule = step2Form.mapType === mapTypesEnum[0].value;
 centerMolecule.value.data.map_type = step2Form.mapType;
@@ -136,12 +136,14 @@ const centralMoleculeOptions = computed(() => {
 });
 
 const referenceLigand = computed(() => {
-  const options = [
-    {
-      label: ligand3dData.value.ligand_name,
-      value: ligand3dData.value.ligand_number
-    }
-  ];
+  const options = ligand3dData.value.ligand_name
+    ? [
+        {
+          label: ligand3dData.value.ligand_name,
+          value: ligand3dData.value.ligand_number
+        }
+      ]
+    : [];
   options.push(
     ...ligandList.value.map(item => ({
       label: item.name,
