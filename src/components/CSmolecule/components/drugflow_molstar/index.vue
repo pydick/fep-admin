@@ -491,7 +491,7 @@ const add_or_update_ligand_view_repr = async (ligand_id: string, color_name: str
       colors: { name: "custom", params: ColorMap({ C: ColorNames.gray }) }
     }
   });
-  await molstar_ref.value.viewerInstance.update_comp_repr("Ligand_plus_" + ligand_id, "Ligand_plus_" + ligand_id + "_label", true, {
+  await molstar_ref.value.viewerInstance.update_comp_repr("Ligand_plus_" + ligand_id, "Ligand_plus_" + ligand_id + "_label", false, {
     type: "label",
     sizeParams: { scale: 0.65 },
     colorParams: { value: 0xffffff },
