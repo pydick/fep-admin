@@ -243,9 +243,6 @@ if (props.isEdit) {
                       mappingScore: edgeRes.similarity
                     }
                   };
-
-                  // 添加新边到图形
-                  excludeEdges.value.data = edgeData.map(item => [item.source, item.target]);
                   edgeData.push(newEdge);
                   graph.addEdgeData([newEdge]);
                   edgeCount.value = edgeData.length;
@@ -258,6 +255,8 @@ if (props.isEdit) {
                     }
                   ]);
                   graph.draw();
+                  excludeEdges.value.data = graph.getEdgeData().map(item => [item.source, item.target]);
+                  console.log(3333, excludeEdges.value.data);
                   edgeChange(newEdge.id);
                 } else {
                   ElMessage.error("不存在");

@@ -84,12 +84,12 @@ const handleSure = async () => {
       return;
     }
   }
-
   perGraphParams.value = {
     step: 2,
     use_user_defined_map_flag: hasEdit.value,
     user_pair_list: hasEdit.value ? (perturbationGraphRef.value?.getAllEdgeData().map(item => [item.source, item.target]) ?? []) : []
   };
+  console.log(1111, excludeEdges.value);
   excludeEdges.value.isNeedRemind = true;
   emit("update:visible", false);
 };
