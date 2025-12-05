@@ -114,40 +114,21 @@ const draw = async () => {
     // 步骤3：如果有新配体，并行请求PDB数据并添加到列表
     if (newLigands.length > 0) {
       // 为每个新配体创建PDB数据请求Promise
-      const pdbPromises = newLigands.map(
-        id =>
-          appendProtein({ task_id: taskStore.taskId, molecule_index: id }).then(res => {
-            if (res.success) {
-              return {
-                id: id,
-                smiles: res.data.smiles,
-                showId: id,
-                residueFullInfo: [],
-                pdbData: res.data.pdb_file
-              };
-            } else {
-              ElMessage.error(res.message);
-              return null;
-            }
-          })
-
-        // {
-        //   let pdbData = "";
-        //   if (item._id === 5940408) {
-        //     pdbData = pdb_5940408;
-        //   } else if (item._id === 5940409) {
-        //     pdbData = pdb_5940409;
-        //   } else if (item._id === 5940410) {
-        //     pdbData = pdb_5940410;
-        //   }
-        //   return {
-        //     id: item._id,
-        //     smiles: item.SMILES,
-        //     showId: item.show_id,
-        //     residueFullInfo: item.values.residues_full_info,
-        //     pdbData: pdbData
-        //   };
-        // }
+      const pdbPromises = newLigands.map(id =>
+        appendProtein({ task_id: taskStore.taskId, molecule_index: id }).then(res => {
+          if (res.success) {
+            return {
+              id: id,
+              smiles: res.data.smiles,
+              ligand_name: res.data.ligand_name || "",
+              residueFullInfo: [],
+              pdbData: res.data.pdb_file
+            };
+          } else {
+            ElMessage.error(res.message);
+            return null;
+          }
+        })
       );
 
       // 并行等待所有PDB请求完成
@@ -160,7 +141,7 @@ const draw = async () => {
           ligand_hex_id: result.id,
           ligand_smiles: result.smiles,
           pdb_string: result.pdbData,
-          ligand_show_name: result.showId,
+          ligand_show_name: result.ligand_name,
           residue_full_info: result.residueFullInfo
         });
         return acc;
