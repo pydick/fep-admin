@@ -74,7 +74,8 @@ const innerHasEdit = computed({
 });
 
 defineExpose({
-  getAllEdgeData: () => getAllEdgeData()
+  getAllEdgeData: () => getAllEdgeData(),
+  getAllNodeData: () => graph.getNodeData()
 });
 
 const unitRadius = ref(0);
