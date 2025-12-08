@@ -210,3 +210,6 @@ export function runPipeline(data) {
 export function getTaskParams(data) {
   return request.post(`${apiV1}/task/params`, { data });
 }
+export function taskDelete(data) {
+  return request.post(`${apiV1}/task/batch-delete`, { data });
+}

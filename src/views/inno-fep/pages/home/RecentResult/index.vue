@@ -8,7 +8,7 @@ import { ElMessage } from "element-plus";
 import useWebSocket from "./websocket";
 import { useUserStoreHook } from "@/store/modules/user";
 import { apiV1 } from "@/config/api";
-
+import { taskDelete } from "@/api/fep";
 defineOptions({
   name: "RecentResult"
 });
@@ -75,18 +75,18 @@ const pagination = reactive({
 });
 
 // 发送分页查询请求
-const queryPageData = (params: { page: number; pageSize?: number }) => {
+const queryPageData = (params: { page?: number; pageSize?: number } = {}) => {
   const queryParams = {
     action: "query",
-    page: params.page,
-    pageSize: params.pageSize ?? 10
+    page: params.page ?? 1,
+    pageSize: params.pageSize ?? pagination.pageSize
   };
   sendMessage(queryParams);
 };
 
 const handleCurrentChange = (page: number) => {
   loading.value = true;
-  queryPageData({ page, pageSize: pagination.pageSize });
+  queryPageData({ page });
 };
 const gotoDetail = (type: string, id: string) => {
   console.log(type, id);
@@ -117,9 +117,19 @@ const exceptionReasonClose = (taskId: string) => {
   exceptionReasonVisible.value[taskId] = false;
 };
 
-const deleteTask = (id: string) => {
-  console.log(id);
-  ElMessage.success("删除成功");
+const deleteTask = async (id: string) => {
+  try {
+    loading.value = true;
+    const res = await taskDelete({ task_ids: [id] });
+    if (res.success) {
+      ElMessage.success("删除成功");
+      queryPageData({ page: 1 });
+    } else {
+      ElMessage.error(res.message);
+    }
+  } finally {
+    loading.value = false;
+  }
 };
 const dialogTaskId = ref("");
 
@@ -137,7 +147,7 @@ const { connectWebSocket, sendMessage } = useWebSocket({
     loading.value = false;
   },
   onConnected: () => {
-    queryPageData({ page: 1, pageSize: pagination.pageSize });
+    queryPageData();
   },
   onError: () => {
     loading.value = false;
@@ -146,7 +156,7 @@ const { connectWebSocket, sendMessage } = useWebSocket({
 
 const handleSizeChange = (pageSize: number) => {
   pagination.pageSize = pageSize;
-  queryPageData({ page: 1, pageSize: pagination.pageSize });
+  queryPageData({ pageSize: pagination.pageSize });
 };
 const statusTypeMap = {
   COMMITTED: "primary",
@@ -177,7 +187,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-loading="loading" element-loading-text="加载中..." class="recentresult-container">
+  <div v-loading="loading" class="recentresult-container">
     <pure-table :data="taskData" :columns="taskColumns" class="m-pure-table-fit flex-1" cell-class-name="h-[60px]">
       <template #status="{ row }">
         <el-tag :type="statusTypeMap[row.status]">{{ statusTextMap[row.status] }}</el-tag>
@@ -193,7 +203,7 @@ onMounted(() => {
 
         <el-tooltip content="删除任务" placement="top">
           <span class="inline-block mx-[8px]">
-            <el-popconfirm title="该操作不能恢复，确认删除该任务吗？" :icon="WarningFilled" width="300px" placement="bottom" @confirm="deleteTask(row.id)">
+            <el-popconfirm title="该操作不能恢复，确认删除该任务吗？" :icon="WarningFilled" width="300px" placement="bottom" @confirm="deleteTask(row.task_id)">
               <template #reference>
                 <el-button :icon="Delete" circle plain type="danger" />
               </template>
