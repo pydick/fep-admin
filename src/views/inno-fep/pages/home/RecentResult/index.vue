@@ -88,9 +88,8 @@ const handleCurrentChange = (page: number) => {
   loading.value = true;
   queryPageData({ page });
 };
-const gotoDetail = (type: string, id: string) => {
-  console.log(type, id);
-  router.push("/inno-fep/detail");
+const gotoDetail = (task_id: string) => {
+  router.push(`/inno-fep/detail?task_id=${task_id}`);
 };
 const showParameterDialog = ref(false);
 const openParameterDialog = (row: any) => {
@@ -228,7 +227,7 @@ onMounted(() => {
         </el-tooltip>
 
         <el-tooltip content="结果详情" placement="top">
-          <el-button :icon="Position" circle plain @click="gotoDetail(row.type, row.id)" />
+          <el-button :icon="Position" circle plain @click="gotoDetail(row.task_id)" />
         </el-tooltip>
       </template>
     </pure-table>

@@ -33,6 +33,8 @@ interface Iprops {
   isEdit?: boolean;
   hasEdit?: boolean;
   visible?: boolean;
+  isCreateTask?: boolean;
+  taskId?: string;
 }
 
 const sourceNodeId = ref<string | null>(null);
@@ -42,7 +44,9 @@ const props = withDefaults(defineProps<Iprops>(), {
   height: "500px",
   isEdit: true,
   hasEdit: false,
-  visible: true
+  visible: true,
+  isCreateTask: true,
+  taskId: ""
 });
 
 const animationConfig = {
@@ -499,17 +503,17 @@ const propertyOptions = [
 
 const init = async () => {
   if (!props.visible) return;
-  if (centerMolecule.value.hasCenterMolecule && !centerMolecule.value.data.center_molecule) {
+  if (centerMolecule?.value?.hasCenterMolecule && !centerMolecule?.value?.data?.center_molecule) {
     return;
   }
 
   const data = {
     type: "json",
-    task_id: taskStore.taskId,
-    map_type: centerMolecule.value.data.map_type,
-    center_molecule: centerMolecule.value.hasCenterMolecule ? centerMolecule.value.data.center_molecule : "",
-    include_edges: excludeEdges.value.data,
-    if_filter_edges: excludeEdges.value.isNeedRemind
+    task_id: props.isCreateTask ? taskStore.taskId : props.taskId,
+    map_type: centerMolecule?.value?.data?.map_type ?? "Star map",
+    center_molecule: centerMolecule?.value?.hasCenterMolecule ?? "",
+    include_edges: excludeEdges?.value?.data ?? [],
+    if_filter_edges: excludeEdges?.value?.isNeedRemind ?? false
   };
   const res = await getPerturbationGraphData(data);
   if (res.success) {

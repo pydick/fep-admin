@@ -15,6 +15,8 @@ import StreamlineCodeAnalysis from "~icons/streamline/code-analysis";
 import FileRow from "@/views/inno-fep/components/FileRow/index.vue";
 import Csdialog from "@/components/Csdialog/index.vue";
 import CorrelationEcharts from "./CorrelationEcharts/index.vue";
+import { useRoute } from "vue-router";
+const route = useRoute();
 defineOptions({
   name: "Inno-Fep-Detail"
 });
@@ -42,6 +44,9 @@ const score_name_dict = {
 };
 const default_list = ref([]);
 const residue_list = ref([]);
+
+const taskId = ref(route.query.task_id || "");
+console.log(666, taskId.value);
 
 const change_table_filter = dict => {
   console.log("change_table_filter");
@@ -144,7 +149,7 @@ onMounted(() => {
                 <FileRow />
               </BlcokTitle>
               <div class="h-[calc(100%-62px)]!">
-                <preturbationGraph />
+                <preturbationGraph :isCreateTask="false" :taskId="taskId" />
               </div>
             </div>
             <div v-if="activeName === 'Ligand'" class="h-full">
