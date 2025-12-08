@@ -201,11 +201,11 @@ onMounted(() => {
           <el-button :icon="InfoFilled" circle plain @click="openParameterDialog(row)" />
         </el-tooltip>
 
-        <el-tooltip content="删除任务" placement="top">
+        <el-tooltip content="删除任务,只要分析完成的任务才能删除" placement="top">
           <span class="inline-block mx-[8px]">
             <el-popconfirm title="该操作不能恢复，确认删除该任务吗？" :icon="WarningFilled" width="300px" placement="bottom" @confirm="deleteTask(row.task_id)">
               <template #reference>
-                <el-button :icon="Delete" circle plain type="danger" />
+                <el-button :icon="Delete" circle plain type="danger" :disabled="row.status !== 'ANALYZED'" />
               </template>
             </el-popconfirm>
           </span>
