@@ -206,3 +206,7 @@ export function setPrepareParams(data) {
 export function runPipeline(data) {
   return request.post(`${apiV1}/cal-analysis/run-pipeline`, { data });
 }
+
+export function getTaskParams(data) {
+  return request.post(`${apiV1}/task/params`, { data });
+}

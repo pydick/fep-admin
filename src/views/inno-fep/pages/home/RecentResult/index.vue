@@ -94,7 +94,7 @@ const gotoDetail = (type: string, id: string) => {
 };
 const showParameterDialog = ref(false);
 const openParameterDialog = (row: any) => {
-  console.log(row);
+  dialogTaskId.value = row.task_id;
   showParameterDialog.value = true;
 };
 const gotoCreateTask = () => {
@@ -121,11 +121,7 @@ const deleteTask = (id: string) => {
   console.log(id);
   ElMessage.success("删除成功");
 };
-const dialogOptions = ref({
-  data: {
-    type: "docking"
-  }
-});
+const dialogTaskId = ref("");
 
 const userId = useUserStoreHook().userId;
 const wsBaseUrl = import.meta.env.VITE_WS_URL;
@@ -229,7 +225,7 @@ onMounted(() => {
     <div class="pt-[15px]">
       <el-pagination v-model:page-size="pagination.pageSize" align="center" :current-page="pagination.page" layout="total, sizes, prev, pager, next" :page-sizes="[2, 5, 10, 20]" :total="pagination.total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
-    <ParameterDialog v-model:visible="showParameterDialog" :options="dialogOptions" />
+    <ParameterDialog v-if="showParameterDialog" v-model:visible="showParameterDialog" :taskId="dialogTaskId" />
   </div>
 </template>
 

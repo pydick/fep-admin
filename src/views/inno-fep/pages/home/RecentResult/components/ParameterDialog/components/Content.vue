@@ -1,60 +1,70 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
-import { refresh_task } from "@/api/fep.js";
+import { getTaskParams } from "@/api/fep.js";
 import { reactive, ref, defineProps, toRef, defineEmits, onMounted } from "vue";
-import { useI18n } from "vue-i18n";
+import { ElMessage } from "element-plus";
 
 defineOptions({
   name: "Content"
 });
 
-const props = defineProps({
-  options: Object
-});
-const options = ref(props.options);
-const { t } = useI18n();
-const route = useRoute();
-const router = useRouter();
-const params_data = ref();
-
-const form = ref({
-  newTeam: [
-    {
-      name: "",
-      quantity: "",
-      user_type: "",
-      license_time: ""
-    }
-  ]
+defineExpose({
+  getTaskParamsData: (taskId: string) => getTaskParamsData(taskId)
 });
 
-const get_date = () => {
-  refresh_task().then(res => {
-    params_data.value = res;
-  });
+const props = defineProps({});
+const params_data = ref({
+  task_name: "",
+  protein_file_name: "",
+  protein_prepare_params: {
+    "Keep Chain": "",
+    "Add Missing Residue": true,
+    "Add Hydrogens": true,
+    "Modify Protonation at pH": 7.4,
+    "Optimize Hydrogen Bonding Network": true,
+    "Energy Minimization Forcefield": ""
+  },
+  reference_ligand: "",
+  perturbation_graph_type: "",
+  center_molecules: "",
+  ligand_pairs: [],
+  simulation_params: {
+    protein_force_field: "",
+    force_field_file: "",
+    simulation_time: ""
+  }
+});
+
+const getTaskParamsData = async (taskId: string) => {
+  const res = await getTaskParams(taskId);
+  if (res.success) {
+    params_data.value = res.data;
+  } else {
+    ElMessage.error(res.message);
+  }
 };
 onMounted(() => {
-  get_date();
+  // getTaskParamsData();
 });
 </script>
 
 <template>
   <div>
     <div style="max-height: 60vh; overflow-y: auto; padding-right: 10px">
-      <div v-if="options.data.type == 'docking'">
+      <div>
         <div>
           <span class="title">任务名称：</span>
-          {{ params_data?.others.name }}
+          {{ params_data.task_name }}
         </div>
         <div>
           <span class="title">蛋白文件名称：</span>
-          {{ params_data?.pdb_name }}
+          {{ params_data.protein_file_name || "-" }}
         </div>
         <div>
           <span class="title">蛋白预处理：</span>
         </div>
         <div class="table_box_column">
-          <div class="table_item">
+          <div class="table_item flex-1">
             <div class="table_title">Keep Chain</div>
             <div class="table_title">Add Missing Residue</div>
             <div class="table_title">Add Hydrogens</div>
@@ -62,90 +72,77 @@ onMounted(() => {
             <div class="table_title">Optimize Hydrogen Bonding Network</div>
             <div class="table_title">Energy Minimization Forcefield</div>
           </div>
-          <div class="table_item" style="flex: 1">
-            <div class="table_content">{{ params_data?.protein.chain.join(",") }}</div>
-            <div class="table_content">{{ params_data?.protein.add_missing_residue }}</div>
-            <div class="table_content">{{ params_data?.protein.addh }}</div>
-            <div class="table_content">{{ params_data?.protein.ph }}</div>
-            <div class="table_content">{{ params_data?.protein.opt_hydrogen }}</div>
-            <div class="table_content">{{ params_data?.protein.force_field }}</div>
+          <div class="table_item flex-1">
+            <div class="table_content">{{ params_data.protein_prepare_params["Keep Chain"] }}</div>
+            <div class="table_content">{{ params_data.protein_prepare_params["Add Missing Residue"] }}</div>
+            <div class="table_content">{{ params_data?.protein_prepare_params["Add Hydrogens"] }}</div>
+            <div class="table_content">{{ params_data?.protein_prepare_params["Modify Protonation at pH"] }}</div>
+            <div class="table_content">{{ params_data?.protein_prepare_params["Optimize Hydrogen Bonding Network"] }}</div>
+            <div class="table_content">{{ params_data?.protein_prepare_params["Energy Minimization Forcefield"] }}</div>
           </div>
         </div>
+
         <div>
-          <span class="title">配体文件名称：</span>
-          {{ params_data?.others.ligands_name }}
-        </div>
-        <div>
-          <span class="title">SMILES列：</span>
-          {{ params_data?.others.smiles_col }}
-        </div>
-        <div>
-          <span class="title">配体预处理：</span>
+          <span class="title">分子叠合：</span>
         </div>
         <div class="table_box_column">
-          <div class="table_item">
-            <div class="table_title">Disconnect Group (Metal Ion/salt Ion)</div>
-            <div class="table_title">Only Largest Molecular Fragment</div>
-            <div class="table_title">Ionization</div>
-            <div class="table_title">Tautomers</div>
-            <div class="table_title">Stereoisomers</div>
-            <div v-if="params_data?.ligands.is_isomer" class="table_title">Isomers Limit</div>
-            <div class="table_title">Forcefield</div>
+          <div class="table_item flex-1">
+            <div class="table_title">参考配体</div>
           </div>
-          <div class="table_item" style="flex: 1">
-            <div class="table_content">{{ params_data?.ligands.disconnect_group }}</div>
-            <div class="table_content">{{ params_data?.ligands.keep_large_fragment }}</div>
-            <div class="table_content">
-              {{ params_data?.ligands.protonation == "keep" ? "Keep Original State" : params_data?.ligands.protonation }}
-              <span v-if="params_data?.ligands.protonation == 'set_pH'">{{ params_data?.ligands.min_ph + "-" + params_data?.ligands.max_ph }}</span>
+          <div class="table_item flex-1">
+            <div class="table_content">{{ params_data.reference_ligand || "-" }}</div>
+          </div>
+        </div>
+
+        <div>
+          <span class="title">微扰图：</span>
+        </div>
+        <div class="table_box_column">
+          <div class="table_item flex-1">
+            <div class="table_title">微扰图方案</div>
+            <div class="table_title">中心分子</div>
+          </div>
+          <div class="table_item flex-1">
+            <div class="table_content">{{ params_data.perturbation_graph_type || "-" }}</div>
+            <div class="table_content">{{ params_data.center_molecules || "-" }}</div>
+          </div>
+        </div>
+
+        <div>
+          <span class="title">用于计算的配体对：</span>
+        </div>
+        <div class="table_box_column">
+          <div v-if="params_data.ligand_pairs.length > 0">
+            <div v-for="(item, index) in params_data.ligand_pairs" :key="index">
+              <div class="table_item flex-1">
+                <div class="table_title">序号{{ index + 1 }}</div>
+                <div class="table_content">Mapping score</div>
+              </div>
+              <div class="table_item flex-1">
+                <div class="table_content">{{ item.ligand_pair }}</div>
+                <div class="table_content">{{ item.similarity }}</div>
+              </div>
             </div>
-            <div class="table_content">{{ params_data?.ligands.tautomers }}</div>
-            <div class="table_content">{{ params_data?.ligands.stereoisomers == "keep" ? "Keep Original Structure" : params_data?.ligands.stereoisomers }}</div>
-            <div v-if="params_data?.ligands.is_isomer" class="table_content">{{ params_data?.ligands.isomer_limit }}</div>
-            <div class="table_content">{{ params_data?.ligands.molecule_minimize }}</div>
+          </div>
+          <div v-else class="table_item flex-1">
+            <div class="text-center py-[10px]">暂无数据</div>
           </div>
         </div>
+
         <div>
-          <span class="title">对接方法：</span>
-          {{ params_data?.docking.scoring_function }}
+          <span class="title">模拟参数：</span>
         </div>
-        <div>
-          <span class="title">Docking Site：</span>
-          {{ params_data?.docking.site }}
-        </div>
-        <div class="table_box">
-          <div class="table_item">
-            <div class="table_title">X</div>
-            <div class="table_content">{{ Math.round(params_data?.docking.center[0] * 1000) / 1000 }}</div>
+        <div class="table_box_column">
+          <div class="table_item flex-1">
+            <div class="table_title">蛋白力场</div>
+            <div class="table_title">配体力场</div>
+            <div class="table_title">模拟时间</div>
           </div>
-          <div class="table_item">
-            <div class="table_title">Y</div>
-            <div class="table_content">{{ Math.round(params_data?.docking.center[1] * 1000) / 1000 }}</div>
+          <div class="table_item flex-1">
+            <div class="table_content">{{ params_data.simulation_params.protein_force_field || "-" }}</div>
+            <div class="table_content">{{ params_data.simulation_params.force_field_file || "-" }}</div>
+            <div class="table_content">{{ params_data.simulation_params.simulation_time || "-" }}</div>
           </div>
-          <div class="table_item">
-            <div class="table_title">Z</div>
-            <div class="table_content">{{ Math.round(params_data?.docking.center[2] * 1000) / 1000 }}</div>
-          </div>
-          <div class="table_item">
-            <div class="table_title">Length</div>
-            <div class="table_content">{{ Math.round(params_data?.docking.size[0] * 1000) / 1000 }}</div>
-          </div>
-          <div class="table_item">
-            <div class="table_title">Width</div>
-            <div class="table_content">{{ Math.round(params_data?.docking.size[1] * 1000) / 1000 }}</div>
-          </div>
-          <div class="table_item">
-            <div class="table_title">Height</div>
-            <div class="table_content">{{ Math.round(params_data?.docking.size[2] * 1000) / 1000 }}</div>
-          </div>
-        </div>
-        <div>
-          <span class="title">Docking Mode：</span>
-          {{ params_data?.docking.flexible == "semi" ? "Semi flexible" : params_data?.docking.flexible }}
-        </div>
-        <div>
-          <span class="title">Output Pose：</span>
-          {{ params_data?.docking.num_poses }}
         </div>
       </div>
     </div>
