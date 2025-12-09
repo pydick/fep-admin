@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import preturbationGraph from "@/views/inno-fep/components/PerturbationGraph/index.vue";
 import BlcokTitle from "@/views/inno-fep/components/BlcokTitle/index.vue";
-import Ligand3d from "@/views/inno-fep/components/Ligand3d/index.vue";
 import CStab from "@/components/CStab/index.vue";
 import Pairs from "./Pairs/index.vue";
 import Ligand from "./Ligand/index.vue";
@@ -13,7 +12,6 @@ import FilterColumn from "./FilterColumn/index.vue";
 import CarbonTextLinkAnalysis from "~icons/carbon/text-link-analysis";
 import StreamlineCodeAnalysis from "~icons/streamline/code-analysis";
 import FileRow from "@/views/inno-fep/components/FileRow/index.vue";
-import Csdialog from "@/components/Csdialog/index.vue";
 import CorrelationEcharts from "./CorrelationEcharts/index.vue";
 import { useRoute } from "vue-router";
 const route = useRoute();
@@ -24,7 +22,7 @@ const tabList = reactive([
   { label: "Pairs", name: "Pairs" },
   { label: "Ligand", name: "Ligand" }
 ]);
-const activeName = ref(tabList[0].name);
+const activeName = ref(tabList[1].name);
 const isCollect = ref(false);
 const if_show_filter = ref(false);
 const histogram_data_all = ref([]);
@@ -45,7 +43,7 @@ const score_name_dict = {
 const default_list = ref([]);
 const residue_list = ref([]);
 
-const taskId = ref(route.query.task_id || "");
+const taskId = ref((route.query.task_id as string) || "");
 console.log(666, taskId.value);
 
 const change_table_filter = dict => {
@@ -53,19 +51,12 @@ const change_table_filter = dict => {
 };
 
 const correlationAnalysis = () => {
-  analysisShow.value = true;
   console.log("相关性分析");
 };
 const resultAnalysis = () => {
   console.log("结果分析");
 };
 
-const analysisShow = ref(false);
-const analysisConfig = reactive({
-  title: "相关性分析",
-  width: "40%",
-  height: "40%"
-});
 onMounted(() => {
   histogram_data_all.value = mockData1.compute.aggregations.histogram;
   for (let i = 0; i < mockData1.compute.aggregations.histogram?.residues.length; i++) {
@@ -157,7 +148,7 @@ onMounted(() => {
                 <FileRow />
               </BlcokTitle>
               <div class="h-[calc(100%-62px)]!">
-                <Ligand3d ref="ligand3dRef" class="h-full" />
+                <CorrelationEcharts class="border" />
               </div>
             </div>
           </div>
@@ -165,9 +156,6 @@ onMounted(() => {
       </el-col>
     </el-row>
     <FilterDrawer v-model:if_show="if_show_filter" :array="histogram_data_all" :cascadOptions="cascadOptions" :need_cascad="false" :default_list="default_list" :residue_list="residue_list" data_type="docking" @change_table_for_filter="change_table_filter" />
-    <Csdialog v-model:visible="analysisShow" :config="analysisConfig">
-      <CorrelationEcharts />
-    </Csdialog>
   </div>
 </template>
 

@@ -198,10 +198,10 @@ const initChart = () => {
       itemGap: 20
     },
     grid: {
-      left: "12%",
-      right: "10%",
-      bottom: "12%",
-      top: "15%",
+      left: "5%",
+      right: "5%",
+      bottom: "5%",
+      top: "5%",
       containLabel: false
     },
     xAxis: {
@@ -352,8 +352,8 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .correlation-echarts-container {
-  width: 600px;
-  height: 600px;
+  width: 100%;
+  height: 100%;
   margin: 0 auto;
 }
 </style>

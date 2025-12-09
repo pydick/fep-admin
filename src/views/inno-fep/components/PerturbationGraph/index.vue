@@ -511,7 +511,7 @@ const init = async () => {
     type: "json",
     task_id: props.isCreateTask ? taskStore.taskId : props.taskId,
     map_type: centerMolecule?.value?.data?.map_type ?? "Star map",
-    center_molecule: centerMolecule?.value?.hasCenterMolecule ?? "",
+    center_molecule: centerMolecule?.value.hasCenterMolecule ? centerMolecule.value.data.center_molecule : "",
     include_edges: excludeEdges?.value?.data ?? [],
     if_filter_edges: excludeEdges?.value?.isNeedRemind ?? false
   };
