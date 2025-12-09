@@ -184,6 +184,13 @@ const initChart = () => {
   const option: echarts.EChartsOption = {
     tooltip: {
       trigger: "item",
+      backgroundColor: "rgba(50, 50, 50, 0.9)",
+      borderColor: "rgba(255, 255, 255, 0.2)",
+      borderWidth: 1,
+      textStyle: {
+        color: "#fff",
+        fontSize: 12
+      },
       formatter: (params: any) => {
         if (params.seriesName === "Retrospective") {
           return `Retrospective<br/>X: ${params.value[0].toFixed(2)}<br/>Y: ${params.value[1].toFixed(2)}`;
@@ -195,7 +202,13 @@ const initChart = () => {
       data: ["Retrospective", "Prospective"],
       top: 10,
       left: "center",
-      itemGap: 20
+      itemGap: 20,
+      textStyle: {
+        color: "rgba(0, 0, 0, 0.85)",
+        fontSize: 12
+      },
+      itemWidth: 12,
+      itemHeight: 12
     },
     grid: {
       left: "70px",
@@ -210,6 +223,21 @@ const initChart = () => {
       max: xMax,
       minInterval: 0.5,
       splitNumber: 12,
+      axisLine: {
+        show: true,
+        lineStyle: {
+          color: "rgba(0, 0, 0, 0.2)",
+          width: 1
+        }
+      },
+      axisTick: {
+        show: true,
+        lineStyle: {
+          color: "rgba(0, 0, 0, 0.2)",
+          width: 1
+        },
+        length: 4
+      },
       splitLine: {
         show: false
       },
@@ -220,10 +248,18 @@ const initChart = () => {
             return value.toFixed(2);
           }
           return "";
-        }
+        },
+        color: "rgba(0, 0, 0, 0.85)",
+        fontSize: 11,
+        margin: 8
       },
       nameLocation: "middle",
-      nameGap: 30
+      nameGap: 30,
+      nameTextStyle: {
+        color: "rgba(0, 0, 0, 0.85)",
+        fontSize: 12,
+        fontWeight: "normal"
+      }
     },
     yAxis: {
       type: "value",
@@ -231,6 +267,21 @@ const initChart = () => {
       max: yMax,
       minInterval: 1.0,
       splitNumber: 10,
+      axisLine: {
+        show: true,
+        lineStyle: {
+          color: "rgba(0, 0, 0, 0.2)",
+          width: 1
+        }
+      },
+      axisTick: {
+        show: true,
+        lineStyle: {
+          color: "rgba(0, 0, 0, 0.2)",
+          width: 1
+        },
+        length: 4
+      },
       splitLine: {
         show: false
       },
@@ -242,10 +293,18 @@ const initChart = () => {
             return value.toFixed(2);
           }
           return "";
-        }
+        },
+        color: "rgba(0, 0, 0, 0.85)",
+        fontSize: 11,
+        margin: 8
       },
       nameLocation: "middle",
-      nameGap: 50
+      nameGap: 50,
+      nameTextStyle: {
+        color: "rgba(0, 0, 0, 0.85)",
+        fontSize: 12,
+        fontWeight: "normal"
+      }
     },
     series: [
       // 外层置信带区域（较浅）
