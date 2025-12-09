@@ -199,7 +199,7 @@ const initChart = () => {
     },
     grid: {
       left: "70px",
-      right: "70px",
+      right: "40px",
       bottom: "40px",
       top: "50px",
       containLabel: false
