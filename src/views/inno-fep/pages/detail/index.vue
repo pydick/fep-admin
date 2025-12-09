@@ -92,11 +92,11 @@ onMounted(() => {
         <div class="left-container h-full">
           <BlcokTitle title="分析列表">
             <div class="flex-1 flex items-center justify-end">
-              <el-tooltip content="相关性分析" placement="top">
+              <!-- <el-tooltip content="相关性分析" placement="top">
                 <el-icon :size="20" class="icon-hover mr-[15px]" @click="correlationAnalysis()">
                   <CarbonTextLinkAnalysis />
                 </el-icon>
-              </el-tooltip>
+              </el-tooltip> -->
               <el-tooltip content="结果分析" placement="top">
                 <el-icon :size="20" class="icon-hover" @click="resultAnalysis()">
                   <StreamlineCodeAnalysis />
