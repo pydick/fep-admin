@@ -22,7 +22,7 @@ const tabList = reactive([
   { label: "Pairs", name: "Pairs" },
   { label: "Ligand", name: "Ligand" }
 ]);
-const activeName = ref(tabList[1].name);
+const activeName = ref(tabList[0].name);
 const isCollect = ref(false);
 const if_show_filter = ref(false);
 const histogram_data_all = ref([]);
@@ -140,7 +140,7 @@ onMounted(() => {
                 <FileRow />
               </BlcokTitle>
               <div class="h-[calc(100%-62px)]!">
-                <preturbationGraph :isCreateTask="false" :taskId="taskId" />
+                <preturbationGraph :isCreateTask="false" :taskId="taskId" :isEdit="false" />
               </div>
             </div>
             <div v-if="activeName === 'Ligand'" class="h-full">
