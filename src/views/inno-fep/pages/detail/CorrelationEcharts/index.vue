@@ -198,10 +198,10 @@ const initChart = () => {
       itemGap: 20
     },
     grid: {
-      left: "5%",
-      right: "5%",
-      bottom: "5%",
-      top: "5%",
+      left: "70px",
+      right: "70px",
+      bottom: "40px",
+      top: "50px",
       containLabel: false
     },
     xAxis: {
