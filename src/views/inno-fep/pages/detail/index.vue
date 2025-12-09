@@ -144,7 +144,7 @@ onMounted(() => {
               </div>
             </div>
             <div v-if="activeName === 'Ligand'" class="h-full">
-              <BlcokTitle title="Pocket Viewer" class="pb-[15px]">
+              <BlcokTitle title="相关性分析" class="pb-[15px]">
                 <FileRow />
               </BlcokTitle>
               <div class="h-[calc(100%-62px)]!">
