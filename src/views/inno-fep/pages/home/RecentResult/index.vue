@@ -146,7 +146,7 @@ const { connectWebSocket, sendMessage } = useWebSocket({
     loading.value = false;
   },
   onConnected: () => {
-    queryPageData();
+    // queryPageData();
   },
   onError: () => {
     loading.value = false;
