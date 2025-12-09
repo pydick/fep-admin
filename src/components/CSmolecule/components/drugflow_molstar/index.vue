@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick, type Ref } from "vue";
+import { ref, onMounted, nextTick, onUnmounted, type Ref } from "vue";
 import molstar_btn from "./components/molstar_btn.vue";
 import prolif_iframe from "./components/prolif_iframe.vue";
 import "drugflow-molstar/build/drugflow-molstar-light.css";
@@ -8,6 +8,7 @@ import { InteractionsRepresentationProvider } from "molstar/lib/mol-model-props/
 import { Color, ColorMap } from "molstar/lib/mol-util/color";
 import { ColorNames } from "molstar/lib/mol-util/color/names";
 import { get_interaction_iframe_api } from "@/api/molecular.js";
+import { throttle } from "@pureadmin/utils";
 
 // ==================== 类型定义 ====================
 /** 分子组件信息接口 */
@@ -1137,9 +1138,41 @@ const show_prolif_func = (): void => {
   }
 };
 
+/**
+ * 处理视图尺寸变化，重载 Molstar 视图
+ */
+const handleResize = (): void => {
+  if (!molstar_ref.value?.viewerInstance) return;
+
+  console.log("handleResize");
+  molstar_ref.value.viewerInstance.plugin.handleResize();
+};
+
+// 创建节流版本的 handleResize（200ms 节流）
+const throttledHandleResize = throttle(handleResize, 400);
+
 onMounted(async () => {
   await init();
   emit("init-complete");
+
+  // 监听容器尺寸变化（用于侧边栏展开/折叠等情况）
+  const viewerContainer = document.getElementById(canvas_id);
+  if (viewerContainer) {
+    const resizeObserver = new ResizeObserver(() => {
+      throttledHandleResize();
+    });
+    resizeObserver.observe(viewerContainer);
+
+    // 保存 observer 引用以便清理
+    (molstar_ref.value as any).resizeObserver = resizeObserver;
+  }
+});
+
+onUnmounted(() => {
+  // 清理 ResizeObserver
+  if (molstar_ref.value && molstar_ref.value.resizeObserver) {
+    molstar_ref.value.resizeObserver.disconnect();
+  }
 });
 
 defineExpose({
