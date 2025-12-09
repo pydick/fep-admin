@@ -77,7 +77,7 @@ const pagination = reactive({
 // 发送分页查询请求
 const queryPageData = (params: { page?: number; pageSize?: number } = {}) => {
   const queryParams = {
-    action: "query",
+    type: "query",
     page: params.page ?? 1,
     pageSize: params.pageSize ?? pagination.pageSize
   };
@@ -103,9 +103,8 @@ const gotoCreateTask = () => {
 
 const exceptionReason = ref<Record<string, string>>({});
 const exceptionReasonVisible = ref<Record<string, boolean>>({});
-const showExceptionReason = (id: string, taskId: string) => {
-  console.log(id);
-  exceptionReason.value[taskId] = "该任务异常原因";
+const showExceptionReason = (taskId: string, err_message: string) => {
+  exceptionReason.value[taskId] = err_message || "-";
   Object.keys(exceptionReasonVisible.value).forEach(key => {
     exceptionReasonVisible.value[key] = false;
   });
@@ -220,7 +219,7 @@ onMounted(() => {
                 {{ exceptionReason[row.task_id] }}
               </template>
               <template #reference>
-                <el-button :icon="WarningFilled" circle plain @click="showExceptionReason(row.id, row.task_id)" />
+                <el-button :icon="WarningFilled" :disabled="row.status !== 'ANALYZE_FAIL'" circle plain @click="showExceptionReason(row.task_id, row.err_message)" />
               </template>
             </el-popover>
           </span>
