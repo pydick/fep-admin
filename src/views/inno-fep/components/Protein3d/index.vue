@@ -33,8 +33,5 @@ defineExpose({
 
 <style lang="scss" scoped>
 .protein3d {
-  :deep(.msp-plugin .msp-viewport) {
-    background: none;
-  }
 }
 </style>

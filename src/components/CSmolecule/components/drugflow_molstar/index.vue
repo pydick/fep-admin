@@ -1444,6 +1444,10 @@ defineExpose({
 </template>
 
 <style scoped lang="css">
+:deep(.drugflow_molstar .msp-plugin .msp-viewport) {
+  background-color: #fcfbf9 !important;
+}
+
 .gray_btn {
   background-color: #888888 !important;
 }
