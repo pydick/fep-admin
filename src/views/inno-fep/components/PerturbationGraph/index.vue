@@ -546,7 +546,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="pre-container border">
+  <div class="pre-container border" @contextmenu.prevent>
     <div id="perturbationGraph" ref="containerRef" class="g6-container" />
     <div class="count-container">
       <span>共{{ edgeCount }}对配体</span>
