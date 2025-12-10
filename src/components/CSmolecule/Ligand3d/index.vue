@@ -22,7 +22,8 @@ const props = defineProps({
   // job_id: { type: String, default: "" },
   // SMILES ID列表字符串
   smiles_id_list_str: { type: String, default: "" },
-  ligandData: { type: Object, default: () => ({}) }
+  ligandData: { type: Object, default: () => ({}) },
+  render_type: { type: String, default: "default" }
 });
 
 // Molstar组件引用
@@ -36,7 +37,8 @@ const ligand_view_dict = ref({
   refer_pdb_string: "", // 参考配体的PDB字符串
   ligands_list: [], // 配体列表
   refer_smiles_name: "", // 参考配体的SMILES名称
-  refer_smiles_id: "" // 参考配体的SMILES ID
+  refer_smiles_id: "", // 参考配体的SMILES ID
+  render_type: "" // 渲染类型：default默认渲染，ligand_view配体视图渲染
 });
 
 // 是否首次绘制
@@ -85,12 +87,14 @@ const draw = async () => {
         ligand_view_dict.value.refer_pdb_string = props.ligandData.pdb_file;
         ligand_view_dict.value.refer_smiles_name = props.ligandData.ligand_name;
         ligand_view_dict.value.refer_smiles_id = props.ligandData.ligand_number;
+        ligand_view_dict.value.render_type = props.render_type;
       } else {
         ligand_view_dict.value.has_refer = false;
         ligand_view_dict.value.refer_smiles = "";
         ligand_view_dict.value.refer_pdb_string = props.ligandData.pdb_file;
         ligand_view_dict.value.refer_smiles_name = "";
         ligand_view_dict.value.refer_smiles_id = "";
+        ligand_view_dict.value.render_type = props.render_type;
       }
 
       console.log(666, ligand_view_dict.value);

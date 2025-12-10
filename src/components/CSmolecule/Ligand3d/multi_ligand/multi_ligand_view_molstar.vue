@@ -55,6 +55,7 @@ export default {
   props: {
     // 是否有参考配体
     has_refer: { type: Boolean, default: true },
+    render_type: { type: String, default: "default" },
     // 参考配体的PDB字符串
     refer_pdb_string: { type: String, default: "" },
     // 参考配体的SMILES字符串
@@ -154,7 +155,7 @@ export default {
       this.drawed_refer = true;
       if (this.refer_pdb_string) {
         const color = this.color_list_ori_pdb[0].color;
-        await this.add_ligand_view(this.refer_pdb_string, undefined, 0, true, "ref", color, [], "default");
+        await this.add_ligand_view(this.refer_pdb_string, undefined, 0, true, "ref", color, [], this.render_type);
       }
     },
     // 主要绘制方法：管理配体的添加、移除和更新
