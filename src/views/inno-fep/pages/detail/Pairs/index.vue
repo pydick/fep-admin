@@ -76,12 +76,12 @@ const pairsColumns = [
     align: "center",
     slot: "status"
   },
-  {
-    label: "Similarity score",
-    prop: "similarityScore",
-    minWidth: 130,
-    align: "center"
-  },
+  // {
+  //   label: "Similarity score",
+  //   prop: "similarityScore",
+  //   minWidth: 130,
+  //   align: "center"
+  // },
   {
     label: "Mapping score",
     prop: "mappingScore",

@@ -101,10 +101,11 @@ const columns = ref([
       </el-descriptions-item>
       <el-descriptions-item label="置信度">Bad</el-descriptions-item>
       <el-descriptions-item label="状态">success</el-descriptions-item>
-      <el-descriptions-item label="Similarity score">0.961</el-descriptions-item>
+      <!-- <el-descriptions-item label="Similarity score">0.961</el-descriptions-item> -->
       <el-descriptions-item label="Mapping score">0.321</el-descriptions-item>
       <el-descriptions-item label="Predicted ddG (Raw)">2.35±0.016</el-descriptions-item>
       <el-descriptions-item label="Predicted ddG (Corrected)">2.12±0.012</el-descriptions-item>
+      <el-descriptions-item label="" />
       <el-descriptions-item label="对比图表" class-name="comparison-table">
         <pure-table :data="tableData" :columns="columns" border>
           <template #conergence="{ row }">
