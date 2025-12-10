@@ -11,7 +11,7 @@ export default {
       component: () => import("@/views/test/index.vue"),
       meta: {
         title: "test",
-        showLink: false
+        showLink: true
       }
     }
   ]

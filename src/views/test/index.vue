@@ -3,6 +3,8 @@ import { reactive, ref } from "vue";
 import protein3d_molstar from "@/components/CSmolecule/Protein3d/index.vue";
 // import app_frame from "@drugflow/components/layout/app_frame.vue";
 import { data } from "./data.js";
+import { liganddata } from "./liganddata.js";
+import { liganddata2 } from "./liganddata.1.js";
 import doc_link from "@drugflow/components/layout/doc_link.vue";
 import SvgBox from "@drugflow/common/svgBox.vue";
 import Data_select from "@drugflow/common/data_select.vue";
@@ -10,7 +12,7 @@ import Spinner from "@drugflow/common/spinner.vue";
 import Upload from "@drugflow/common/upload.vue";
 import task_card from "@drugflow/components/task/task_card.vue";
 import csv_details from "@drugflow/components/file_process/csv_details.vue";
-import multi_ligand_dock_frame from "@drugflow/components/molecule/multi_ligand/multi_ligand_dock_frame.vue";
+import Ligand3d_molstar from "@/components/CSmolecule/Ligand3d/index.vue";
 import { data2 } from "./data2.js";
 import TestSvg from "@/assets/svg/dymicTest.svg?component";
 
@@ -26,10 +28,22 @@ export default {
     Upload,
     task_card,
     csv_details,
-    multi_ligand_dock_frame,
-    TestSvg
+    TestSvg,
+    Ligand3d_molstar
   },
   setup() {
+    const ligandData = ref({
+      pdb_file: liganddata,
+      smiles: "",
+      ligand_name: "",
+      ligand_number: ""
+    });
+    const ligandData2 = ref({
+      pdb_file: liganddata2,
+      smiles: "",
+      ligand_name: "a",
+      ligand_number: "1"
+    });
     const form = reactive({
       is_isomer: true,
       need_prot_process: true,
@@ -127,12 +141,12 @@ export default {
     const label_col = reactive(["Smiles"]);
     const task_id = ref("15190");
     const frame_data = data2;
-    return { frame_data, form, theme, if_show_box, molstar3dRef, ligand_smiles, show_data_list, data_list, protein_name, task_name, ori_task_name, label_col, ligands_id, task_id };
+    return { ligandData, ligandData2, frame_data, form, theme, if_show_box, molstar3dRef, ligand_smiles, show_data_list, data_list, protein_name, task_name, ori_task_name, label_col, ligands_id, task_id };
   },
   mounted() {
-    setTimeout(() => {
-      this.$refs.molstar3dRef.loadStructure(data, "pdb");
-    }, 3000);
+    // setTimeout(() => {
+    //   this.$refs.molstar3dRef.loadStructure(data, "pdb");
+    // }, 3000);
   },
   methods: {
     show_protein() {
@@ -156,15 +170,16 @@ export default {
 
 <template>
   <div>
-    <!-- <p>-------------配体预览------------------</p>
+    <p>-------------配体预览------------------</p>
     <div style="position: relative; width: 800px; height: 800px">
-      <multi_ligand_dock_frame ref="ngl_ref" :job_id="task_id" :smiles_id_list_str="JSON.stringify(frame_data)" />
-    </div> -->
-    <p>-------------分子预览------------------</p>
+      <Ligand3d_molstar ref="ngl_ref" :smiles_id_list_str="'[]'" :ligandData="ligandData" render_type="ligand_view" />
+      <Ligand3d_molstar ref="ngl_ref" :smiles_id_list_str="'[]'" :ligandData="ligandData2" render_type="ligand_view" />
+    </div>
+    <!-- <p>-------------分子预览------------------</p>
     <div style="width: 800px; height: 800px">
       <el-button @click="show_protein">show_protein</el-button>
       <Protein3dMolstar ref="molstar3dRef" v-model:box_x="form.X_center" v-model:box_y="form.Y_center" v-model:box_z="form.Z_center" v-model:l1="form.X_dimension" v-model:l2="form.Y_dimension" v-model:l3="form.Z_dimension" v-model:ligand_select="form.box_ligand" v-model:theme="theme" v-model:if_changed_box="form.box_changed_by_user" :if_show_box="if_show_box" />
-    </div>
+    </div> -->
     <!-- <p>-------------doc_link----------------------</p>
     <doc_link algo_type="Docking" />
 
