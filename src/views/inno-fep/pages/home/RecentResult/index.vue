@@ -137,11 +137,12 @@ const { connectWebSocket, sendMessage } = useWebSocket({
   wsUrl: `${apiV1}/cal-analysis/ws/tasks?user_id=${userId}`,
   onMessage: message => {
     const tableData = message;
-    const { page, pageSize, total, data } = tableData;
+    console.log(11, tableData);
+    const { page, page_size, total, data } = tableData;
     taskData.value = data;
     pagination.total = total || 0;
     pagination.page = page || 1;
-    pagination.pageSize = pageSize || 10;
+    pagination.pageSize = page_size || 10;
     loading.value = false;
   },
   onConnected: () => {
