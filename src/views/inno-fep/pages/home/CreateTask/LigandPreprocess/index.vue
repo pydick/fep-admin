@@ -207,7 +207,6 @@ const handleAlign = async () => {
 const isGernerate = ref(false);
 
 const handleGenerateMap = async () => {
-  console.log(ligandList.value);
   // 检查分子名称是否有重名
   const names = ligandList.value.map(item => item.name);
   const hasDuplicate = names.length !== new Set(names).size;
@@ -251,6 +250,8 @@ const handleGenerateMap = async () => {
     } else {
       ElMessage.error(validateRes.message);
     }
+  } catch (err) {
+    console.error(err);
   } finally {
     loading.close();
   }
