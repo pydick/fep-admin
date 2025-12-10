@@ -207,6 +207,14 @@ const handleAlign = async () => {
 const isGernerate = ref(false);
 
 const handleGenerateMap = async () => {
+  console.log(ligandList.value);
+  // 检查分子名称是否有重名
+  const names = ligandList.value.map(item => item.name);
+  const hasDuplicate = names.length !== new Set(names).size;
+  if (hasDuplicate) {
+    ElMessage.warning("分子名称不能重复，请修改重名分子后再进行build");
+    return;
+  }
   if (step2Form.mapType === mapTypesEnum[0].value && !step2Form.centerMolecule) {
     ElMessage.warning("请先选择映射图方式为Star map，并选择中心分子");
     return;
